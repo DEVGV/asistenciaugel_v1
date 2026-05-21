@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: asistenciaugel_app
+    ports:
+      - "8000:8000"
+      - "5190:5190"
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_DATABASE=asistenciaugel
+      - DB_USERNAME=sail
+      - DB_PASSWORD=password
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - asistenciaugel_network
+
+  db:
+    image: postgres:15
+    container_name: asistenciaugel_db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: asistenciaugel
+      POSTGRES_USER: sail
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - asistenciaugel_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: asistenciaugel_pgadmin
+    restart: unless-stopped
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    depends_on:
+      - db
+    networks:
+      - asistenciaugel_network
+
+networks:
+  asistenciaugel_network:
+    driver: bridge
+
+volumes:
+  db-data:
