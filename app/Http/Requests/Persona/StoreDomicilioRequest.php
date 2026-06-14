@@ -18,10 +18,15 @@ class StoreDomicilioRequest extends FormRequest
     {
         return [
             'domicilio' => ['required', 'string', 'max:500'],
-            'zona_id' => ['required', 'integer'],
+            'zona_id' => ['nullable', 'integer'],
             'ubigeo' => ['nullable', 'string', 'max:6'],
-            'fechaInicio' => ['nullable', 'date'],
-            'fechaFin' => ['nullable', 'date', 'after_or_equal:fechaInicio'],
+            'fechaInicio' => ['sometimes', 'nullable', 'date'],
         ];
+    }
+
+    /** @return array<string, mixed> */
+    public function toDTO(): array
+    {
+        return $this->validated();
     }
 }

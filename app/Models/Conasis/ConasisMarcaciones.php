@@ -22,6 +22,7 @@ class ConasisMarcaciones extends Model
         'trabajador_id',
         'altaTrabajador_id',
         'localMarcacion_id',
+        'codigo',
         'fechaMarcacion',
         'fechaRegistro',
         'reloj_id',

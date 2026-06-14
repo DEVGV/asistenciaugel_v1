@@ -2,6 +2,7 @@
 
 namespace App\Models\Conasis;
 
+use App\Models\InstitucionesEduc;
 use App\Models\Param\ParamFeriados;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,6 +15,7 @@ class ConasisDiasNoLaborables extends Model
 
     protected $fillable = [
         'feriado_id',
+        'institucionEduc_id',
         'fecha',
         'observacion',
         'nacionalLocal',
@@ -25,5 +27,10 @@ class ConasisDiasNoLaborables extends Model
     public function feriado(): BelongsTo
     {
         return $this->belongsTo(ParamFeriados::class, 'feriado_id');
+    }
+
+    public function institucion(): BelongsTo
+    {
+        return $this->belongsTo(InstitucionesEduc::class, 'institucionEduc_id');
     }
 }

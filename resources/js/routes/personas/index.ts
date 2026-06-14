@@ -1,4 +1,5 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
+import masivo from './masivo'
 import telefonos from './telefonos'
 import emails from './emails'
 import domicilios from './domicilios'
@@ -449,12 +450,94 @@ destroyForm.delete = (args: { persona: string | number | { id: string | number }
 
 destroy.form = destroyForm
 
+/**
+* @see \App\Http\Controllers\Persona\PersonaController::convertirTrabajador
+* @see app/Http/Controllers/Persona/PersonaController.php:70
+* @route '/personas/{persona}/convertir-trabajador'
+*/
+export const convertirTrabajador = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: convertirTrabajador.url(args, options),
+    method: 'post',
+})
+
+convertirTrabajador.definition = {
+    methods: ["post"],
+    url: '/personas/{persona}/convertir-trabajador',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Persona\PersonaController::convertirTrabajador
+* @see app/Http/Controllers/Persona/PersonaController.php:70
+* @route '/personas/{persona}/convertir-trabajador'
+*/
+convertirTrabajador.url = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { persona: args }
+    }
+
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { persona: args.id }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            persona: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        persona: typeof args.persona === 'object'
+        ? args.persona.id
+        : args.persona,
+    }
+
+    return convertirTrabajador.definition.url
+            .replace('{persona}', parsedArgs.persona.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Persona\PersonaController::convertirTrabajador
+* @see app/Http/Controllers/Persona/PersonaController.php:70
+* @route '/personas/{persona}/convertir-trabajador'
+*/
+convertirTrabajador.post = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: convertirTrabajador.url(args, options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Persona\PersonaController::convertirTrabajador
+* @see app/Http/Controllers/Persona/PersonaController.php:70
+* @route '/personas/{persona}/convertir-trabajador'
+*/
+const convertirTrabajadorForm = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: convertirTrabajador.url(args, options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Persona\PersonaController::convertirTrabajador
+* @see app/Http/Controllers/Persona/PersonaController.php:70
+* @route '/personas/{persona}/convertir-trabajador'
+*/
+convertirTrabajadorForm.post = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: convertirTrabajador.url(args, options),
+    method: 'post',
+})
+
+convertirTrabajador.form = convertirTrabajadorForm
+
 const personas = {
     index: Object.assign(index, index),
     store: Object.assign(store, store),
     show: Object.assign(show, show),
     update: Object.assign(update, update),
     destroy: Object.assign(destroy, destroy),
+    convertirTrabajador: Object.assign(convertirTrabajador, convertirTrabajador),
+    masivo: Object.assign(masivo, masivo),
     telefonos: Object.assign(telefonos, telefonos),
     emails: Object.assign(emails, emails),
     domicilios: Object.assign(domicilios, domicilios),

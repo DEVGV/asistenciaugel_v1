@@ -116,7 +116,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\SeccionIEController::destroy
-* @see app/Http/Controllers/InstitucionEducativa/SeccionIEController.php:37
+* @see app/Http/Controllers/InstitucionEducativa/SeccionIEController.php:35
 * @route '/secciones/{seccione}'
 */
 export const destroy = (args: { seccione: string | number | { id: string | number } } | [seccione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -131,7 +131,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\SeccionIEController::destroy
-* @see app/Http/Controllers/InstitucionEducativa/SeccionIEController.php:37
+* @see app/Http/Controllers/InstitucionEducativa/SeccionIEController.php:35
 * @route '/secciones/{seccione}'
 */
 destroy.url = (args: { seccione: string | number | { id: string | number } } | [seccione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -164,7 +164,7 @@ destroy.url = (args: { seccione: string | number | { id: string | number } } | [
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\SeccionIEController::destroy
-* @see app/Http/Controllers/InstitucionEducativa/SeccionIEController.php:37
+* @see app/Http/Controllers/InstitucionEducativa/SeccionIEController.php:35
 * @route '/secciones/{seccione}'
 */
 destroy.delete = (args: { seccione: string | number | { id: string | number } } | [seccione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -174,7 +174,7 @@ destroy.delete = (args: { seccione: string | number | { id: string | number } } 
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\SeccionIEController::destroy
-* @see app/Http/Controllers/InstitucionEducativa/SeccionIEController.php:37
+* @see app/Http/Controllers/InstitucionEducativa/SeccionIEController.php:35
 * @route '/secciones/{seccione}'
 */
 const destroyForm = (args: { seccione: string | number | { id: string | number } } | [seccione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -189,7 +189,7 @@ const destroyForm = (args: { seccione: string | number | { id: string | number }
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\SeccionIEController::destroy
-* @see app/Http/Controllers/InstitucionEducativa/SeccionIEController.php:37
+* @see app/Http/Controllers/InstitucionEducativa/SeccionIEController.php:35
 * @route '/secciones/{seccione}'
 */
 destroyForm.delete = (args: { seccione: string | number | { id: string | number } } | [seccione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

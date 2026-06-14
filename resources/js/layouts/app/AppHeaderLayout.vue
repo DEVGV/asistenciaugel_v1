@@ -18,7 +18,9 @@ withDefaults(defineProps<Props>(), {
     <AppShell variant="header">
         <AppHeader :breadcrumbs="breadcrumbs" />
         <AppContent variant="header">
-            <slot />
+            <div class="animate-element flex flex-1 flex-col">
+                <slot />
+            </div>
         </AppContent>
         <Toaster />
     </AppShell>

@@ -1,0 +1,1 @@
+import{B as e}from"./app-GdrzbMNe.js";var t=e(`ChevronUpIcon`,[[`path`,{d:`m18 15-6-6-6 6`,key:`153udz`}]]);export{t};

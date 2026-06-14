@@ -9,6 +9,7 @@ import type { ParamSimple } from '@/types/models/params';
 
 const props = defineProps<{
     form: any;
+    isEditing?: boolean;
 }>();
 
 const selectedDocTypeAbrev = ref<string | null>(null);
@@ -21,12 +22,12 @@ function onDocTypeChange(item: ParamSimple | null) {
 
 async function buscarReniec() {
     if (!props.form.docIdentidad || props.form.docIdentidad.length !== 8) {
-return;
-}
+        return;
+    }
 
     if (selectedDocTypeAbrev.value !== 'DNI') {
-return;
-}
+        return;
+    }
 
     isSearchingReniec.value = true;
     searchError.value = null;
@@ -197,6 +198,28 @@ watch(
         </div>
         <p v-if="form.errors.activo" class="text-sm text-destructive">
             {{ form.errors.activo }}
+        </p>
+
+        <!-- Registrar como Trabajador (solo en creación) -->
+        <div v-if="!props.isEditing" class="mt-2 flex items-center space-x-2">
+            <input
+                id="es_trabajador"
+                type="checkbox"
+                :checked="!!form.es_trabajador"
+                @change="
+                    (e: Event) =>
+                        (form.es_trabajador = (
+                            e.target as HTMLInputElement
+                        ).checked)
+                "
+                class="size-4 cursor-pointer rounded border-input accent-primary"
+            />
+            <Label for="es_trabajador" class="cursor-pointer"
+                >Registrar como Trabajador</Label
+            >
+        </div>
+        <p v-if="form.errors.es_trabajador" class="text-sm text-destructive">
+            {{ form.errors.es_trabajador }}
         </p>
     </div>
 </template>

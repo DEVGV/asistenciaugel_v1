@@ -22,6 +22,29 @@ class LocalInstEducService
     }
 
     /**
+     * Devuelve los locales de marcación disponibles para una IE,
+     * en formato simple {id, nombre} para selects del formulario de altas.
+     * El id corresponde al localInstEduc_id (no al local_id).
+     *
+     * @return array<int, array{id: int, nombre: string}>
+     */
+    public function opcionesParaSelect(InstitucionesEduc $ie): array
+    {
+        return $ie->localesInstEduc()
+            ->with('local:id,nombre,domicilio')
+            ->whereNull('fechaFin')
+            ->get()
+            ->map(fn (ConasisLocalesInstEduc $li) => [
+                'id'     => $li->id,
+                'nombre' => $li->local?->nombre
+                    ?? $li->local?->domicilio
+                    ?? "Local #{$li->local_id}",
+            ])
+            ->values()
+            ->all();
+    }
+
+    /**
      * Crea un local nuevo y lo asocia a la IE automáticamente.
      */
     public function crearYAsignar(CreateLocalDTO $localDTO, InstitucionesEduc $ie, ?string $fechaInicio = null, ?string $fechaFin = null): ConasisLocalesInstEduc

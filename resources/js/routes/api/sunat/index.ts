@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Api\SunatController::ruc
-* @see app/Http/Controllers/Api/SunatController.php:21
+* @see app/Http/Controllers/Api/SunatController.php:17
 * @route '/api/sunat/ruc'
 */
 export const ruc = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ ruc.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\SunatController::ruc
-* @see app/Http/Controllers/Api/SunatController.php:21
+* @see app/Http/Controllers/Api/SunatController.php:17
 * @route '/api/sunat/ruc'
 */
 ruc.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ ruc.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\SunatController::ruc
-* @see app/Http/Controllers/Api/SunatController.php:21
+* @see app/Http/Controllers/Api/SunatController.php:17
 * @route '/api/sunat/ruc'
 */
 ruc.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -35,7 +35,7 @@ ruc.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\SunatController::ruc
-* @see app/Http/Controllers/Api/SunatController.php:21
+* @see app/Http/Controllers/Api/SunatController.php:17
 * @route '/api/sunat/ruc'
 */
 const rucForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -45,7 +45,7 @@ const rucForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\SunatController::ruc
-* @see app/Http/Controllers/Api/SunatController.php:21
+* @see app/Http/Controllers/Api/SunatController.php:17
 * @route '/api/sunat/ruc'
 */
 rucForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -57,7 +57,7 @@ ruc.form = rucForm
 
 /**
 * @see \App\Http\Controllers\Api\SunatController::dni
-* @see app/Http/Controllers/Api/SunatController.php:45
+* @see app/Http/Controllers/Api/SunatController.php:30
 * @route '/api/sunat/dni'
 */
 export const dni = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -72,7 +72,7 @@ dni.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\SunatController::dni
-* @see app/Http/Controllers/Api/SunatController.php:45
+* @see app/Http/Controllers/Api/SunatController.php:30
 * @route '/api/sunat/dni'
 */
 dni.url = (options?: RouteQueryOptions) => {
@@ -81,7 +81,7 @@ dni.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\SunatController::dni
-* @see app/Http/Controllers/Api/SunatController.php:45
+* @see app/Http/Controllers/Api/SunatController.php:30
 * @route '/api/sunat/dni'
 */
 dni.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -91,7 +91,7 @@ dni.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\SunatController::dni
-* @see app/Http/Controllers/Api/SunatController.php:45
+* @see app/Http/Controllers/Api/SunatController.php:30
 * @route '/api/sunat/dni'
 */
 const dniForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -101,7 +101,7 @@ const dniForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\SunatController::dni
-* @see app/Http/Controllers/Api/SunatController.php:45
+* @see app/Http/Controllers/Api/SunatController.php:30
 * @route '/api/sunat/dni'
 */
 dniForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

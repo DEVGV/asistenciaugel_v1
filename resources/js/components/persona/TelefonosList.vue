@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { useForm, router } from '@inertiajs/vue3';
-import { Plus, Pencil, Trash2, Phone, Smartphone } from 'lucide-vue-next';
+import {
+    Plus,
+    Pencil,
+    Trash2,
+    Phone,
+    Smartphone,
+    ArrowDownCircle,
+} from 'lucide-vue-next';
 import { ref } from 'vue';
 import TelefonoController from '@/actions/App/Http/Controllers/Persona/TelefonoController';
 import ConfirmModal from '@/components/shared/ConfirmModal.vue';
@@ -31,6 +38,9 @@ const editingId = ref<number | null>(null);
 const showDeleteModal = ref(false);
 const itemToDelete = ref<Telefono | null>(null);
 const isDeleting = ref(false);
+const showBajaModal = ref(false);
+const itemToBaja = ref<Telefono | null>(null);
+const isBaja = ref(false);
 
 const form = useForm({
     operador_id: null as number | null,
@@ -38,45 +48,51 @@ const form = useForm({
     codigoPais: '+51',
     numero: '',
     imei: '',
-    fechaInicio: '',
-    fechaFin: '',
 });
 
-function openCreate() {
+function resetForm() {
+    form.operador_id = null;
+    form.movilFijo = 'M';
+    form.codigoPais = '+51';
+    form.numero = '';
+    form.imei = '';
+    form.clearErrors();
+}
+
+function closeModal() {
+    showModal.value = false;
+    resetForm();
     isEditing.value = false;
     editingId.value = null;
-    form.reset();
-    form.clearErrors();
-    form.fechaInicio = new Date().toISOString().split('T')[0];
+}
+
+function openCreate() {
+    resetForm();
+    isEditing.value = false;
+    editingId.value = null;
     showModal.value = true;
 }
 
 function openEdit(tel: Telefono) {
+    resetForm();
     isEditing.value = true;
     editingId.value = tel.id;
-    form.clearErrors();
     form.operador_id = tel.operador_id;
     form.movilFijo = tel.movilFijo;
     form.codigoPais = tel.codigoPais || '+51';
     form.numero = tel.numero;
     form.imei = tel.imei || '';
-    form.fechaInicio = tel.fechaInicio || '';
-    form.fechaFin = tel.fechaFin || '';
     showModal.value = true;
 }
 
 function submitForm() {
     if (isEditing.value && editingId.value) {
         form.put(TelefonoController.update({ telefono: editingId.value }).url, {
-            onSuccess: () => {
-                showModal.value = false;
-            },
+            onSuccess: () => closeModal(),
         });
     } else {
         form.post(TelefonoController.store({ persona: props.personaId }).url, {
-            onSuccess: () => {
-                showModal.value = false;
-            },
+            onSuccess: () => closeModal(),
         });
     }
 }
@@ -88,8 +104,8 @@ function confirmDelete(tel: Telefono) {
 
 function executeDelete() {
     if (!itemToDelete.value) {
-return;
-}
+        return;
+    }
 
     isDeleting.value = true;
     router.delete(
@@ -101,6 +117,32 @@ return;
             },
             onFinish: () => {
                 isDeleting.value = false;
+            },
+        },
+    );
+}
+
+function confirmBaja(tel: Telefono) {
+    itemToBaja.value = tel;
+    showBajaModal.value = true;
+}
+
+function executeBaja() {
+    if (!itemToBaja.value) {
+        return;
+    }
+
+    isBaja.value = true;
+    router.patch(
+        `/telefonos/${itemToBaja.value.id}/dar-de-baja`,
+        {},
+        {
+            onSuccess: () => {
+                showBajaModal.value = false;
+                itemToBaja.value = null;
+            },
+            onFinish: () => {
+                isBaja.value = false;
             },
         },
     );
@@ -161,6 +203,16 @@ return;
                                 <Pencil class="h-3.5 w-3.5" />
                             </Button>
                             <Button
+                                v-if="!tel.fechaFin"
+                                variant="ghost"
+                                size="icon"
+                                class="h-7 w-7 text-amber-600"
+                                title="Dar de baja"
+                                @click="confirmBaja(tel)"
+                            >
+                                <ArrowDownCircle class="h-3.5 w-3.5" />
+                            </Button>
+                            <Button
                                 variant="ghost"
                                 size="icon"
                                 class="h-7 w-7 text-destructive"
@@ -187,6 +239,7 @@ return;
             :title="isEditing ? 'Editar Teléfono' : 'Nuevo Teléfono'"
             :processing="form.processing"
             @submit="submitForm"
+            @close="closeModal"
         >
             <div class="grid gap-4">
                 <div class="grid grid-cols-2 gap-4">
@@ -230,19 +283,6 @@ return;
                         </p>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="grid gap-2">
-                        <Label>Fecha Inicio</Label>
-                        <Input v-model="form.fechaInicio" type="date" />
-                    </div>
-                    <div class="grid gap-2">
-                        <Label>Fecha de Baja</Label>
-                        <Input v-model="form.fechaFin" type="date" />
-                        <p class="text-xs text-muted-foreground">
-                            Establece una fecha para marcarlo como inactivo.
-                        </p>
-                    </div>
-                </div>
             </div>
         </FormModal>
 
@@ -254,6 +294,15 @@ return;
             destructive
             :processing="isDeleting"
             @confirm="executeDelete"
+        />
+
+        <ConfirmModal
+            v-model:show="showBajaModal"
+            title="Dar de Baja Teléfono"
+            :description="`¿Dar de baja el número ${itemToBaja?.numero}? Se registrará la fecha de hoy como fecha de baja.`"
+            confirm-text="Dar de Baja"
+            :processing="isBaja"
+            @confirm="executeBaja"
         />
     </div>
 </template>

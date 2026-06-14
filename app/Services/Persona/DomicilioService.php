@@ -23,6 +23,7 @@ class DomicilioService
     {
         $data['persona_id'] = $persona->id;
         $data['created_by'] = auth()->id() ?? 1;
+        $data['fechaInicio'] ??= now()->toDateString();
 
         return Domicilios::create($data);
     }
@@ -33,6 +34,11 @@ class DomicilioService
     public function actualizar(Domicilios $domicilio, array $data): bool
     {
         return $domicilio->update($data);
+    }
+
+    public function darDeBaja(Domicilios $domicilio): bool
+    {
+        return $domicilio->update(['fechaFin' => now()->toDateString()]);
     }
 
     public function eliminar(Domicilios $domicilio): bool

@@ -23,7 +23,7 @@ class EntidadController extends Controller
     {
         return Inertia::render('entidad/Index', [
             'entidades' => $this->entidadService->listarPaginado($request),
-            'filters' => $request->only(['search']),
+            'filters'   => $request->only(['search']),
         ]);
     }
 
@@ -53,35 +53,8 @@ class EntidadController extends Controller
 
     public function search(Request $request): JsonResponse
     {
-        $tipoId = $request->integer('tipo_entidad_id');
-        $selectedId = $request->integer('selected_id');
-        $search = $request->string('q')->trim();
-
-        $query = Entidades::query()->select('id', 'razonSocial as nombre', 'ruc as codigo');
-
-        if ($tipoId) {
-            $query->where('tipoEntidad_id', $tipoId);
-        }
-
-        $query->where(function ($q) use ($selectedId) {
-            $q->where('activo', true);
-            if ($selectedId) {
-                $q->orWhere('id', $selectedId);
-            }
-        });
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('razonSocial', 'ilike', "%{$search}%")
-                    ->orWhere('ruc', 'like', "%{$search}%");
-            });
-        } elseif ($selectedId) {
-            // Sort to ensure the selected item is at the top when no search query is active
-            $query->orderByRaw('CASE WHEN id = ? THEN 1 ELSE 0 END DESC', [$selectedId]);
-        }
-
         return response()->json([
-            'data' => $query->limit(50)->get(),
+            'data' => $this->entidadService->buscarParaSelect($request),
         ]);
     }
 }

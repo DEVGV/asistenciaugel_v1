@@ -6,6 +6,7 @@ import CondicionLaboralController from '@/actions/App/Http/Controllers/Configura
 import ConfirmModal from '@/components/shared/ConfirmModal.vue';
 import FormModal from '@/components/shared/FormModal.vue';
 import ParamSelect from '@/components/shared/ParamSelect.vue';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -125,8 +126,8 @@ function confirmDelete(condicion: CondicionLaboral) {
 
 function executeDelete() {
     if (!condicionToDelete.value) {
-return;
-}
+        return;
+    }
 
     isDeleting.value = true;
     router.delete(
@@ -180,9 +181,16 @@ return;
                         <TableCell class="font-medium">{{
                             condicion.nombre
                         }}</TableCell>
-                        <TableCell>{{
-                            condicion.abreviatura || '-'
-                        }}</TableCell>
+                        <TableCell>
+                            <Badge
+                                v-if="condicion.abreviatura"
+                                variant="outline"
+                                class="border-sky-200 bg-sky-50 text-[10px] font-semibold tracking-wider text-sky-700 uppercase dark:border-sky-800 dark:bg-sky-950 dark:text-sky-300"
+                            >
+                                {{ condicion.abreviatura }}
+                            </Badge>
+                            <span v-else>-</span>
+                        </TableCell>
                         <TableCell class="text-sm text-muted-foreground">{{
                             condicion.regimenLaboral?.nombre || '-'
                         }}</TableCell>

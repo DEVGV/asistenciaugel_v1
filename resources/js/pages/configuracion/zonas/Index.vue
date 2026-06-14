@@ -135,8 +135,8 @@ function confirmDelete(zona: Zona) {
 
 function executeDelete() {
     if (!zonaToDelete.value) {
-return;
-}
+        return;
+    }
 
     isDeleting.value = true;
     router.delete(ZonaController.destroy({ zona: zonaToDelete.value.id }).url, {
@@ -152,8 +152,8 @@ return;
 
 function getUbigeoText(zona: Zona): string {
     if (!zona.distrito) {
-return '-';
-}
+        return '-';
+    }
 
     const dist = zona.distrito.nombre || '';
     const prov = zona.distrito.provincia?.nombre || '';
@@ -335,8 +335,9 @@ return '-';
                     </div>
                 </div>
 
-                <div class="border-t pt-3 mt-1">
-                    <Label class="text-sm font-semibold text-muted-foreground block mb-3"
+                <div class="mt-1 border-t pt-3">
+                    <Label
+                        class="mb-3 block text-sm font-semibold text-muted-foreground"
                         >Ubicación Geográfica (Ubigeo)</Label
                     >
                     <div class="grid gap-3">

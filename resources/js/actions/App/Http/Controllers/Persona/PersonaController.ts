@@ -447,6 +447,86 @@ destroyForm.delete = (args: { persona: string | number | { id: string | number }
 destroy.form = destroyForm
 
 /**
+* @see \App\Http\Controllers\Persona\PersonaController::convertirTrabajador
+* @see app/Http/Controllers/Persona/PersonaController.php:70
+* @route '/personas/{persona}/convertir-trabajador'
+*/
+export const convertirTrabajador = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: convertirTrabajador.url(args, options),
+    method: 'post',
+})
+
+convertirTrabajador.definition = {
+    methods: ["post"],
+    url: '/personas/{persona}/convertir-trabajador',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Persona\PersonaController::convertirTrabajador
+* @see app/Http/Controllers/Persona/PersonaController.php:70
+* @route '/personas/{persona}/convertir-trabajador'
+*/
+convertirTrabajador.url = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { persona: args }
+    }
+
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { persona: args.id }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            persona: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        persona: typeof args.persona === 'object'
+        ? args.persona.id
+        : args.persona,
+    }
+
+    return convertirTrabajador.definition.url
+            .replace('{persona}', parsedArgs.persona.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Persona\PersonaController::convertirTrabajador
+* @see app/Http/Controllers/Persona/PersonaController.php:70
+* @route '/personas/{persona}/convertir-trabajador'
+*/
+convertirTrabajador.post = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: convertirTrabajador.url(args, options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Persona\PersonaController::convertirTrabajador
+* @see app/Http/Controllers/Persona/PersonaController.php:70
+* @route '/personas/{persona}/convertir-trabajador'
+*/
+const convertirTrabajadorForm = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: convertirTrabajador.url(args, options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Persona\PersonaController::convertirTrabajador
+* @see app/Http/Controllers/Persona/PersonaController.php:70
+* @route '/personas/{persona}/convertir-trabajador'
+*/
+convertirTrabajadorForm.post = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: convertirTrabajador.url(args, options),
+    method: 'post',
+})
+
+convertirTrabajador.form = convertirTrabajadorForm
+
+/**
 * @see \App\Http\Controllers\Persona\PersonaController::search
 * @see app/Http/Controllers/Persona/PersonaController.php:30
 * @route '/api/personas/search'
@@ -527,6 +607,6 @@ searchForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 
 search.form = searchForm
 
-const PersonaController = { index, store, show, update, destroy, search }
+const PersonaController = { index, store, show, update, destroy, convertirTrabajador, search }
 
 export default PersonaController

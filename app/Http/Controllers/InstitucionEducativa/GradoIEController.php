@@ -17,7 +17,7 @@ class GradoIEController extends Controller
 
     public function store(StoreSubRecursoIERequest $request, InstitucionesEduc $institucione): RedirectResponse
     {
-        $this->gradoService->crear($institucione, $request->validated());
+        $this->gradoService->crear($institucione, $request->toDTO());
 
         return redirect()->route('instituciones.show', $institucione)
             ->with('success', 'Grado registrado exitosamente.');
@@ -25,7 +25,7 @@ class GradoIEController extends Controller
 
     public function update(StoreSubRecursoIERequest $request, GradosIE $grado): RedirectResponse
     {
-        $this->gradoService->actualizar($grado, $request->validated());
+        $this->gradoService->actualizar($grado, $request->toDTO());
 
         return redirect()->route('instituciones.show', $grado->institucionEduc_id)
             ->with('success', 'Grado actualizado exitosamente.');

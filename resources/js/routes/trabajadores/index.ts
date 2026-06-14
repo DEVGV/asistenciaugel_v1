@@ -1,7 +1,9 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
+import masivo from './masivo'
+import altas from './altas'
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::index
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:23
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:21
 * @route '/trabajadores'
 */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +18,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::index
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:23
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:21
 * @route '/trabajadores'
 */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +27,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::index
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:23
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:21
 * @route '/trabajadores'
 */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -35,7 +37,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::index
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:23
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:21
 * @route '/trabajadores'
 */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -45,7 +47,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::index
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:23
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:21
 * @route '/trabajadores'
 */
 const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -55,7 +57,7 @@ const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::index
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:23
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:21
 * @route '/trabajadores'
 */
 indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -65,7 +67,7 @@ indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::index
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:23
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:21
 * @route '/trabajadores'
 */
 indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -82,7 +84,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::store
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:31
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:37
 * @route '/trabajadores'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -97,7 +99,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::store
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:31
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:37
 * @route '/trabajadores'
 */
 store.url = (options?: RouteQueryOptions) => {
@@ -106,7 +108,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::store
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:31
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:37
 * @route '/trabajadores'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -116,7 +118,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::store
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:31
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:37
 * @route '/trabajadores'
 */
 const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -126,7 +128,7 @@ const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::store
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:31
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:37
 * @route '/trabajadores'
 */
 storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -138,7 +140,7 @@ store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::show
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:39
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:45
 * @route '/trabajadores/{trabajador}'
 */
 export const show = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -153,7 +155,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::show
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:39
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:45
 * @route '/trabajadores/{trabajador}'
 */
 show.url = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -186,7 +188,7 @@ show.url = (args: { trabajador: string | number | { id: string | number } } | [t
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::show
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:39
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:45
 * @route '/trabajadores/{trabajador}'
 */
 show.get = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -196,7 +198,7 @@ show.get = (args: { trabajador: string | number | { id: string | number } } | [t
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::show
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:39
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:45
 * @route '/trabajadores/{trabajador}'
 */
 show.head = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -206,7 +208,7 @@ show.head = (args: { trabajador: string | number | { id: string | number } } | [
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::show
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:39
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:45
 * @route '/trabajadores/{trabajador}'
 */
 const showForm = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -216,7 +218,7 @@ const showForm = (args: { trabajador: string | number | { id: string | number } 
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::show
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:39
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:45
 * @route '/trabajadores/{trabajador}'
 */
 showForm.get = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -226,7 +228,7 @@ showForm.get = (args: { trabajador: string | number | { id: string | number } } 
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::show
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:39
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:45
 * @route '/trabajadores/{trabajador}'
 */
 showForm.head = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -242,228 +244,8 @@ showForm.head = (args: { trabajador: string | number | { id: string | number } }
 show.form = showForm
 
 /**
-* @see \App\Http\Controllers\Trabajador\TrabajadorController::edit
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:46
-* @route '/trabajadores/{trabajador}/edit'
-*/
-export const edit = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: edit.url(args, options),
-    method: 'get',
-})
-
-edit.definition = {
-    methods: ["get","head"],
-    url: '/trabajadores/{trabajador}/edit',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \App\Http\Controllers\Trabajador\TrabajadorController::edit
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:46
-* @route '/trabajadores/{trabajador}/edit'
-*/
-edit.url = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
-    if (typeof args === 'string' || typeof args === 'number') {
-        args = { trabajador: args }
-    }
-
-    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-        args = { trabajador: args.id }
-    }
-
-    if (Array.isArray(args)) {
-        args = {
-            trabajador: args[0],
-        }
-    }
-
-    args = applyUrlDefaults(args)
-
-    const parsedArgs = {
-        trabajador: typeof args.trabajador === 'object'
-        ? args.trabajador.id
-        : args.trabajador,
-    }
-
-    return edit.definition.url
-            .replace('{trabajador}', parsedArgs.trabajador.toString())
-            .replace(/\/+$/, '') + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\Trabajador\TrabajadorController::edit
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:46
-* @route '/trabajadores/{trabajador}/edit'
-*/
-edit.get = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: edit.url(args, options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\Trabajador\TrabajadorController::edit
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:46
-* @route '/trabajadores/{trabajador}/edit'
-*/
-edit.head = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: edit.url(args, options),
-    method: 'head',
-})
-
-/**
-* @see \App\Http\Controllers\Trabajador\TrabajadorController::edit
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:46
-* @route '/trabajadores/{trabajador}/edit'
-*/
-const editForm = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: edit.url(args, options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\Trabajador\TrabajadorController::edit
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:46
-* @route '/trabajadores/{trabajador}/edit'
-*/
-editForm.get = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: edit.url(args, options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\Trabajador\TrabajadorController::edit
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:46
-* @route '/trabajadores/{trabajador}/edit'
-*/
-editForm.head = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: edit.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-edit.form = editForm
-
-/**
-* @see \App\Http\Controllers\Trabajador\TrabajadorController::update
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:53
-* @route '/trabajadores/{trabajador}'
-*/
-export const update = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
-    url: update.url(args, options),
-    method: 'put',
-})
-
-update.definition = {
-    methods: ["put","patch"],
-    url: '/trabajadores/{trabajador}',
-} satisfies RouteDefinition<["put","patch"]>
-
-/**
-* @see \App\Http\Controllers\Trabajador\TrabajadorController::update
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:53
-* @route '/trabajadores/{trabajador}'
-*/
-update.url = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
-    if (typeof args === 'string' || typeof args === 'number') {
-        args = { trabajador: args }
-    }
-
-    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-        args = { trabajador: args.id }
-    }
-
-    if (Array.isArray(args)) {
-        args = {
-            trabajador: args[0],
-        }
-    }
-
-    args = applyUrlDefaults(args)
-
-    const parsedArgs = {
-        trabajador: typeof args.trabajador === 'object'
-        ? args.trabajador.id
-        : args.trabajador,
-    }
-
-    return update.definition.url
-            .replace('{trabajador}', parsedArgs.trabajador.toString())
-            .replace(/\/+$/, '') + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\Trabajador\TrabajadorController::update
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:53
-* @route '/trabajadores/{trabajador}'
-*/
-update.put = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
-    url: update.url(args, options),
-    method: 'put',
-})
-
-/**
-* @see \App\Http\Controllers\Trabajador\TrabajadorController::update
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:53
-* @route '/trabajadores/{trabajador}'
-*/
-update.patch = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
-    url: update.url(args, options),
-    method: 'patch',
-})
-
-/**
-* @see \App\Http\Controllers\Trabajador\TrabajadorController::update
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:53
-* @route '/trabajadores/{trabajador}'
-*/
-const updateForm = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: update.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'PUT',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'post',
-})
-
-/**
-* @see \App\Http\Controllers\Trabajador\TrabajadorController::update
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:53
-* @route '/trabajadores/{trabajador}'
-*/
-updateForm.put = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: update.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'PUT',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'post',
-})
-
-/**
-* @see \App\Http\Controllers\Trabajador\TrabajadorController::update
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:53
-* @route '/trabajadores/{trabajador}'
-*/
-updateForm.patch = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: update.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'PATCH',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'post',
-})
-
-update.form = updateForm
-
-/**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::destroy
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:61
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:52
 * @route '/trabajadores/{trabajador}'
 */
 export const destroy = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -478,7 +260,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::destroy
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:61
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:52
 * @route '/trabajadores/{trabajador}'
 */
 destroy.url = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -511,7 +293,7 @@ destroy.url = (args: { trabajador: string | number | { id: string | number } } |
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::destroy
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:61
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:52
 * @route '/trabajadores/{trabajador}'
 */
 destroy.delete = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -521,7 +303,7 @@ destroy.delete = (args: { trabajador: string | number | { id: string | number } 
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::destroy
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:61
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:52
 * @route '/trabajadores/{trabajador}'
 */
 const destroyForm = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -536,7 +318,7 @@ const destroyForm = (args: { trabajador: string | number | { id: string | number
 
 /**
 * @see \App\Http\Controllers\Trabajador\TrabajadorController::destroy
-* @see app/Http/Controllers/Trabajador/TrabajadorController.php:61
+* @see app/Http/Controllers/Trabajador/TrabajadorController.php:52
 * @route '/trabajadores/{trabajador}'
 */
 destroyForm.delete = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -551,13 +333,225 @@ destroyForm.delete = (args: { trabajador: string | number | { id: string | numbe
 
 destroy.form = destroyForm
 
+/**
+* @see \App\Http\Controllers\Horario\HorarioTrabajadorController::horarios
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:27
+* @route '/trabajadores/{trabajador}/horarios'
+*/
+export const horarios = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: horarios.url(args, options),
+    method: 'get',
+})
+
+horarios.definition = {
+    methods: ["get","head"],
+    url: '/trabajadores/{trabajador}/horarios',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\Horario\HorarioTrabajadorController::horarios
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:27
+* @route '/trabajadores/{trabajador}/horarios'
+*/
+horarios.url = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { trabajador: args }
+    }
+
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { trabajador: args.id }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            trabajador: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        trabajador: typeof args.trabajador === 'object'
+        ? args.trabajador.id
+        : args.trabajador,
+    }
+
+    return horarios.definition.url
+            .replace('{trabajador}', parsedArgs.trabajador.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Horario\HorarioTrabajadorController::horarios
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:27
+* @route '/trabajadores/{trabajador}/horarios'
+*/
+horarios.get = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: horarios.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Horario\HorarioTrabajadorController::horarios
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:27
+* @route '/trabajadores/{trabajador}/horarios'
+*/
+horarios.head = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: horarios.url(args, options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\Horario\HorarioTrabajadorController::horarios
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:27
+* @route '/trabajadores/{trabajador}/horarios'
+*/
+const horariosForm = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: horarios.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Horario\HorarioTrabajadorController::horarios
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:27
+* @route '/trabajadores/{trabajador}/horarios'
+*/
+horariosForm.get = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: horarios.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Horario\HorarioTrabajadorController::horarios
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:27
+* @route '/trabajadores/{trabajador}/horarios'
+*/
+horariosForm.head = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: horarios.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+horarios.form = horariosForm
+
+/**
+* @see \App\Http\Controllers\Tramite\PermisoController::permisos
+* @see app/Http/Controllers/Tramite/PermisoController.php:24
+* @route '/trabajadores/{trabajador}/permisos'
+*/
+export const permisos = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: permisos.url(args, options),
+    method: 'get',
+})
+
+permisos.definition = {
+    methods: ["get","head"],
+    url: '/trabajadores/{trabajador}/permisos',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\Tramite\PermisoController::permisos
+* @see app/Http/Controllers/Tramite/PermisoController.php:24
+* @route '/trabajadores/{trabajador}/permisos'
+*/
+permisos.url = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { trabajador: args }
+    }
+
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { trabajador: args.id }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            trabajador: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        trabajador: typeof args.trabajador === 'object'
+        ? args.trabajador.id
+        : args.trabajador,
+    }
+
+    return permisos.definition.url
+            .replace('{trabajador}', parsedArgs.trabajador.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Tramite\PermisoController::permisos
+* @see app/Http/Controllers/Tramite/PermisoController.php:24
+* @route '/trabajadores/{trabajador}/permisos'
+*/
+permisos.get = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: permisos.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Tramite\PermisoController::permisos
+* @see app/Http/Controllers/Tramite/PermisoController.php:24
+* @route '/trabajadores/{trabajador}/permisos'
+*/
+permisos.head = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: permisos.url(args, options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\Tramite\PermisoController::permisos
+* @see app/Http/Controllers/Tramite/PermisoController.php:24
+* @route '/trabajadores/{trabajador}/permisos'
+*/
+const permisosForm = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: permisos.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Tramite\PermisoController::permisos
+* @see app/Http/Controllers/Tramite/PermisoController.php:24
+* @route '/trabajadores/{trabajador}/permisos'
+*/
+permisosForm.get = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: permisos.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Tramite\PermisoController::permisos
+* @see app/Http/Controllers/Tramite/PermisoController.php:24
+* @route '/trabajadores/{trabajador}/permisos'
+*/
+permisosForm.head = (args: { trabajador: string | number | { id: string | number } } | [trabajador: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: permisos.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+permisos.form = permisosForm
+
 const trabajadores = {
     index: Object.assign(index, index),
     store: Object.assign(store, store),
     show: Object.assign(show, show),
-    edit: Object.assign(edit, edit),
-    update: Object.assign(update, update),
     destroy: Object.assign(destroy, destroy),
+    masivo: Object.assign(masivo, masivo),
+    altas: Object.assign(altas, altas),
+    horarios: Object.assign(horarios, horarios),
+    permisos: Object.assign(permisos, permisos),
 }
 
 export default trabajadores

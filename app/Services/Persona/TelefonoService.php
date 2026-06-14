@@ -23,6 +23,7 @@ class TelefonoService
     {
         $data['persona_id'] = $persona->id;
         $data['created_by'] = auth()->id() ?? 1;
+        $data['fechaInicio'] ??= now()->toDateString();
 
         return Telefonos::create($data);
     }
@@ -33,6 +34,11 @@ class TelefonoService
     public function actualizar(Telefonos $telefono, array $data): bool
     {
         return $telefono->update($data);
+    }
+
+    public function darDeBaja(Telefonos $telefono): bool
+    {
+        return $telefono->update(['fechaFin' => now()->toDateString()]);
     }
 
     public function eliminar(Telefonos $telefono): bool

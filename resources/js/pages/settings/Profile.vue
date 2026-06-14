@@ -1,22 +1,9 @@
 <script setup lang="ts">
-import { Form, Head, Link, usePage } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
-import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
-import DeleteUser from '@/components/DeleteUser.vue';
 import Heading from '@/components/Heading.vue';
-import InputError from '@/components/InputError.vue';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import DeleteUser from '@/components/DeleteUser.vue';
 import { edit } from '@/routes/profile';
-import { send } from '@/routes/verification';
-
-type Props = {
-    mustVerifyEmail: boolean;
-    status?: string;
-};
-
-defineProps<Props>();
 
 defineOptions({
     layout: {
@@ -31,6 +18,7 @@ defineOptions({
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
+const persona = computed(() => user.value?.trabajador?.persona);
 </script>
 
 <template>
@@ -42,70 +30,48 @@ const user = computed(() => page.props.auth.user);
         <Heading
             variant="small"
             title="Información del perfil"
-            description="Actualiza tu nombre y dirección de correo electrónico"
+            description="Datos de tu cuenta en el sistema"
         />
 
-        <Form
-            v-bind="ProfileController.update.form()"
-            class="space-y-6"
-            v-slot="{ errors, processing }"
-        >
-            <div class="grid gap-2">
-                <Label for="name">Nombre</Label>
-                <Input
-                    id="name"
-                    class="mt-1 block w-full"
-                    name="name"
-                    :default-value="user.name"
-                    required
-                    autocomplete="name"
-                    placeholder="Nombre completo"
-                />
-                <InputError class="mt-2" :message="errors.name" />
-            </div>
-
-            <div class="grid gap-2">
-                <Label for="email">Correo electrónico</Label>
-                <Input
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    name="email"
-                    :default-value="user.email"
-                    required
-                    autocomplete="username"
-                    placeholder="Correo electrónico"
-                />
-                <InputError class="mt-2" :message="errors.email" />
-            </div>
-
-            <div v-if="mustVerifyEmail && !user.email_verified_at">
-                <p class="-mt-4 text-sm text-muted-foreground">
-                    Tu dirección de correo electrónico no está verificada.
-                    <Link
-                        :href="send()"
-                        as="button"
-                        class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
-                    >
-                        Haz clic aquí para reenviar el correo de verificación.
-                    </Link>
-                </p>
-
-                <div
-                    v-if="status === 'verification-link-sent'"
-                    class="mt-2 text-sm font-medium text-green-600"
-                >
-                    Se ha enviado un nuevo enlace de verificación a tu dirección
-                    de correo electrónico.
+        <div class="space-y-4">
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div>
+                    <p class="text-xs text-muted-foreground">
+                        Login (Documento)
+                    </p>
+                    <p class="mt-0.5 font-mono text-sm font-semibold">
+                        {{ user.login }}
+                    </p>
+                </div>
+                <div v-if="persona">
+                    <p class="text-xs text-muted-foreground">Nombre Completo</p>
+                    <p class="mt-0.5 text-sm font-medium">
+                        {{ persona.paterno }} {{ persona.materno }},
+                        {{ persona.nombre }}
+                    </p>
                 </div>
             </div>
 
-            <div class="flex items-center gap-4">
-                <Button :disabled="processing" data-test="update-profile-button"
-                    >Guardar</Button
-                >
+            <div v-if="persona" class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div>
+                    <p class="text-xs text-muted-foreground">Tipo Documento</p>
+                    <p class="mt-0.5 text-sm">
+                        {{ persona.tipoDocIdentidad?.nombre || '-' }}
+                    </p>
+                </div>
+                <div>
+                    <p class="text-xs text-muted-foreground">N° Documento</p>
+                    <p class="mt-0.5 text-sm font-medium">
+                        {{ persona.docIdentidad }}
+                    </p>
+                </div>
             </div>
-        </Form>
+
+            <p class="text-xs text-muted-foreground">
+                Los datos personales se gestionan desde el módulo de Personas.
+                Para cambiar tu contraseña, utiliza la sección de Seguridad.
+            </p>
+        </div>
     </div>
 
     <DeleteUser />

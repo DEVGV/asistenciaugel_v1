@@ -45,4 +45,14 @@ class SeccionIEService
     {
         return $seccion->update(['activo' => false]);
     }
+
+    /**
+     * Resuelve el institucionEduc_id navegando la relación grado → IE.
+     * Carga la relación si no está en memoria para evitar queries adicionales en el controller.
+     */
+    public function obtenerIeId(SeccionesIE $seccion): ?int
+    {
+        return $seccion->grado?->institucionEduc_id
+            ?? $seccion->load('grado')->grado?->institucionEduc_id;
+    }
 }

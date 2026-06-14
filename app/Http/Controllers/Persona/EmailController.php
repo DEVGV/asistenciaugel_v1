@@ -17,7 +17,7 @@ class EmailController extends Controller
 
     public function store(StoreEmailRequest $request, Personas $persona): RedirectResponse
     {
-        $this->emailService->crear($persona, $request->validated());
+        $this->emailService->crear($persona, $request->toDTO());
 
         return redirect()->route('personas.show', $persona)
             ->with('success', 'Email agregado exitosamente.');
@@ -25,10 +25,18 @@ class EmailController extends Controller
 
     public function update(StoreEmailRequest $request, Emails $email): RedirectResponse
     {
-        $this->emailService->actualizar($email, $request->validated());
+        $this->emailService->actualizar($email, $request->toDTO());
 
         return redirect()->route('personas.show', $email->persona_id)
             ->with('success', 'Email actualizado exitosamente.');
+    }
+
+    public function darDeBaja(Emails $email): RedirectResponse
+    {
+        $this->emailService->darDeBaja($email);
+
+        return redirect()->route('personas.show', $email->persona_id)
+            ->with('success', 'Email dado de baja exitosamente.');
     }
 
     public function destroy(Emails $email): RedirectResponse

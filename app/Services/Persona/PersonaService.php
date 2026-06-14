@@ -5,8 +5,12 @@ namespace App\Services\Persona;
 use App\DTOs\Persona\CreatePersonaDTO;
 use App\DTOs\Persona\UpdatePersonaDTO;
 use App\Models\Personas;
+use App\Models\Trabajador;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class PersonaService
 {
@@ -16,7 +20,7 @@ class PersonaService
     public function listarPaginado(Request $request): LengthAwarePaginator
     {
         return Personas::query()
-            ->with(['tipoDocIdentidad', 'sexo'])
+            ->with(['tipoDocIdentidad', 'sexo', 'trabajador'])
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('docIdentidad', 'like', "%{$search}%")
@@ -53,7 +57,26 @@ class PersonaService
 
     public function crear(CreatePersonaDTO $dto): Personas
     {
-        return Personas::create($dto->toArray());
+        return DB::transaction(function () use ($dto) {
+            $persona = Personas::create($dto->toArray());
+
+            if ($dto->es_trabajador) {
+                $trabajador = Trabajador::create([
+                    'persona_id' => $persona->id,
+                    'created_by' => auth()->id() ?? 1,
+                    'activo' => true,
+                ]);
+
+                User::create([
+                    'trabajador_id' => $trabajador->id,
+                    'login' => $persona->docIdentidad,
+                    'password' => Hash::make($persona->docIdentidad),
+                    'activo' => true,
+                ]);
+            }
+
+            return $persona;
+        });
     }
 
     public function actualizar(Personas $persona, UpdatePersonaDTO $dto): bool
@@ -64,5 +87,39 @@ class PersonaService
     public function eliminar(Personas $persona): bool
     {
         return $persona->update(['activo' => false]);
+    }
+
+    /**
+     * Convierte a una persona existente en trabajador (y le crea/activa usuario).
+     */
+    public function convertirEnTrabajador(Personas $persona): void
+    {
+        DB::transaction(function () use ($persona) {
+            // 1. Activar o crear trabajador
+            $persona->load('trabajador.user');
+            $trabajador = $persona->trabajador;
+            if ($trabajador) {
+                $trabajador->update(['activo' => true]);
+            } else {
+                $trabajador = Trabajador::create([
+                    'persona_id' => $persona->id,
+                    'created_by' => auth()->id() ?? 1,
+                    'activo' => true,
+                ]);
+            }
+
+            // 2. Activar o crear usuario
+            $user = $trabajador->user ?? null;
+            if ($user) {
+                $user->update(['activo' => true]);
+            } else {
+                User::create([
+                    'trabajador_id' => $trabajador->id,
+                    'login' => $persona->docIdentidad,
+                    'password' => Hash::make($persona->docIdentidad),
+                    'activo' => true,
+                ]);
+            }
+        });
     }
 }

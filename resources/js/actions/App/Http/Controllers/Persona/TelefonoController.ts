@@ -196,7 +196,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::destroy
-* @see app/Http/Controllers/Persona/TelefonoController.php:34
+* @see app/Http/Controllers/Persona/TelefonoController.php:42
 * @route '/telefonos/{telefono}'
 */
 export const destroy = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -211,7 +211,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::destroy
-* @see app/Http/Controllers/Persona/TelefonoController.php:34
+* @see app/Http/Controllers/Persona/TelefonoController.php:42
 * @route '/telefonos/{telefono}'
 */
 destroy.url = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -244,7 +244,7 @@ destroy.url = (args: { telefono: string | number | { id: string | number } } | [
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::destroy
-* @see app/Http/Controllers/Persona/TelefonoController.php:34
+* @see app/Http/Controllers/Persona/TelefonoController.php:42
 * @route '/telefonos/{telefono}'
 */
 destroy.delete = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -254,7 +254,7 @@ destroy.delete = (args: { telefono: string | number | { id: string | number } } 
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::destroy
-* @see app/Http/Controllers/Persona/TelefonoController.php:34
+* @see app/Http/Controllers/Persona/TelefonoController.php:42
 * @route '/telefonos/{telefono}'
 */
 const destroyForm = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -269,7 +269,7 @@ const destroyForm = (args: { telefono: string | number | { id: string | number }
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::destroy
-* @see app/Http/Controllers/Persona/TelefonoController.php:34
+* @see app/Http/Controllers/Persona/TelefonoController.php:42
 * @route '/telefonos/{telefono}'
 */
 destroyForm.delete = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -284,6 +284,96 @@ destroyForm.delete = (args: { telefono: string | number | { id: string | number 
 
 destroy.form = destroyForm
 
-const TelefonoController = { store, update, destroy }
+/**
+* @see \App\Http\Controllers\Persona\TelefonoController::darDeBaja
+* @see app/Http/Controllers/Persona/TelefonoController.php:34
+* @route '/telefonos/{telefono}/dar-de-baja'
+*/
+export const darDeBaja = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: darDeBaja.url(args, options),
+    method: 'patch',
+})
+
+darDeBaja.definition = {
+    methods: ["patch"],
+    url: '/telefonos/{telefono}/dar-de-baja',
+} satisfies RouteDefinition<["patch"]>
+
+/**
+* @see \App\Http\Controllers\Persona\TelefonoController::darDeBaja
+* @see app/Http/Controllers/Persona/TelefonoController.php:34
+* @route '/telefonos/{telefono}/dar-de-baja'
+*/
+darDeBaja.url = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { telefono: args }
+    }
+
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { telefono: args.id }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            telefono: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        telefono: typeof args.telefono === 'object'
+        ? args.telefono.id
+        : args.telefono,
+    }
+
+    return darDeBaja.definition.url
+            .replace('{telefono}', parsedArgs.telefono.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Persona\TelefonoController::darDeBaja
+* @see app/Http/Controllers/Persona/TelefonoController.php:34
+* @route '/telefonos/{telefono}/dar-de-baja'
+*/
+darDeBaja.patch = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: darDeBaja.url(args, options),
+    method: 'patch',
+})
+
+/**
+* @see \App\Http\Controllers\Persona\TelefonoController::darDeBaja
+* @see app/Http/Controllers/Persona/TelefonoController.php:34
+* @route '/telefonos/{telefono}/dar-de-baja'
+*/
+const darDeBajaForm = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: darDeBaja.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PATCH',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Persona\TelefonoController::darDeBaja
+* @see app/Http/Controllers/Persona/TelefonoController.php:34
+* @route '/telefonos/{telefono}/dar-de-baja'
+*/
+darDeBajaForm.patch = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: darDeBaja.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PATCH',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+darDeBaja.form = darDeBajaForm
+
+const TelefonoController = { store, update, destroy, darDeBaja }
 
 export default TelefonoController

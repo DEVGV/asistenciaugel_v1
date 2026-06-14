@@ -32,6 +32,7 @@ class StorePersonaRequest extends FormRequest
             'ubigeo' => ['nullable', 'string', 'max:6'],
             'foto' => ['nullable', 'string'],
             'activo' => ['boolean'],
+            'es_trabajador' => ['nullable', 'boolean'],
         ];
     }
 

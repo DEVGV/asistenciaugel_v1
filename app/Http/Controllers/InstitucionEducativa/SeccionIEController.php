@@ -17,7 +17,7 @@ class SeccionIEController extends Controller
 
     public function store(StoreSubRecursoIERequest $request, GradosIE $grado): RedirectResponse
     {
-        $this->seccionService->crear($grado, $request->validated());
+        $this->seccionService->crear($grado, $request->toDTO());
 
         return redirect()->route('instituciones.show', $grado->institucionEduc_id)
             ->with('success', 'Sección registrada exitosamente.');
@@ -25,21 +25,19 @@ class SeccionIEController extends Controller
 
     public function update(StoreSubRecursoIERequest $request, SeccionesIE $seccione): RedirectResponse
     {
-        $gradoId = $seccione->grado_id;
-        $this->seccionService->actualizar($seccione, $request->validated());
+        $ieId = $this->seccionService->obtenerIeId($seccione);
+        $this->seccionService->actualizar($seccione, $request->toDTO());
 
-        $grado = GradosIE::find($gradoId);
-
-        return redirect()->route('instituciones.show', $grado->institucionEduc_id)
+        return redirect()->route('instituciones.show', $ieId)
             ->with('success', 'Sección actualizada exitosamente.');
     }
 
     public function destroy(SeccionesIE $seccione): RedirectResponse
     {
-        $grado = GradosIE::find($seccione->grado_id);
+        $ieId = $this->seccionService->obtenerIeId($seccione);
         $this->seccionService->eliminar($seccione);
 
-        return redirect()->route('instituciones.show', $grado->institucionEduc_id)
+        return redirect()->route('instituciones.show', $ieId)
             ->with('success', 'Sección desactivada exitosamente.');
     }
 }

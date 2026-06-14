@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\InstitucionEducativa\StoreInstEducRequest;
 use App\Http\Requests\InstitucionEducativa\UpdateInstEducRequest;
 use App\Models\InstitucionesEduc;
+use App\Services\Infraestructura\LocalInstEducService;
 use App\Services\InstitucionEducativa\InstitucionEducativaService;
+use App\Services\Trabajador\AltaTrabajadorService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,14 +19,21 @@ class InstitucionEducativaController extends Controller
 {
     public function __construct(
         private InstitucionEducativaService $ieService,
+        private AltaTrabajadorService $altaService,
+        private LocalInstEducService $localInstEducService,
     ) {}
 
     public function index(Request $request): Response
     {
         return Inertia::render('institucion-educativa/Index', [
             'instituciones' => $this->ieService->listarPaginado($request),
-            'filters' => $request->only(['search']),
+            'filters'       => $request->only(['search']),
         ]);
+    }
+
+    public function search(Request $request): JsonResponse
+    {
+        return response()->json($this->ieService->buscarParaSelect($request));
     }
 
     public function store(StoreInstEducRequest $request): RedirectResponse
@@ -38,6 +48,30 @@ class InstitucionEducativaController extends Controller
     {
         return Inertia::render('institucion-educativa/Show', [
             'institucion' => $this->ieService->obtenerConRelaciones($institucione),
+        ]);
+    }
+
+    public function docentes(InstitucionesEduc $institucione, Request $request): Response
+    {
+        return Inertia::render('institucion-educativa/Show', [
+            'institucion'     => $this->ieService->obtenerConRelaciones($institucione),
+            'docentes'        => $this->altaService->listarPorInstitucion($institucione, $request),
+            'docentesFiltros' => $request->only(['search', 'solo_activas', 'condicion_id']),
+            'activeTab'       => 'docentes',
+        ]);
+    }
+
+    public function locales(InstitucionesEduc $institucione): JsonResponse
+    {
+        return response()->json([
+            'data' => $this->localInstEducService->opcionesParaSelect($institucione),
+        ]);
+    }
+
+    public function detallesJson(InstitucionesEduc $institucione): JsonResponse
+    {
+        return response()->json([
+            'data' => $this->ieService->obtenerConRelaciones($institucione),
         ]);
     }
 

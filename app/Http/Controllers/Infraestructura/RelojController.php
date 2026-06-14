@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Infraestructura;
 
-use App\DTOs\Infraestructura\CreateRelojDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Infraestructura\StoreRelojRequest;
 use App\Http\Requests\Infraestructura\UpdateRelojRequest;
@@ -19,8 +18,7 @@ class RelojController extends Controller
 
     public function store(StoreRelojRequest $request, ConasisLocalesInstEduc $localesIe): RedirectResponse
     {
-        $data = array_merge($request->validated(), ['localInstEduc_id' => $localesIe->id]);
-        $this->relojService->crear(CreateRelojDTO::from($data));
+        $this->relojService->crear($request->toDTO($localesIe->id));
 
         return redirect()->route('instituciones.show', $localesIe->institucionEduc_id)
             ->with('success', 'Reloj registrado exitosamente.');

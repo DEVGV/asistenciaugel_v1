@@ -2,6 +2,10 @@
 
 namespace App\Services\Param;
 
+use App\Models\Areas;
+use App\Models\Auth\Perfil;
+use App\Models\Cargos;
+use App\Models\CondicionesLaborales;
 use App\Models\Param\ParamDepartamento;
 use App\Models\Param\ParamDistritos;
 use App\Models\Param\ParamDocumentos;
@@ -66,6 +70,11 @@ class ParamService
         'niveles-ciclo' => ParamNivelesCiclo::class,
         'tipo-susp-laboral' => ParamTipoSuspensionLaboral::class,
         'tipo-entidad' => ParamTipoEntidad::class,
+        // Entidades propias del sistema (no Param, pero reutilizan el mismo endpoint)
+        'condiciones-laborales' => CondicionesLaborales::class,
+        'areas' => Areas::class,
+        'cargos' => Cargos::class,
+        'perfiles' => Perfil::class,
     ];
 
     /**
@@ -94,7 +103,14 @@ class ParamService
 
         $cacheKey = "param.{$tipo}".($parentId !== null ? ".{$parentId}" : '');
 
-        $cached = Cache::remember($cacheKey, now()->addHour(), function () use ($tipo, $modelClass, $parentId) {
+        // Si hay una entrada en caché vacía (generada antes de que hubiera datos), la invalidamos
+        $cached = Cache::get($cacheKey);
+        if ($cached !== null && count($cached) === 0) {
+            Cache::forget($cacheKey);
+            $cached = null;
+        }
+
+        if ($cached === null) {
             $query = $modelClass::query();
             $model = new $modelClass;
 
@@ -103,13 +119,18 @@ class ParamService
             }
 
             if (in_array('activo', $model->getFillable(), true)) {
-                $query->where('activo', true);
+                $query->where(function ($q) {
+                    $q->where('activo', true)->orWhereNull('activo');
+                });
             }
 
             $orderColumn = $this->resolverColumnaOrden($model);
+            $cached = $query->orderBy($orderColumn)->get()->toArray();
 
-            return $query->orderBy($orderColumn)->get()->toArray();
-        });
+            if (count($cached) > 0) {
+                Cache::put($cacheKey, $cached, now()->addHour());
+            }
+        }
 
         return collect($cached);
     }

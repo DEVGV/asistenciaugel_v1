@@ -17,6 +17,8 @@ class CondicionesLaborales extends Model
 
     public $timestamps = false;
 
+    public static $snakeAttributes = false;
+
     protected string $codigoPrefix = 'CLA';
 
     protected $fillable = [

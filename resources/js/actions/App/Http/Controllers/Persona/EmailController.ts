@@ -196,7 +196,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::destroy
-* @see app/Http/Controllers/Persona/EmailController.php:34
+* @see app/Http/Controllers/Persona/EmailController.php:42
 * @route '/emails/{email}'
 */
 export const destroy = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -211,7 +211,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::destroy
-* @see app/Http/Controllers/Persona/EmailController.php:34
+* @see app/Http/Controllers/Persona/EmailController.php:42
 * @route '/emails/{email}'
 */
 destroy.url = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -244,7 +244,7 @@ destroy.url = (args: { email: string | number | { id: string | number } } | [ema
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::destroy
-* @see app/Http/Controllers/Persona/EmailController.php:34
+* @see app/Http/Controllers/Persona/EmailController.php:42
 * @route '/emails/{email}'
 */
 destroy.delete = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -254,7 +254,7 @@ destroy.delete = (args: { email: string | number | { id: string | number } } | [
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::destroy
-* @see app/Http/Controllers/Persona/EmailController.php:34
+* @see app/Http/Controllers/Persona/EmailController.php:42
 * @route '/emails/{email}'
 */
 const destroyForm = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -269,7 +269,7 @@ const destroyForm = (args: { email: string | number | { id: string | number } } 
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::destroy
-* @see app/Http/Controllers/Persona/EmailController.php:34
+* @see app/Http/Controllers/Persona/EmailController.php:42
 * @route '/emails/{email}'
 */
 destroyForm.delete = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -284,6 +284,96 @@ destroyForm.delete = (args: { email: string | number | { id: string | number } }
 
 destroy.form = destroyForm
 
-const EmailController = { store, update, destroy }
+/**
+* @see \App\Http\Controllers\Persona\EmailController::darDeBaja
+* @see app/Http/Controllers/Persona/EmailController.php:34
+* @route '/emails/{email}/dar-de-baja'
+*/
+export const darDeBaja = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: darDeBaja.url(args, options),
+    method: 'patch',
+})
+
+darDeBaja.definition = {
+    methods: ["patch"],
+    url: '/emails/{email}/dar-de-baja',
+} satisfies RouteDefinition<["patch"]>
+
+/**
+* @see \App\Http\Controllers\Persona\EmailController::darDeBaja
+* @see app/Http/Controllers/Persona/EmailController.php:34
+* @route '/emails/{email}/dar-de-baja'
+*/
+darDeBaja.url = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { email: args }
+    }
+
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { email: args.id }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            email: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        email: typeof args.email === 'object'
+        ? args.email.id
+        : args.email,
+    }
+
+    return darDeBaja.definition.url
+            .replace('{email}', parsedArgs.email.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Persona\EmailController::darDeBaja
+* @see app/Http/Controllers/Persona/EmailController.php:34
+* @route '/emails/{email}/dar-de-baja'
+*/
+darDeBaja.patch = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: darDeBaja.url(args, options),
+    method: 'patch',
+})
+
+/**
+* @see \App\Http\Controllers\Persona\EmailController::darDeBaja
+* @see app/Http/Controllers/Persona/EmailController.php:34
+* @route '/emails/{email}/dar-de-baja'
+*/
+const darDeBajaForm = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: darDeBaja.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PATCH',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Persona\EmailController::darDeBaja
+* @see app/Http/Controllers/Persona/EmailController.php:34
+* @route '/emails/{email}/dar-de-baja'
+*/
+darDeBajaForm.patch = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: darDeBaja.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PATCH',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+darDeBaja.form = darDeBajaForm
+
+const EmailController = { store, update, destroy, darDeBaja }
 
 export default EmailController

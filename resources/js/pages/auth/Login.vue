@@ -43,27 +43,27 @@ defineProps<{
         class="flex flex-col gap-6"
     >
         <div class="space-y-5">
-            <!-- Email Field -->
+            <!-- Login (Documento) Field -->
             <div class="animate-element animate-delay-300">
                 <Label
-                    for="email"
+                    for="login"
                     class="ml-1 text-sm font-medium text-muted-foreground"
-                    >Correo Electrónico</Label
+                    >N° de Documento</Label
                 >
                 <GlassInputWrapper class="mt-1.5">
                     <Input
-                        id="email"
-                        type="email"
-                        name="email"
+                        id="login"
+                        type="text"
+                        name="login"
                         required
                         autofocus
                         :tabindex="1"
-                        autocomplete="email"
-                        placeholder="nombre@ejemplo.com"
+                        autocomplete="username"
+                        placeholder="Ingresa tu número de documento"
                         class="h-12 border-0 bg-transparent px-4 shadow-none focus-visible:ring-0"
                     />
                 </GlassInputWrapper>
-                <InputError :message="errors.email" class="mt-2 ml-1" />
+                <InputError :message="errors.login" class="mt-2 ml-1" />
             </div>
 
             <!-- Password Field -->

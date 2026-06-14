@@ -17,6 +17,7 @@ final readonly class CreatePersonaDTO
         public ?string $foto,
         public int $created_by,
         public bool $activo = true,
+        public bool $es_trabajador = false,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -35,12 +36,16 @@ final readonly class CreatePersonaDTO
             foto: $data['foto'] ?? null,
             created_by: auth()->id() ?? 1,
             activo: isset($data['activo']) ? filter_var($data['activo'], FILTER_VALIDATE_BOOLEAN) : true,
+            es_trabajador: isset($data['es_trabajador']) ? filter_var($data['es_trabajador'], FILTER_VALIDATE_BOOLEAN) : false,
         );
     }
 
     /** @return array<string, mixed> */
     public function toArray(): array
     {
-        return get_object_vars($this);
+        $vars = get_object_vars($this);
+        unset($vars['es_trabajador']);
+
+        return $vars;
     }
 }

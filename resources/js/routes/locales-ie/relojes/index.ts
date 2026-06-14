@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Infraestructura\RelojController::store
-* @see app/Http/Controllers/Infraestructura/RelojController.php:20
+* @see app/Http/Controllers/Infraestructura/RelojController.php:19
 * @route '/locales-ie/{localesIe}/relojes'
 */
 export const store = (args: { localesIe: number | { id: number } } | [localesIe: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\Infraestructura\RelojController::store
-* @see app/Http/Controllers/Infraestructura/RelojController.php:20
+* @see app/Http/Controllers/Infraestructura/RelojController.php:19
 * @route '/locales-ie/{localesIe}/relojes'
 */
 store.url = (args: { localesIe: number | { id: number } } | [localesIe: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ store.url = (args: { localesIe: number | { id: number } } | [localesIe: number |
 
 /**
 * @see \App\Http\Controllers\Infraestructura\RelojController::store
-* @see app/Http/Controllers/Infraestructura/RelojController.php:20
+* @see app/Http/Controllers/Infraestructura/RelojController.php:19
 * @route '/locales-ie/{localesIe}/relojes'
 */
 store.post = (args: { localesIe: number | { id: number } } | [localesIe: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -59,7 +59,7 @@ store.post = (args: { localesIe: number | { id: number } } | [localesIe: number 
 
 /**
 * @see \App\Http\Controllers\Infraestructura\RelojController::store
-* @see app/Http/Controllers/Infraestructura/RelojController.php:20
+* @see app/Http/Controllers/Infraestructura/RelojController.php:19
 * @route '/locales-ie/{localesIe}/relojes'
 */
 const storeForm = (args: { localesIe: number | { id: number } } | [localesIe: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -69,7 +69,7 @@ const storeForm = (args: { localesIe: number | { id: number } } | [localesIe: nu
 
 /**
 * @see \App\Http\Controllers\Infraestructura\RelojController::store
-* @see app/Http/Controllers/Infraestructura/RelojController.php:20
+* @see app/Http/Controllers/Infraestructura/RelojController.php:19
 * @route '/locales-ie/{localesIe}/relojes'
 */
 storeForm.post = (args: { localesIe: number | { id: number } } | [localesIe: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

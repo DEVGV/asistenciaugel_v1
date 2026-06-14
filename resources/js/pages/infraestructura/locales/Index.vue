@@ -1,16 +1,35 @@
 <script setup lang="ts">
 import { Head, useForm, router } from '@inertiajs/vue3';
-import { Plus, Pencil, Trash2, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-vue-next';
+import {
+    Plus,
+    Pencil,
+    Trash2,
+    ChevronDown,
+    ChevronLeft,
+    ChevronRight,
+} from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 import LocalController from '@/actions/App/Http/Controllers/Infraestructura/LocalController';
 import ConfirmModal from '@/components/shared/ConfirmModal.vue';
 import FormModal from '@/components/shared/FormModal.vue';
 import StatusBadge from '@/components/shared/StatusBadge.vue';
 import { Button } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import type { Local } from '@/types/models/infraestructura';
 
 export interface PaginatedResponse<T> {
@@ -42,7 +61,11 @@ let searchTimeout: ReturnType<typeof setTimeout>;
 watch(searchQuery, (val) => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
-        router.get(LocalController.index().url, { search: val || undefined }, { preserveState: true, replace: true });
+        router.get(
+            LocalController.index().url,
+            { search: val || undefined },
+            { preserveState: true, replace: true },
+        );
     }, 300);
 });
 
@@ -63,7 +86,12 @@ const form = useForm({
     activo: true,
 });
 
-watch(showModal, (val) => { if (!val) { form.reset(); form.clearErrors(); } });
+watch(showModal, (val) => {
+    if (!val) {
+        form.reset();
+        form.clearErrors();
+    }
+});
 
 function openCreate() {
     isEditing.value = false;
@@ -92,11 +120,15 @@ function openEdit(local: Local) {
 function submitForm() {
     if (isEditing.value && editingId.value) {
         form.put(LocalController.update({ local: editingId.value }).url, {
-            onSuccess: () => { showModal.value = false; },
+            onSuccess: () => {
+                showModal.value = false;
+            },
         });
     } else {
         form.post(LocalController.store().url, {
-            onSuccess: () => { showModal.value = false; },
+            onSuccess: () => {
+                showModal.value = false;
+            },
         });
     }
 }
@@ -114,11 +146,19 @@ function confirmDelete(local: Local) {
 }
 
 function executeDelete() {
-    if (!deleteId.value) return;
+    if (!deleteId.value) {
+        return;
+    }
+
     isDeleting.value = true;
     router.delete(LocalController.destroy({ local: deleteId.value }).url, {
-        onSuccess: () => { showDelete.value = false; deleteId.value = null; },
-        onFinish: () => { isDeleting.value = false; },
+        onSuccess: () => {
+            showDelete.value = false;
+            deleteId.value = null;
+        },
+        onFinish: () => {
+            isDeleting.value = false;
+        },
     });
 }
 </script>
@@ -130,19 +170,29 @@ function executeDelete() {
         <!-- Header -->
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold tracking-tight text-foreground">Locales</h1>
-                <p class="text-sm text-muted-foreground">Gestión de locales físicos del sistema.</p>
+                <h1 class="text-2xl font-bold tracking-tight text-foreground">
+                    Locales
+                </h1>
+                <p class="text-sm text-muted-foreground">
+                    Gestión de locales físicos del sistema.
+                </p>
             </div>
-            <Button size="sm" @click="openCreate()"><Plus class="mr-2 h-4 w-4" /> Nuevo Local</Button>
+            <Button size="sm" @click="openCreate()"
+                ><Plus class="mr-2 h-4 w-4" /> Nuevo Local</Button
+            >
         </div>
 
         <!-- Búsqueda -->
         <div class="flex items-center gap-2">
-            <Input v-model="searchQuery" placeholder="Buscar por nombre o domicilio..." class="max-w-sm" />
+            <Input
+                v-model="searchQuery"
+                placeholder="Buscar por nombre o domicilio..."
+                class="max-w-sm"
+            />
         </div>
 
         <!-- Tabla -->
-        <div class="rounded-md border bg-card overflow-hidden">
+        <div class="overflow-hidden rounded-md border bg-card">
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -151,43 +201,111 @@ function executeDelete() {
                         <TableHead>Zona</TableHead>
                         <TableHead class="w-[100px]">Ubigeo</TableHead>
                         <TableHead class="w-[80px]">Estado</TableHead>
-                        <TableHead class="w-[100px] text-right">Acciones</TableHead>
+                        <TableHead class="w-[100px] text-right"
+                            >Acciones</TableHead
+                        >
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    <TableRow v-for="local in props.locales.data" :key="local.id">
-                        <TableCell class="text-sm font-medium">{{ local.nombre || '-' }}</TableCell>
-                        <TableCell class="text-sm">{{ local.domicilio || '-' }}</TableCell>
-                        <TableCell class="text-sm">{{ local.zona?.nombre || '-' }}</TableCell>
-                        <TableCell class="text-xs">{{ local.ubigeo || '-' }}</TableCell>
-                        <TableCell><StatusBadge :active="local.activo ?? false" /></TableCell>
+                    <TableRow
+                        v-for="local in props.locales.data"
+                        :key="local.id"
+                    >
+                        <TableCell class="text-sm font-medium">{{
+                            local.nombre || '-'
+                        }}</TableCell>
+                        <TableCell class="text-sm">{{
+                            local.domicilio || '-'
+                        }}</TableCell>
+                        <TableCell class="text-sm">{{
+                            local.zona?.nombre || '-'
+                        }}</TableCell>
+                        <TableCell class="text-xs">{{
+                            local.ubigeo || '-'
+                        }}</TableCell>
+                        <TableCell
+                            ><StatusBadge :active="local.activo ?? false"
+                        /></TableCell>
                         <TableCell class="text-right">
                             <DropdownMenu>
-                                <DropdownMenuTrigger as-child><Button variant="ghost" size="sm" class="h-7"><ChevronDown class="h-4 w-4" /></Button></DropdownMenuTrigger>
+                                <DropdownMenuTrigger as-child
+                                    ><Button
+                                        variant="ghost"
+                                        size="sm"
+                                        class="h-7"
+                                        ><ChevronDown class="h-4 w-4" /></Button
+                                ></DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                    <DropdownMenuItem @click="openEdit(local)"><Pencil class="mr-2 h-4 w-4" /> Editar</DropdownMenuItem>
-                                    <DropdownMenuItem @click="confirmDelete(local)" class="text-destructive"><Trash2 class="mr-2 h-4 w-4" /> Desactivar</DropdownMenuItem>
+                                    <DropdownMenuItem @click="openEdit(local)"
+                                        ><Pencil class="mr-2 h-4 w-4" />
+                                        Editar</DropdownMenuItem
+                                    >
+                                    <DropdownMenuItem
+                                        @click="confirmDelete(local)"
+                                        class="text-destructive"
+                                        ><Trash2 class="mr-2 h-4 w-4" />
+                                        Desactivar</DropdownMenuItem
+                                    >
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </TableCell>
                     </TableRow>
                     <TableRow v-if="!props.locales.data.length">
-                        <TableCell colspan="6" class="h-20 text-center text-muted-foreground">No se encontraron locales.</TableCell>
+                        <TableCell
+                            colspan="6"
+                            class="h-20 text-center text-muted-foreground"
+                            >No se encontraron locales.</TableCell
+                        >
                     </TableRow>
                 </TableBody>
             </Table>
         </div>
 
         <!-- Paginación -->
-        <div v-if="props.locales.last_page > 1" class="flex items-center justify-between">
-            <p class="text-sm text-muted-foreground">Página {{ props.locales.current_page }} de {{ props.locales.last_page }} ({{ props.locales.total }} registros)</p>
+        <div
+            v-if="props.locales.last_page > 1"
+            class="flex items-center justify-between"
+        >
+            <p class="text-sm text-muted-foreground">
+                Página {{ props.locales.current_page }} de
+                {{ props.locales.last_page }} ({{ props.locales.total }}
+                registros)
+            </p>
             <div class="flex gap-2">
-                <Button variant="outline" size="sm" :disabled="props.locales.current_page <= 1"
-                    @click="router.get(LocalController.index().url, { page: props.locales.current_page - 1, search: searchQuery || undefined }, { preserveState: true })">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    :disabled="props.locales.current_page <= 1"
+                    @click="
+                        router.get(
+                            LocalController.index().url,
+                            {
+                                page: props.locales.current_page - 1,
+                                search: searchQuery || undefined,
+                            },
+                            { preserveState: true },
+                        )
+                    "
+                >
                     <ChevronLeft class="h-4 w-4" /> Anterior
                 </Button>
-                <Button variant="outline" size="sm" :disabled="props.locales.current_page >= props.locales.last_page"
-                    @click="router.get(LocalController.index().url, { page: props.locales.current_page + 1, search: searchQuery || undefined }, { preserveState: true })">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    :disabled="
+                        props.locales.current_page >= props.locales.last_page
+                    "
+                    @click="
+                        router.get(
+                            LocalController.index().url,
+                            {
+                                page: props.locales.current_page + 1,
+                                search: searchQuery || undefined,
+                            },
+                            { preserveState: true },
+                        )
+                    "
+                >
                     Siguiente <ChevronRight class="h-4 w-4" />
                 </Button>
             </div>
@@ -203,41 +321,75 @@ function executeDelete() {
             <div class="space-y-4">
                 <div class="grid gap-2">
                     <Label>Nombre *</Label>
-                    <Input v-model="form.nombre" placeholder="Nombre del local" :class="{ 'border-destructive': form.errors.nombre }" />
-                    <p v-if="form.errors.nombre" class="text-sm text-destructive">{{ form.errors.nombre }}</p>
+                    <Input
+                        v-model="form.nombre"
+                        placeholder="Nombre del local"
+                        :class="{ 'border-destructive': form.errors.nombre }"
+                    />
+                    <p
+                        v-if="form.errors.nombre"
+                        class="text-sm text-destructive"
+                    >
+                        {{ form.errors.nombre }}
+                    </p>
                 </div>
                 <div class="grid gap-2">
                     <Label>Domicilio</Label>
-                    <Input v-model="form.domicilio" placeholder="Dirección del local" />
+                    <Input
+                        v-model="form.domicilio"
+                        placeholder="Dirección del local"
+                    />
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="grid gap-2">
                         <Label>Zona ID</Label>
-                        <Input v-model="form.zona_id" type="number" placeholder="ID de zona" />
+                        <Input
+                            v-model="form.zona_id"
+                            type="number"
+                            placeholder="ID de zona"
+                        />
                     </div>
                     <div class="grid gap-2">
                         <Label>Ubigeo</Label>
-                        <Input v-model="form.ubigeo" placeholder="Código ubigeo" />
+                        <Input
+                            v-model="form.ubigeo"
+                            placeholder="Código ubigeo"
+                        />
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="grid gap-2">
                         <Label>UTM Huso</Label>
-                        <Input v-model="form.utm_huso" type="number" step="0.0001" />
+                        <Input
+                            v-model="form.utm_huso"
+                            type="number"
+                            step="0.0001"
+                        />
                     </div>
                     <div class="grid gap-2">
                         <Label>UTM Banda</Label>
-                        <Input v-model="form.utm_banda" placeholder="Banda UTM" />
+                        <Input
+                            v-model="form.utm_banda"
+                            placeholder="Banda UTM"
+                        />
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="grid gap-2">
                         <Label>UTM X (Este)</Label>
-                        <Input v-model="form.utm_x_este" type="number" step="0.0001" />
+                        <Input
+                            v-model="form.utm_x_este"
+                            type="number"
+                            step="0.0001"
+                        />
                     </div>
                     <div class="grid gap-2">
                         <Label>UTM Y (Norte)</Label>
-                        <Input v-model="form.utm_y_norte" type="number" step="0.0001" />
+                        <Input
+                            v-model="form.utm_y_norte"
+                            type="number"
+                            step="0.0001"
+                        />
                     </div>
                 </div>
             </div>

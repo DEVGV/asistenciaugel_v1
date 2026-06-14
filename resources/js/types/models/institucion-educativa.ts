@@ -1,5 +1,5 @@
-import type { ParamSimple } from './params';
 import type { LocalInstEduc } from './infraestructura';
+import type { ParamSimple } from './params';
 
 export interface Entidad {
     id: number;
@@ -34,6 +34,7 @@ export interface InstitucionEducativa {
     cursos?: CursoIE[];
     grados?: GradoIE[];
     locales_inst_educ?: LocalInstEduc[];
+    dias_no_laborables?: DiasNoLaborable[];
 }
 
 export interface CursoIE {
@@ -66,6 +67,26 @@ export interface SeccionIE {
     sigla: string | null;
     created_by: number;
     activo: boolean;
+    // Relations
+    grado?: GradoIE;
+}
+
+export interface DiasNoLaborable {
+    id: number;
+    institucionEduc_id: number;
+    feriado_id: number | null;
+    fecha: string;
+    observacion: string | null;
+    nacionalLocal: 'N' | 'L' | null;
+    recuperable: 'S' | 'N' | null;
+    created_by: number | null;
+    activo: boolean;
+    // Relations
+    feriado?: {
+        id: number;
+        descripcion: string | null;
+        diaMesDefault: string | null;
+    };
 }
 
 export interface PaginatedResponse<T> {

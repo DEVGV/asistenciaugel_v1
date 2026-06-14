@@ -1,5 +1,6 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 import relojes from './relojes'
+import relojesMasivos from './relojes-masivos'
 import marcacionesLocal from './marcaciones-local'
 /**
 * @see \App\Http\Controllers\Infraestructura\LocalInstEducController::destroy
@@ -94,6 +95,7 @@ destroy.form = destroyForm
 const localesIe = {
     destroy: Object.assign(destroy, destroy),
     relojes: Object.assign(relojes, relojes),
+    relojesMasivos: Object.assign(relojesMasivos, relojesMasivos),
     marcacionesLocal: Object.assign(marcacionesLocal, marcacionesLocal),
 }
 

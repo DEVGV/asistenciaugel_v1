@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Conasis\ConasisDiasNoLaborables;
 use App\Models\Conasis\ConasisLocalesInstEduc;
 use App\Models\Param\ParamModalidadesForm;
 use App\Models\Param\ParamNivelesCiclo;
@@ -75,5 +76,10 @@ class InstitucionesEduc extends Model
     public function localesInstEduc(): HasMany
     {
         return $this->hasMany(ConasisLocalesInstEduc::class, 'institucionEduc_id');
+    }
+
+    public function diasNoLaborables(): HasMany
+    {
+        return $this->hasMany(ConasisDiasNoLaborables::class, 'institucionEduc_id');
     }
 }

@@ -12,6 +12,8 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Http\Controllers\NewPasswordController;
+use Laravel\Fortify\Http\Requests\SendPasswordResetLinkRequest;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -20,7 +22,15 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            SendPasswordResetLinkRequest::class,
+            \App\Http\Requests\Auth\SendPasswordResetLinkRequest::class
+        );
+
+        $this->app->bind(
+            NewPasswordController::class,
+            \App\Http\Controllers\Auth\NewPasswordController::class
+        );
     }
 
     /**

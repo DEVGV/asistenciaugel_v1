@@ -66,4 +66,12 @@ class PersonaController extends Controller
         return redirect()->route('personas.index')
             ->with('success', 'Persona eliminada exitosamente.');
     }
+
+    public function convertirTrabajador(Personas $persona): RedirectResponse
+    {
+        $this->personaService->convertirEnTrabajador($persona);
+
+        return redirect()->route('personas.index')
+            ->with('success', 'Persona convertida en trabajador exitosamente.');
+    }
 }

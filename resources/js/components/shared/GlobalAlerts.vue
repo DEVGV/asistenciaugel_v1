@@ -31,19 +31,19 @@ watch(
     flash,
     (newFlash) => {
         if (newFlash.success) {
-showToast('success', '¡Éxito!', newFlash.success, CheckCircle2);
-} else if (newFlash.error) {
-showToast('destructive', 'Error', newFlash.error, AlertCircle);
-} else if (newFlash.warning) {
-showToast(
+            showToast('success', '¡Éxito!', newFlash.success, CheckCircle2);
+        } else if (newFlash.error) {
+            showToast('destructive', 'Error', newFlash.error, AlertCircle);
+        } else if (newFlash.warning) {
+            showToast(
                 'warning',
                 'Advertencia',
                 newFlash.warning,
                 AlertTriangle,
             );
-} else if (newFlash.info) {
-showToast('info', 'Información', newFlash.info, Info);
-}
+        } else if (newFlash.info) {
+            showToast('info', 'Información', newFlash.info, Info);
+        }
     },
     { deep: true, immediate: true },
 );
@@ -53,8 +53,8 @@ function showToast(type: any, title: string, message: string, icon: any) {
 
     // Limpiar timeout anterior si existe
     if (timeoutId) {
-clearTimeout(timeoutId);
-}
+        clearTimeout(timeoutId);
+    }
 
     // Auto-ocultar después de 4 segundos
     timeoutId = setTimeout(() => {

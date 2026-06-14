@@ -22,7 +22,7 @@ class ZonaController extends Controller
     public function index(Request $request): Response
     {
         return Inertia::render('configuracion/zonas/Index', [
-            'zonas' => $this->zonaService->listarPaginado($request),
+            'zonas'   => $this->zonaService->listarPaginado($request),
             'filters' => $request->only(['search']),
         ]);
     }
@@ -53,21 +53,8 @@ class ZonaController extends Controller
 
     public function search(Request $request): JsonResponse
     {
-        $search = $request->string('q')->trim();
-        $distritoId = $request->integer('distrito_id') ?: null;
-
-        $query = Zonas::query()->select('id', 'nombre', 'abreviatura')->where('activo', true);
-
-        if ($distritoId) {
-            $query->where('distrito_id', $distritoId);
-        }
-
-        if ($search) {
-            $query->where('nombre', 'ilike', "%{$search}%");
-        }
-
         return response()->json([
-            'data' => $query->orderBy('nombre')->limit(50)->get(),
+            'data' => $this->zonaService->buscarParaSelect($request),
         ]);
     }
 }

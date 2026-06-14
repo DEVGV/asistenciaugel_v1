@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { Head, useForm, router } from '@inertiajs/vue3';
-import { Plus, Pencil, Trash2, ChevronDown } from 'lucide-vue-next';
+import { Plus, Pencil, Trash2, ChevronDown, Upload } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 import EntidadController from '@/actions/App/Http/Controllers/Entidad/EntidadController';
 import EntidadForm from '@/components/entidad/EntidadForm.vue';
+import EntidadMasivaGrid from '@/components/entidad/EntidadMasivaGrid.vue';
 import ConfirmModal from '@/components/shared/ConfirmModal.vue';
 import FormModal from '@/components/shared/FormModal.vue';
 import StatusBadge from '@/components/shared/StatusBadge.vue';
@@ -85,7 +86,7 @@ function openEditModal(entidad: Entidad) {
     form.tipoEntidad_id = entidad.tipoEntidad_id;
     form.ruc = entidad.ruc;
     form.razonSocial = entidad.razonSocial;
-    form.razonComercial = entidad.razonComercial;
+    form.razonComercial = entidad.razonComercial || '';
     form.personaRepLegal_id = entidad.personaRepLegal_id;
     form.activo = entidad.activo;
     showModal.value = true;
@@ -120,8 +121,8 @@ function confirmDeleteEntidad(entidad: Entidad) {
 
 function executeDelete() {
     if (!entidadToDelete.value) {
-return;
-}
+        return;
+    }
 
     isDeleting.value = true;
     router.delete(
@@ -137,6 +138,15 @@ return;
         },
     );
 }
+
+// Carga Masiva
+const showMasivoModal = ref(false);
+
+function onMasivoSuccess(count: number) {
+    showMasivoModal.value = false;
+    router.reload({ only: ['entidades'] });
+    console.log(`${count} entidades registradas en lote.`);
+}
 </script>
 
 <template>
@@ -145,10 +155,16 @@ return;
     <div class="flex flex-col gap-4 p-4">
         <div class="flex items-center justify-between">
             <h1 class="text-2xl font-bold tracking-tight">Entidades</h1>
-            <Button @click="openCreateModal">
-                <Plus class="mr-2 h-4 w-4" />
-                Nueva Entidad
-            </Button>
+            <div class="flex items-center gap-2">
+                <Button variant="outline" @click="showMasivoModal = true">
+                    <Upload class="mr-2 h-4 w-4" />
+                    Carga Masiva
+                </Button>
+                <Button @click="openCreateModal">
+                    <Plus class="mr-2 h-4 w-4" />
+                    Nueva Entidad
+                </Button>
+            </div>
         </div>
 
         <div class="rounded-md border bg-card">
@@ -293,6 +309,13 @@ return;
             :processing="isDeleting"
             @confirm="executeDelete"
             @cancel="entidadToDelete = null"
+        />
+
+        <!-- Modal Carga Masiva Grid -->
+        <EntidadMasivaGrid
+            v-if="showMasivoModal"
+            @close="showMasivoModal = false"
+            @success="onMasivoSuccess"
         />
     </div>
 </template>

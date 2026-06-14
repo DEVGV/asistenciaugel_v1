@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Personas extends Model
 {
+    public static $snakeAttributes = false;
+
     protected $table = 't_personas';
 
     public $timestamps = false;

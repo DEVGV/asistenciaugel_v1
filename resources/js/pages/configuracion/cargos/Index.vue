@@ -6,6 +6,7 @@ import CargoController from '@/actions/App/Http/Controllers/Configuracion/CargoC
 import ConfirmModal from '@/components/shared/ConfirmModal.vue';
 import FormModal from '@/components/shared/FormModal.vue';
 import { Button } from '@/components/ui/button';
+import StatusBadge from '@/components/shared/StatusBadge.vue';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -114,8 +115,8 @@ function confirmDelete(cargo: Cargo) {
 
 function executeDelete() {
     if (!cargoToDelete.value) {
-return;
-}
+        return;
+    }
 
     isDeleting.value = true;
     router.delete(
@@ -149,6 +150,7 @@ return;
                         <TableHead>Código</TableHead>
                         <TableHead>Nombre</TableHead>
                         <TableHead>Abreviatura</TableHead>
+                        <TableHead>Estado</TableHead>
                         <TableHead class="text-right">Acciones</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -164,6 +166,9 @@ return;
                             cargo.nombre
                         }}</TableCell>
                         <TableCell>{{ cargo.abreviatura || '-' }}</TableCell>
+                        <TableCell>
+                            <StatusBadge :active="cargo.activo" />
+                        </TableCell>
                         <TableCell class="text-right">
                             <DropdownMenu>
                                 <DropdownMenuTrigger as-child>
@@ -201,7 +206,7 @@ return;
                         </TableCell>
                     </TableRow>
                     <TableRow v-if="props.cargos.data.length === 0">
-                        <TableCell colspan="4" class="h-24 text-center"
+                        <TableCell colspan="5" class="h-24 text-center"
                             >No hay cargos registrados.</TableCell
                         >
                     </TableRow>

@@ -5,17 +5,22 @@ namespace App\Services\InstitucionEducativa;
 use App\DTOs\InstitucionEducativa\CreateInstEducDTO;
 use App\DTOs\InstitucionEducativa\UpdateInstEducDTO;
 use App\Models\InstitucionesEduc;
+use App\Services\Auth\ContextoService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class InstitucionEducativaService
 {
+    public function __construct(
+        private ContextoService $contextoService,
+    ) {}
+
     /**
      * @return LengthAwarePaginator<InstitucionesEduc>
      */
     public function listarPaginado(Request $request): LengthAwarePaginator
     {
-        return InstitucionesEduc::query()
+        return $this->contextoService->filtrarInstituciones(InstitucionesEduc::query())
             ->with(['regimenEduc', 'tipoInstEduc', 'modalidadFormativa', 'nivelCiclo', 'entidadUgel', 'entidadAdmin'])
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
@@ -45,7 +50,32 @@ class InstitucionEducativaService
             'localesInstEduc.local.zona',
             'localesInstEduc.relojes',
             'localesInstEduc.localesMarcacion.trabajador.persona',
+            'diasNoLaborables' => fn ($q) => $q->where('activo', true)->orderBy('fecha')->with('feriado'),
         ]);
+    }
+
+    /**
+     * Búsqueda de IE para selects/typeaheads (paginada).
+     *
+     * @return \Illuminate\Pagination\LengthAwarePaginator<InstitucionesEduc>
+     */
+    public function buscarParaSelect(Request $request): \Illuminate\Pagination\LengthAwarePaginator
+    {
+        $query = $this->contextoService->filtrarInstituciones(InstitucionesEduc::query())
+            ->select(['id', 'nombreLegal', 'codigoInstitucion', 'codigoModular']);
+
+        if ($request->filled('search')) {
+            $term = '%'.$request->string('search').'%';
+            $query->where(function ($q) use ($term) {
+                $q->whereRaw('LOWER("nombreLegal") LIKE LOWER(?)', [$term])
+                    ->orWhereRaw('LOWER("codigoInstitucion") LIKE LOWER(?)', [$term])
+                    ->orWhereRaw('LOWER("codigoModular") LIKE LOWER(?)', [$term]);
+            });
+        }
+
+        $perPage = min((int) $request->get('per_page', 30), 100);
+
+        return $query->orderBy('nombreLegal')->paginate($perPage);
     }
 
     public function crear(CreateInstEducDTO $dto): InstitucionesEduc

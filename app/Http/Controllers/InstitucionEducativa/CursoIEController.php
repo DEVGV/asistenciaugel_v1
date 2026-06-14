@@ -17,7 +17,7 @@ class CursoIEController extends Controller
 
     public function store(StoreSubRecursoIERequest $request, InstitucionesEduc $institucione): RedirectResponse
     {
-        $this->cursoService->crear($institucione, $request->validated());
+        $this->cursoService->crear($institucione, $request->toDTO());
 
         return redirect()->route('instituciones.show', $institucione)
             ->with('success', 'Curso registrado exitosamente.');
@@ -25,7 +25,7 @@ class CursoIEController extends Controller
 
     public function update(StoreSubRecursoIERequest $request, CursosIE $curso): RedirectResponse
     {
-        $this->cursoService->actualizar($curso, $request->validated());
+        $this->cursoService->actualizar($curso, $request->toDTO());
 
         return redirect()->route('instituciones.show', $curso->institucionEduc_id)
             ->with('success', 'Curso actualizado exitosamente.');

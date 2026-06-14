@@ -32,4 +32,10 @@ class StoreSubRecursoIERequest extends FormRequest
             'nombre.required' => 'El nombre es obligatorio.',
         ];
     }
+
+    /** @return array<string, mixed> */
+    public function toDTO(): array
+    {
+        return $this->validated();
+    }
 }

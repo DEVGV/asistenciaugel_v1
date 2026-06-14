@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useForm, router } from '@inertiajs/vue3';
-import { Plus, Pencil, Trash2, Mail } from 'lucide-vue-next';
+import { Plus, Pencil, Trash2, Mail, ArrowDownCircle } from 'lucide-vue-next';
 import { ref } from 'vue';
 import EmailController from '@/actions/App/Http/Controllers/Persona/EmailController';
 import ConfirmModal from '@/components/shared/ConfirmModal.vue';
@@ -30,46 +30,52 @@ const editingId = ref<number | null>(null);
 const showDeleteModal = ref(false);
 const itemToDelete = ref<Email | null>(null);
 const isDeleting = ref(false);
+const showBajaModal = ref(false);
+const itemToBaja = ref<Email | null>(null);
+const isBaja = ref(false);
 
 const form = useForm({
     email: '',
     personalInst: 'P' as 'P' | 'I',
-    fechaInicio: '',
-    fechaFin: '',
 });
 
-function openCreate() {
+function resetForm() {
+    form.email = '';
+    form.personalInst = 'P';
+    form.clearErrors();
+}
+
+function closeModal() {
+    showModal.value = false;
+    resetForm();
     isEditing.value = false;
     editingId.value = null;
-    form.reset();
-    form.clearErrors();
-    form.fechaInicio = new Date().toISOString().split('T')[0];
+}
+
+function openCreate() {
+    resetForm();
+    isEditing.value = false;
+    editingId.value = null;
     showModal.value = true;
 }
 
 function openEdit(item: Email) {
+    resetForm();
     isEditing.value = true;
     editingId.value = item.id;
-    form.clearErrors();
     form.email = item.email;
     form.personalInst = item.personalInst;
-    form.fechaInicio = item.fechaInicio || '';
-    form.fechaFin = item.fechaFin || '';
     showModal.value = true;
 }
 
 function submitForm() {
     if (isEditing.value && editingId.value) {
         form.put(EmailController.update({ email: editingId.value }).url, {
-            onSuccess: () => {
-                showModal.value = false;
-            },
+            onSuccess: () => closeModal(),
         });
     } else {
         form.post(EmailController.store({ persona: props.personaId }).url, {
-            onSuccess: () => {
-                showModal.value = false;
-            },
+            onSuccess: () => closeModal(),
         });
     }
 }
@@ -81,8 +87,8 @@ function confirmDelete(item: Email) {
 
 function executeDelete() {
     if (!itemToDelete.value) {
-return;
-}
+        return;
+    }
 
     isDeleting.value = true;
     router.delete(
@@ -94,6 +100,32 @@ return;
             },
             onFinish: () => {
                 isDeleting.value = false;
+            },
+        },
+    );
+}
+
+function confirmBaja(item: Email) {
+    itemToBaja.value = item;
+    showBajaModal.value = true;
+}
+
+function executeBaja() {
+    if (!itemToBaja.value) {
+        return;
+    }
+
+    isBaja.value = true;
+    router.patch(
+        `/emails/${itemToBaja.value.id}/dar-de-baja`,
+        {},
+        {
+            onSuccess: () => {
+                showBajaModal.value = false;
+                itemToBaja.value = null;
+            },
+            onFinish: () => {
+                isBaja.value = false;
             },
         },
     );
@@ -147,6 +179,16 @@ return;
                                 <Pencil class="h-3.5 w-3.5" />
                             </Button>
                             <Button
+                                v-if="!item.fechaFin"
+                                variant="ghost"
+                                size="icon"
+                                class="h-7 w-7 text-amber-600"
+                                title="Dar de baja"
+                                @click="confirmBaja(item)"
+                            >
+                                <ArrowDownCircle class="h-3.5 w-3.5" />
+                            </Button>
+                            <Button
                                 variant="ghost"
                                 size="icon"
                                 class="h-7 w-7 text-destructive"
@@ -173,6 +215,7 @@ return;
             :title="isEditing ? 'Editar Email' : 'Nuevo Email'"
             :processing="form.processing"
             @submit="submitForm"
+            @close="closeModal"
         >
             <div class="grid gap-4">
                 <div class="grid gap-2">
@@ -199,19 +242,6 @@ return;
                         <option value="I">Institucional</option>
                     </select>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="grid gap-2">
-                        <Label>Fecha Inicio</Label>
-                        <Input v-model="form.fechaInicio" type="date" />
-                    </div>
-                    <div class="grid gap-2">
-                        <Label>Fecha de Baja</Label>
-                        <Input v-model="form.fechaFin" type="date" />
-                        <p class="text-xs text-muted-foreground">
-                            Establece una fecha para marcarlo como inactivo.
-                        </p>
-                    </div>
-                </div>
             </div>
         </FormModal>
 
@@ -223,6 +253,15 @@ return;
             destructive
             :processing="isDeleting"
             @confirm="executeDelete"
+        />
+
+        <ConfirmModal
+            v-model:show="showBajaModal"
+            title="Dar de Baja Email"
+            :description="`¿Dar de baja el correo ${itemToBaja?.email}? Se registrará la fecha de hoy como fecha de baja.`"
+            confirm-text="Dar de Baja"
+            :processing="isBaja"
+            @confirm="executeBaja"
         />
     </div>
 </template>

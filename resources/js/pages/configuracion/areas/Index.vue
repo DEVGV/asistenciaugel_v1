@@ -117,8 +117,8 @@ function confirmDelete(area: Area) {
 
 function executeDelete() {
     if (!areaToDelete.value) {
-return;
-}
+        return;
+    }
 
     isDeleting.value = true;
     router.delete(AreaController.destroy({ area: areaToDelete.value.id }).url, {

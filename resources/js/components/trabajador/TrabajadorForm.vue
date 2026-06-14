@@ -11,17 +11,17 @@ defineProps<{
 <template>
     <div class="grid gap-4">
         <!-- Tarjeta de información de la Persona seleccionada -->
-        <div
-            v-if="persona"
-            class="rounded-lg border bg-muted/40 p-3 text-sm"
-        >
-            <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <div v-if="persona" class="rounded-lg border bg-muted/40 p-3 text-sm">
+            <p
+                class="text-xs font-semibold tracking-wider text-muted-foreground uppercase"
+            >
                 Persona Asignada
             </p>
             <div class="mt-1 flex items-center justify-between">
                 <div>
                     <p class="font-medium">
-                        {{ persona.paterno }} {{ persona.materno }}, {{ persona.nombre }}
+                        {{ persona.paterno }} {{ persona.materno }},
+                        {{ persona.nombre }}
                     </p>
                     <p class="text-xs text-muted-foreground">
                         {{ persona.docIdentidad }}
@@ -29,7 +29,6 @@ defineProps<{
                 </div>
             </div>
         </div>
-
 
         <!-- Estado Activo -->
         <div class="mt-2 flex items-center space-x-2">

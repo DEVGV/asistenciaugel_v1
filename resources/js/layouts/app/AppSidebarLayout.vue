@@ -22,7 +22,9 @@ withDefaults(defineProps<Props>(), {
         <AppContent variant="sidebar" class="overflow-x-hidden">
             <AppSidebarHeader :breadcrumbs="breadcrumbs" />
             <GlobalAlerts />
-            <slot />
+            <div class="animate-element flex flex-1 flex-col">
+                <slot />
+            </div>
         </AppContent>
         <Toaster />
     </AppShell>

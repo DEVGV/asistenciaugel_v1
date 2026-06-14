@@ -196,7 +196,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\Persona\DomicilioController::destroy
-* @see app/Http/Controllers/Persona/DomicilioController.php:34
+* @see app/Http/Controllers/Persona/DomicilioController.php:42
 * @route '/domicilios/{domicilio}'
 */
 export const destroy = (args: { domicilio: string | number | { id: string | number } } | [domicilio: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -211,7 +211,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Persona\DomicilioController::destroy
-* @see app/Http/Controllers/Persona/DomicilioController.php:34
+* @see app/Http/Controllers/Persona/DomicilioController.php:42
 * @route '/domicilios/{domicilio}'
 */
 destroy.url = (args: { domicilio: string | number | { id: string | number } } | [domicilio: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -244,7 +244,7 @@ destroy.url = (args: { domicilio: string | number | { id: string | number } } | 
 
 /**
 * @see \App\Http\Controllers\Persona\DomicilioController::destroy
-* @see app/Http/Controllers/Persona/DomicilioController.php:34
+* @see app/Http/Controllers/Persona/DomicilioController.php:42
 * @route '/domicilios/{domicilio}'
 */
 destroy.delete = (args: { domicilio: string | number | { id: string | number } } | [domicilio: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -254,7 +254,7 @@ destroy.delete = (args: { domicilio: string | number | { id: string | number } }
 
 /**
 * @see \App\Http\Controllers\Persona\DomicilioController::destroy
-* @see app/Http/Controllers/Persona/DomicilioController.php:34
+* @see app/Http/Controllers/Persona/DomicilioController.php:42
 * @route '/domicilios/{domicilio}'
 */
 const destroyForm = (args: { domicilio: string | number | { id: string | number } } | [domicilio: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -269,7 +269,7 @@ const destroyForm = (args: { domicilio: string | number | { id: string | number 
 
 /**
 * @see \App\Http\Controllers\Persona\DomicilioController::destroy
-* @see app/Http/Controllers/Persona/DomicilioController.php:34
+* @see app/Http/Controllers/Persona/DomicilioController.php:42
 * @route '/domicilios/{domicilio}'
 */
 destroyForm.delete = (args: { domicilio: string | number | { id: string | number } } | [domicilio: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -284,6 +284,96 @@ destroyForm.delete = (args: { domicilio: string | number | { id: string | number
 
 destroy.form = destroyForm
 
-const DomicilioController = { store, update, destroy }
+/**
+* @see \App\Http\Controllers\Persona\DomicilioController::darDeBaja
+* @see app/Http/Controllers/Persona/DomicilioController.php:34
+* @route '/domicilios/{domicilio}/dar-de-baja'
+*/
+export const darDeBaja = (args: { domicilio: string | number | { id: string | number } } | [domicilio: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: darDeBaja.url(args, options),
+    method: 'patch',
+})
+
+darDeBaja.definition = {
+    methods: ["patch"],
+    url: '/domicilios/{domicilio}/dar-de-baja',
+} satisfies RouteDefinition<["patch"]>
+
+/**
+* @see \App\Http\Controllers\Persona\DomicilioController::darDeBaja
+* @see app/Http/Controllers/Persona/DomicilioController.php:34
+* @route '/domicilios/{domicilio}/dar-de-baja'
+*/
+darDeBaja.url = (args: { domicilio: string | number | { id: string | number } } | [domicilio: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { domicilio: args }
+    }
+
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { domicilio: args.id }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            domicilio: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        domicilio: typeof args.domicilio === 'object'
+        ? args.domicilio.id
+        : args.domicilio,
+    }
+
+    return darDeBaja.definition.url
+            .replace('{domicilio}', parsedArgs.domicilio.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Persona\DomicilioController::darDeBaja
+* @see app/Http/Controllers/Persona/DomicilioController.php:34
+* @route '/domicilios/{domicilio}/dar-de-baja'
+*/
+darDeBaja.patch = (args: { domicilio: string | number | { id: string | number } } | [domicilio: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: darDeBaja.url(args, options),
+    method: 'patch',
+})
+
+/**
+* @see \App\Http\Controllers\Persona\DomicilioController::darDeBaja
+* @see app/Http/Controllers/Persona/DomicilioController.php:34
+* @route '/domicilios/{domicilio}/dar-de-baja'
+*/
+const darDeBajaForm = (args: { domicilio: string | number | { id: string | number } } | [domicilio: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: darDeBaja.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PATCH',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Persona\DomicilioController::darDeBaja
+* @see app/Http/Controllers/Persona/DomicilioController.php:34
+* @route '/domicilios/{domicilio}/dar-de-baja'
+*/
+darDeBajaForm.patch = (args: { domicilio: string | number | { id: string | number } } | [domicilio: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: darDeBaja.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PATCH',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+darDeBaja.form = darDeBajaForm
+
+const DomicilioController = { store, update, destroy, darDeBaja }
 
 export default DomicilioController

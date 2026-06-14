@@ -36,22 +36,22 @@ defineProps<{
         <Form v-bind="email.form()" v-slot="{ errors, processing }">
             <div class="animate-element animate-delay-200">
                 <Label
-                    for="email"
+                    for="login"
                     class="ml-1 text-sm font-medium text-muted-foreground"
-                    >Correo Electrónico</Label
+                    >N° de Documento</Label
                 >
                 <GlassInputWrapper class="mt-1.5">
                     <Input
-                        id="email"
-                        type="email"
-                        name="email"
+                        id="login"
+                        type="text"
+                        name="login"
                         autocomplete="off"
                         autofocus
-                        placeholder="nombre@ejemplo.com"
+                        placeholder="Ingresa tu número de documento"
                         class="h-12 border-0 bg-transparent px-4 shadow-none focus-visible:ring-0"
                     />
                 </GlassInputWrapper>
-                <InputError :message="errors.email" class="mt-2 ml-1" />
+                <InputError :message="errors.login" class="mt-2 ml-1" />
             </div>
 
             <div class="mt-8">

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core';
 import { Check, ChevronDown, Search } from 'lucide-vue-next';
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, watch, nextTick } from 'vue';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import type { ParamSimple } from '@/types/models/params';
@@ -21,29 +21,58 @@ const emit = defineEmits<{
     (e: 'update:item', item: ParamSimple | null): void;
 }>();
 
+// Determina si este select requiere parentId para cargar datos
+const requiresParent = ['provincias', 'distritos'].includes(props.type);
+
 const data = ref<ParamSimple[]>([]);
-const loading = ref(true);
+const loading = ref(false);
 const isOpen = ref(false);
 const searchQuery = ref('');
 const target = ref(null);
+const searchInput = ref<HTMLInputElement | null>(null);
+
+// AbortController para cancelar fetches en vuelo cuando llega uno nuevo
+let abortController: AbortController | null = null;
 
 onClickOutside(target, () => {
     isOpen.value = false;
 });
 
+watch(isOpen, async (val) => {
+    if (val) {
+        await nextTick();
+        searchInput.value?.focus();
+    }
+});
+
 async function fetchData() {
+    // Si requiere padre y no lo tiene, limpiar y no fetchear
+    if (requiresParent && !props.parentId) {
+        data.value = [];
+        loading.value = false;
+        return;
+    }
+
+    // Cancelar fetch anterior si sigue en vuelo
+    if (abortController) {
+        abortController.abort();
+    }
+    abortController = new AbortController();
+    const signal = abortController.signal;
+
     loading.value = true;
+    data.value = [];
 
     try {
         const url = props.parentId
             ? `/api/params/${props.type}?parent_id=${props.parentId}`
             : `/api/params/${props.type}`;
 
-        const response = await fetch(url);
+        const response = await fetch(url, { signal });
 
         if (!response.ok) {
-throw new Error('Network response was not ok');
-}
+            throw new Error('Network response was not ok');
+        }
 
         const json = await response.json();
         data.value = json.data;
@@ -57,8 +86,10 @@ throw new Error('Network response was not ok');
                 emit('update:item', initialItem);
             }
         }
-    } catch (e) {
-        console.error(`Error loading params for ${props.type}`, e);
+    } catch (e: any) {
+        if (e?.name !== 'AbortError') {
+            console.error(`Error loading params for ${props.type}`, e);
+        }
     } finally {
         loading.value = false;
     }
@@ -70,8 +101,10 @@ onMounted(() => {
 
 watch(
     () => props.parentId,
-    () => {
-        fetchData();
+    (newVal, oldVal) => {
+        if (newVal !== oldVal) {
+            fetchData();
+        }
     },
 );
 
@@ -86,8 +119,8 @@ watch(
             );
 
             if (item) {
-emit('update:item', item);
-}
+                emit('update:item', item);
+            }
         }
     },
 );
@@ -110,8 +143,8 @@ const filteredData = computed(() => {
 
 const selectedItemName = computed(() => {
     if (!props.modelValue) {
-return '';
-}
+        return '';
+    }
 
     const item = data.value.find(
         (i) => String(i.id) === String(props.modelValue),
@@ -122,8 +155,8 @@ return '';
 
 function toggleDropdown() {
     if (props.disabled || loading.value) {
-return;
-}
+        return;
+    }
 
     isOpen.value = !isOpen.value;
 
@@ -190,6 +223,7 @@ function selectItem(item: ParamSimple) {
                         class="h-4 w-4 shrink-0 text-muted-foreground opacity-50"
                     />
                     <input
+                        ref="searchInput"
                         type="text"
                         v-model="searchQuery"
                         placeholder="Buscar..."

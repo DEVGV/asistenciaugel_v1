@@ -23,6 +23,7 @@ class EmailService
     {
         $data['persona_id'] = $persona->id;
         $data['created_by'] = auth()->id() ?? 1;
+        $data['fechaInicio'] ??= now()->toDateString();
 
         return Emails::create($data);
     }
@@ -33,6 +34,11 @@ class EmailService
     public function actualizar(Emails $email, array $data): bool
     {
         return $email->update($data);
+    }
+
+    public function darDeBaja(Emails $email): bool
+    {
+        return $email->update(['fechaFin' => now()->toDateString()]);
     }
 
     public function eliminar(Emails $email): bool

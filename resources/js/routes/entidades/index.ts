@@ -1,4 +1,5 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
+import masivo from './masivo'
 /**
 * @see \App\Http\Controllers\Entidad\EntidadController::index
 * @see app/Http/Controllers/Entidad/EntidadController.php:22
@@ -346,6 +347,7 @@ const entidades = {
     store: Object.assign(store, store),
     update: Object.assign(update, update),
     destroy: Object.assign(destroy, destroy),
+    masivo: Object.assign(masivo, masivo),
 }
 
 export default entidades

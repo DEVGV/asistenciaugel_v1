@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\Infraestructura\RelojController::update
-* @see app/Http/Controllers/Infraestructura/RelojController.php:29
+* @see app/Http/Controllers/Infraestructura/RelojController.php:27
 * @route '/relojes/{reloje}'
 */
 export const update = (args: { reloje: number | { id: number } } | [reloje: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -16,7 +16,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Infraestructura\RelojController::update
-* @see app/Http/Controllers/Infraestructura/RelojController.php:29
+* @see app/Http/Controllers/Infraestructura/RelojController.php:27
 * @route '/relojes/{reloje}'
 */
 update.url = (args: { reloje: number | { id: number } } | [reloje: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ update.url = (args: { reloje: number | { id: number } } | [reloje: number | { id
 
 /**
 * @see \App\Http\Controllers\Infraestructura\RelojController::update
-* @see app/Http/Controllers/Infraestructura/RelojController.php:29
+* @see app/Http/Controllers/Infraestructura/RelojController.php:27
 * @route '/relojes/{reloje}'
 */
 update.put = (args: { reloje: number | { id: number } } | [reloje: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -59,7 +59,7 @@ update.put = (args: { reloje: number | { id: number } } | [reloje: number | { id
 
 /**
 * @see \App\Http\Controllers\Infraestructura\RelojController::update
-* @see app/Http/Controllers/Infraestructura/RelojController.php:29
+* @see app/Http/Controllers/Infraestructura/RelojController.php:27
 * @route '/relojes/{reloje}'
 */
 update.patch = (args: { reloje: number | { id: number } } | [reloje: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -69,7 +69,7 @@ update.patch = (args: { reloje: number | { id: number } } | [reloje: number | { 
 
 /**
 * @see \App\Http\Controllers\Infraestructura\RelojController::update
-* @see app/Http/Controllers/Infraestructura/RelojController.php:29
+* @see app/Http/Controllers/Infraestructura/RelojController.php:27
 * @route '/relojes/{reloje}'
 */
 const updateForm = (args: { reloje: number | { id: number } } | [reloje: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -84,7 +84,7 @@ const updateForm = (args: { reloje: number | { id: number } } | [reloje: number 
 
 /**
 * @see \App\Http\Controllers\Infraestructura\RelojController::update
-* @see app/Http/Controllers/Infraestructura/RelojController.php:29
+* @see app/Http/Controllers/Infraestructura/RelojController.php:27
 * @route '/relojes/{reloje}'
 */
 updateForm.put = (args: { reloje: number | { id: number } } | [reloje: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -99,7 +99,7 @@ updateForm.put = (args: { reloje: number | { id: number } } | [reloje: number | 
 
 /**
 * @see \App\Http\Controllers\Infraestructura\RelojController::update
-* @see app/Http/Controllers/Infraestructura/RelojController.php:29
+* @see app/Http/Controllers/Infraestructura/RelojController.php:27
 * @route '/relojes/{reloje}'
 */
 updateForm.patch = (args: { reloje: number | { id: number } } | [reloje: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -116,7 +116,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\Infraestructura\RelojController::destroy
-* @see app/Http/Controllers/Infraestructura/RelojController.php:37
+* @see app/Http/Controllers/Infraestructura/RelojController.php:35
 * @route '/relojes/{reloje}'
 */
 export const destroy = (args: { reloje: number | { id: number } } | [reloje: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -131,7 +131,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Infraestructura\RelojController::destroy
-* @see app/Http/Controllers/Infraestructura/RelojController.php:37
+* @see app/Http/Controllers/Infraestructura/RelojController.php:35
 * @route '/relojes/{reloje}'
 */
 destroy.url = (args: { reloje: number | { id: number } } | [reloje: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -164,7 +164,7 @@ destroy.url = (args: { reloje: number | { id: number } } | [reloje: number | { i
 
 /**
 * @see \App\Http\Controllers\Infraestructura\RelojController::destroy
-* @see app/Http/Controllers/Infraestructura/RelojController.php:37
+* @see app/Http/Controllers/Infraestructura/RelojController.php:35
 * @route '/relojes/{reloje}'
 */
 destroy.delete = (args: { reloje: number | { id: number } } | [reloje: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -174,7 +174,7 @@ destroy.delete = (args: { reloje: number | { id: number } } | [reloje: number | 
 
 /**
 * @see \App\Http\Controllers\Infraestructura\RelojController::destroy
-* @see app/Http/Controllers/Infraestructura/RelojController.php:37
+* @see app/Http/Controllers/Infraestructura/RelojController.php:35
 * @route '/relojes/{reloje}'
 */
 const destroyForm = (args: { reloje: number | { id: number } } | [reloje: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -189,7 +189,7 @@ const destroyForm = (args: { reloje: number | { id: number } } | [reloje: number
 
 /**
 * @see \App\Http\Controllers\Infraestructura\RelojController::destroy
-* @see app/Http/Controllers/Infraestructura/RelojController.php:37
+* @see app/Http/Controllers/Infraestructura/RelojController.php:35
 * @route '/relojes/{reloje}'
 */
 destroyForm.delete = (args: { reloje: number | { id: number } } | [reloje: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

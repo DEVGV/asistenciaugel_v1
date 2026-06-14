@@ -45,8 +45,14 @@ class StoreRelojRequest extends FormRequest
         ];
     }
 
-    public function toDTO(): CreateRelojDTO
+    /**
+     * Construye el DTO inyectando el localInstEduc_id desde el modelo de ruta,
+     * ya que este campo viene de la URL, no del body del request.
+     */
+    public function toDTO(int $localInstEducId): CreateRelojDTO
     {
-        return CreateRelojDTO::from($this->validated());
+        return CreateRelojDTO::from(
+            array_merge($this->validated(), ['localInstEduc_id' => $localInstEducId])
+        );
     }
 }

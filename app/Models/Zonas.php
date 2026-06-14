@@ -16,6 +16,8 @@ class Zonas extends Model
 
     public $timestamps = false;
 
+    public static $snakeAttributes = false;
+
     protected $fillable = [
         'tipoZona_id',
         'distrito_id',

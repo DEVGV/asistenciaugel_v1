@@ -3,7 +3,13 @@ import { Form, Head } from '@inertiajs/vue3';
 import TextLink from '@/components/TextLink.vue';
 import { Button } from '@/components/ui/button';
 import { logout } from '@/routes';
-import { send } from '@/routes/verification';
+
+const send = {
+    form: () => ({
+        action: '/email/verification-notification',
+        method: 'post' as const,
+    }),
+};
 
 defineOptions({
     layout: {

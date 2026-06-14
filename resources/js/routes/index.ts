@@ -220,6 +220,87 @@ home.form = homeForm
 /**
 * @see \Inertia\Controller::__invoke
 * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
+* @route '/sin-acceso'
+*/
+export const sinAcceso = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: sinAcceso.url(options),
+    method: 'get',
+})
+
+sinAcceso.definition = {
+    methods: ["get","head"],
+    url: '/sin-acceso',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \Inertia\Controller::__invoke
+* @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
+* @route '/sin-acceso'
+*/
+sinAcceso.url = (options?: RouteQueryOptions) => {
+    return sinAcceso.definition.url + queryParams(options)
+}
+
+/**
+* @see \Inertia\Controller::__invoke
+* @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
+* @route '/sin-acceso'
+*/
+sinAcceso.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: sinAcceso.url(options),
+    method: 'get',
+})
+
+/**
+* @see \Inertia\Controller::__invoke
+* @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
+* @route '/sin-acceso'
+*/
+sinAcceso.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: sinAcceso.url(options),
+    method: 'head',
+})
+
+/**
+* @see \Inertia\Controller::__invoke
+* @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
+* @route '/sin-acceso'
+*/
+const sinAccesoForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: sinAcceso.url(options),
+    method: 'get',
+})
+
+/**
+* @see \Inertia\Controller::__invoke
+* @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
+* @route '/sin-acceso'
+*/
+sinAccesoForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: sinAcceso.url(options),
+    method: 'get',
+})
+
+/**
+* @see \Inertia\Controller::__invoke
+* @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
+* @route '/sin-acceso'
+*/
+sinAccesoForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: sinAcceso.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+sinAcceso.form = sinAccesoForm
+
+/**
+* @see \Inertia\Controller::__invoke
+* @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
 * @route '/dashboard'
 */
 export const dashboard = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
