@@ -82,4 +82,19 @@ class InstitucionesEduc extends Model
     {
         return $this->hasMany(ConasisDiasNoLaborables::class, 'institucionEduc_id');
     }
+
+    public function telefonos(): HasMany
+    {
+        return $this->hasMany(Telefonos::class, 'institucionEduc_id');
+    }
+
+    public function emails(): HasMany
+    {
+        return $this->hasMany(Emails::class, 'institucionEduc_id');
+    }
+
+    public function domicilios(): HasMany
+    {
+        return $this->hasMany(Domicilios::class, 'institucionEduc_id');
+    }
 }

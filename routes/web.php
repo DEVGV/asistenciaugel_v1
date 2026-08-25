@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Asistencia\ConsolidadoAsistenciaController;
 use App\Http\Controllers\Auth\ContextoController;
 use App\Http\Controllers\Configuracion\AreaController;
 use App\Http\Controllers\Configuracion\CargoController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\Configuracion\CondicionLaboralController;
 use App\Http\Controllers\Configuracion\PerfilController;
 use App\Http\Controllers\Configuracion\UsuarioController;
 use App\Http\Controllers\Configuracion\ZonaController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Entidad\EntidadController;
 use App\Http\Controllers\Entidad\EntidadMasivaController;
 use App\Http\Controllers\Horario\CargaHorariaController;
@@ -23,23 +25,26 @@ use App\Http\Controllers\InstitucionEducativa\AltaMasivaIEController;
 use App\Http\Controllers\InstitucionEducativa\CursoIEController;
 use App\Http\Controllers\InstitucionEducativa\CursosMasivaIEController;
 use App\Http\Controllers\InstitucionEducativa\DiasNoLaborablesController;
+use App\Http\Controllers\InstitucionEducativa\DomicilioIEController;
+use App\Http\Controllers\InstitucionEducativa\EmailIEController;
 use App\Http\Controllers\InstitucionEducativa\GradoIEController;
 use App\Http\Controllers\InstitucionEducativa\GradosMasivaIEController;
 use App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController;
 use App\Http\Controllers\InstitucionEducativa\InstitucionEducativaMasivaController;
 use App\Http\Controllers\InstitucionEducativa\SeccionIEController;
+use App\Http\Controllers\InstitucionEducativa\TelefonoIEController;
+use App\Http\Controllers\Marcacion\CargaMarcacionesController;
 use App\Http\Controllers\Persona\DomicilioController;
 use App\Http\Controllers\Persona\EmailController;
-use App\Http\Controllers\Persona\PersonaController;
-use App\Http\Controllers\Persona\PersonaMasivaController;
 use App\Http\Controllers\Persona\TelefonoController;
 use App\Http\Controllers\Trabajador\AltaTrabajadorController;
-use App\Http\Controllers\Tramite\PermisoController;
+use App\Http\Controllers\Trabajador\MarcacionesTrabajadorController;
 use App\Http\Controllers\Trabajador\RegistroTrabajadorController;
 use App\Http\Controllers\Trabajador\TrabajadorController;
+use App\Http\Controllers\Tramite\ExpedienteController;
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'Welcome')->name('home');
+Route::redirect('/', '/login')->name('home');
 
 // ── Contexto de trabajo (UGEL / IE) ─────────────────────────────────────────
 Route::middleware(['auth'])->group(function () {
@@ -51,229 +56,360 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified', 'contexto'])->group(function () {
-    Route::inertia('dashboard', 'Dashboard')->name('dashboard');
+    // ── Dashboard ─────────────────────────────────────────────────────────────
+    // Docentes son redirigidos a su propia ficha de trabajador.
+    Route::get('dashboard', DashboardController::class)->name('dashboard');
 
-    Route::resource('entidades', EntidadController::class)
-        ->only(['index', 'store', 'update', 'destroy'])
-        ->parameters(['entidades' => 'entidade']);
-    Route::post('entidades-masivas', [EntidadMasivaController::class, 'store'])
-        ->name('entidades.masivo.store');
+    // ── Entidades ────────────────────────────────────────────────────────────
+    Route::middleware('permiso:entidades.ver')->group(function () {
+        Route::resource('entidades', EntidadController::class)
+            ->only(['index'])
+            ->parameters(['entidades' => 'entidade']);
+    });
+    Route::middleware('permiso:entidades.crear,entidades.editar')->group(function () {
+        Route::resource('entidades', EntidadController::class)
+            ->only(['store', 'update'])
+            ->parameters(['entidades' => 'entidade']);
+        Route::post('entidades-masivas', [EntidadMasivaController::class, 'store'])
+            ->name('entidades.masivo.store');
+    });
+    Route::middleware('permiso:entidades.eliminar')->group(function () {
+        Route::resource('entidades', EntidadController::class)
+            ->only(['destroy'])
+            ->parameters(['entidades' => 'entidade']);
+    });
 
-    Route::resource('areas', AreaController::class)
-        ->only(['index', 'store', 'update', 'destroy'])
-        ->parameters(['areas' => 'area']);
+    // ── Configuración (áreas, cargos, condiciones, zonas) ────────────────────
+    Route::middleware('permiso:configuracion.ver')->group(function () {
+        Route::resource('areas', AreaController::class)
+            ->only(['index'])
+            ->parameters(['areas' => 'area']);
+        Route::resource('cargos', CargoController::class)
+            ->only(['index'])
+            ->parameters(['cargos' => 'cargo']);
+        Route::resource('condiciones-laborales', CondicionLaboralController::class)
+            ->only(['index'])
+            ->parameters(['condiciones-laborales' => 'condicionLaboral']);
+        Route::resource('zonas', ZonaController::class)
+            ->only(['index'])
+            ->parameters(['zonas' => 'zona']);
+    });
+    Route::middleware('permiso:configuracion.editar')->group(function () {
+        Route::resource('areas', AreaController::class)
+            ->only(['store', 'update', 'destroy'])
+            ->parameters(['areas' => 'area']);
+        Route::resource('cargos', CargoController::class)
+            ->only(['store', 'update', 'destroy'])
+            ->parameters(['cargos' => 'cargo']);
+        Route::resource('condiciones-laborales', CondicionLaboralController::class)
+            ->only(['store', 'update', 'destroy'])
+            ->parameters(['condiciones-laborales' => 'condicionLaboral']);
+        Route::resource('zonas', ZonaController::class)
+            ->only(['store', 'update', 'destroy'])
+            ->parameters(['zonas' => 'zona']);
+    });
 
-    Route::resource('cargos', CargoController::class)
-        ->only(['index', 'store', 'update', 'destroy'])
-        ->parameters(['cargos' => 'cargo']);
+    // ── Usuarios y Perfiles ──────────────────────────────────────────────────
+    Route::middleware('permiso:usuarios.gestionar')->group(function () {
+        Route::resource('usuarios', UsuarioController::class)
+            ->only(['index', 'show'])
+            ->parameters(['usuarios' => 'usuario']);
 
-    Route::resource('condiciones-laborales', CondicionLaboralController::class)
-        ->only(['index', 'store', 'update', 'destroy'])
-        ->parameters(['condiciones-laborales' => 'condicionLaboral']);
+        Route::post('usuarios/{usuario}/cambiar-password', [UsuarioController::class, 'cambiarPassword'])
+            ->name('usuarios.cambiar-password');
+        Route::post('usuarios/{usuario}/toggle-activo', [UsuarioController::class, 'toggleActivo'])
+            ->name('usuarios.toggle-activo');
+        Route::post('usuarios/{usuario}/perfiles', [UsuarioController::class, 'asignarPerfil'])
+            ->name('usuarios.perfiles.asignar');
+        Route::delete('usuarios/{usuario}/perfiles/{perfilIe}', [UsuarioController::class, 'revocarPerfil'])
+            ->name('usuarios.perfiles.revocar');
 
-    Route::resource('zonas', ZonaController::class)
-        ->only(['index', 'store', 'update', 'destroy'])
-        ->parameters(['zonas' => 'zona']);
+        Route::resource('perfiles', PerfilController::class)
+            ->only(['index', 'store', 'update', 'destroy'])
+            ->parameters(['perfiles' => 'perfil']);
+        Route::post('perfiles/{perfil}/permisos', [PerfilController::class, 'syncPermisos'])
+            ->name('perfiles.permisos.sync');
+    });
 
-    // ── Usuarios ─────────────────────────────────────────────────────────────
-    Route::resource('usuarios', UsuarioController::class)
-        ->only(['index', 'show'])
-        ->parameters(['usuarios' => 'usuario']);
+    // ── Trabajadores ─────────────────────────────────────────────────────────
+    Route::middleware('permiso:trabajadores.ver')->group(function () {
+        Route::resource('trabajadores', TrabajadorController::class)
+            ->only(['index', 'show'])
+            ->parameters(['trabajadores' => 'trabajador']);
 
-    Route::post('usuarios/{usuario}/cambiar-password', [UsuarioController::class, 'cambiarPassword'])
-        ->name('usuarios.cambiar-password');
+        Route::get('trabajadores/{trabajador}/{tab}', [TrabajadorController::class, 'showTab'])
+            ->where('tab', 'laboral|horario|asistencia|permisos')
+            ->name('trabajadores.show-tab');
 
-    Route::post('usuarios/{usuario}/toggle-activo', [UsuarioController::class, 'toggleActivo'])
-        ->name('usuarios.toggle-activo');
+        Route::get('altas', [AltaTrabajadorController::class, 'index'])->name('altas.index');
 
-    Route::post('usuarios/{usuario}/perfiles', [UsuarioController::class, 'asignarPerfil'])
-        ->name('usuarios.perfiles.asignar');
+        // API: horarios y marcaciones del trabajador (lectura)
+        Route::get('trabajadores/{trabajador}/horarios', [HorarioTrabajadorController::class, 'porTrabajador'])
+            ->name('trabajadores.horarios');
+        Route::get('trabajadores/{trabajador}/marcaciones', [MarcacionesTrabajadorController::class, 'porTrabajador'])
+            ->name('trabajadores.marcaciones');
+        Route::get('trabajadores/{trabajador}/asistencia-consolidada', [MarcacionesTrabajadorController::class, 'asistenciaConsolidada'])
+            ->name('trabajadores.asistencia-consolidada');
+    });
+    Route::middleware('permiso:trabajadores.crear')->group(function () {
+        Route::resource('trabajadores', TrabajadorController::class)
+            ->only(['store'])
+            ->parameters(['trabajadores' => 'trabajador']);
 
-    Route::delete('usuarios/{usuario}/perfiles/{perfilIe}', [UsuarioController::class, 'revocarPerfil'])
-        ->name('usuarios.perfiles.revocar');
+        Route::get('registro-trabajador', [RegistroTrabajadorController::class, 'create'])
+            ->name('registro-trabajador.create');
+        Route::post('registro-trabajador', [RegistroTrabajadorController::class, 'store'])
+            ->name('registro-trabajador.store');
+        Route::post('trabajadores-masivos', [RegistroTrabajadorController::class, 'storeMasivo'])
+            ->name('trabajadores.masivo.store');
 
-    // ── Perfiles ──────────────────────────────────────────────────────────────
-    Route::resource('perfiles', PerfilController::class)
-        ->only(['index', 'store', 'update', 'destroy'])
-        ->parameters(['perfiles' => 'perfil']);
+        Route::resource('trabajadores.altas', AltaTrabajadorController::class)
+            ->only(['store'])
+            ->shallow()
+            ->parameters(['trabajadores' => 'trabajador', 'altas' => 'alta']);
+    });
+    Route::middleware('permiso:trabajadores.editar')->group(function () {
+        Route::resource('trabajadores', TrabajadorController::class)
+            ->only(['update'])
+            ->parameters(['trabajadores' => 'trabajador']);
 
-    Route::post('perfiles/{perfil}/permisos', [PerfilController::class, 'syncPermisos'])
-        ->name('perfiles.permisos.sync');
+        Route::resource('trabajadores.altas', AltaTrabajadorController::class)
+            ->only(['update'])
+            ->shallow()
+            ->parameters(['trabajadores' => 'trabajador', 'altas' => 'alta']);
 
-    Route::resource('personas', PersonaController::class)
-        ->only(['index', 'show', 'store', 'update', 'destroy']);
-    Route::post('personas/{persona}/convertir-trabajador', [PersonaController::class, 'convertirTrabajador'])
-        ->name('personas.convertir-trabajador');
-    Route::post('personas-masivas', [PersonaMasivaController::class, 'store'])
-        ->name('personas.masivo.store');
+        Route::post('altas/{alta}/baja', [AltaTrabajadorController::class, 'darBaja'])
+            ->name('altas.baja');
+    });
+    Route::middleware('permiso:trabajadores.eliminar')->group(function () {
+        Route::resource('trabajadores', TrabajadorController::class)
+            ->only(['destroy'])
+            ->parameters(['trabajadores' => 'trabajador']);
 
-    Route::resource('personas.telefonos', TelefonoController::class)
-        ->only(['store', 'update', 'destroy'])
-        ->shallow();
-    Route::patch('telefonos/{telefono}/dar-de-baja', [TelefonoController::class, 'darDeBaja'])
-        ->name('telefonos.dar-de-baja');
+        Route::resource('trabajadores.altas', AltaTrabajadorController::class)
+            ->only(['destroy'])
+            ->shallow()
+            ->parameters(['trabajadores' => 'trabajador', 'altas' => 'alta']);
+    });
 
-    Route::resource('personas.emails', EmailController::class)
-        ->only(['store', 'update', 'destroy'])
-        ->shallow();
-    Route::patch('emails/{email}/dar-de-baja', [EmailController::class, 'darDeBaja'])
-        ->name('emails.dar-de-baja');
+    // ── Contacto de persona (sub-recurso de trabajadores) ────────────────────
+    Route::middleware('permiso:personas.ver,personas.editar')->group(function () {
+        Route::resource('personas.telefonos', TelefonoController::class)
+            ->only(['store', 'update', 'destroy'])
+            ->shallow();
+        Route::patch('telefonos/{telefono}/dar-de-baja', [TelefonoController::class, 'darDeBaja'])
+            ->name('telefonos.dar-de-baja');
 
-    Route::resource('personas.domicilios', DomicilioController::class)
-        ->only(['store', 'update', 'destroy'])
-        ->shallow();
-    Route::patch('domicilios/{domicilio}/dar-de-baja', [DomicilioController::class, 'darDeBaja'])
-        ->name('domicilios.dar-de-baja');
+        Route::resource('personas.emails', EmailController::class)
+            ->only(['store', 'update', 'destroy'])
+            ->shallow();
+        Route::patch('emails/{email}/dar-de-baja', [EmailController::class, 'darDeBaja'])
+            ->name('emails.dar-de-baja');
 
-    Route::resource('trabajadores', TrabajadorController::class)
-        ->except(['create', 'edit', 'update'])
-        ->parameters(['trabajadores' => 'trabajador']);
+        Route::resource('personas.domicilios', DomicilioController::class)
+            ->only(['store', 'update', 'destroy'])
+            ->shallow();
+        Route::patch('domicilios/{domicilio}/dar-de-baja', [DomicilioController::class, 'darDeBaja'])
+            ->name('domicilios.dar-de-baja');
+    });
 
-    // Registro unificado de trabajador (persona + usuario + alta + perfil)
-    Route::get('registro-trabajador', [RegistroTrabajadorController::class, 'create'])
-        ->name('registro-trabajador.create');
-    Route::post('registro-trabajador', [RegistroTrabajadorController::class, 'store'])
-        ->name('registro-trabajador.store');
-    Route::post('trabajadores-masivos', [RegistroTrabajadorController::class, 'storeMasivo'])
-        ->name('trabajadores.masivo.store');
+    // ── Instituciones Educativas ─────────────────────────────────────────────
+    Route::middleware('permiso:instituciones.ver')->group(function () {
+        Route::resource('instituciones', InstitucionEducativaController::class)
+            ->only(['index', 'show'])
+            ->parameters(['instituciones' => 'institucione']);
 
-    // Sub-recurso shallow: store/update/destroy por trabajador o por alta directamente
-    Route::resource('trabajadores.altas', AltaTrabajadorController::class)
-        ->only(['store', 'update', 'destroy'])
-        ->shallow()
-        ->parameters(['trabajadores' => 'trabajador', 'altas' => 'alta']);
+        Route::get('instituciones/{institucione}/{tab}', [InstitucionEducativaController::class, 'showTab'])
+            ->where('tab', 'cursos|grados|locales|permisos|no-laborables|consolidado-asistencia')
+            ->name('instituciones.show-tab');
 
-    // Ruta global paginada de todas las altas del sistema
-    Route::get('altas', [AltaTrabajadorController::class, 'index'])->name('altas.index');
+        Route::get('instituciones/{institucione}/docentes', [InstitucionEducativaController::class, 'docentes'])
+            ->name('instituciones.docentes');
 
-    // Registrar baja de un alta activa
-    Route::post('altas/{alta}/baja', [AltaTrabajadorController::class, 'darBaja'])
-        ->name('altas.baja');
+        // Consolidado de Asistencia
+        Route::post('instituciones/{institucione}/consolidado-asistencia/procesar', [ConsolidadoAsistenciaController::class, 'procesar'])
+            ->name('instituciones.consolidado-asistencia.procesar');
+        Route::post('instituciones/{institucione}/consolidado-asistencia/reprocesar-trabajador', [ConsolidadoAsistenciaController::class, 'reprocesarTrabajador'])
+            ->name('instituciones.consolidado-asistencia.reprocesar-trabajador');
+        Route::get('instituciones/{institucione}/consolidado-asistencia/consultar', [ConsolidadoAsistenciaController::class, 'consultar'])
+            ->name('instituciones.consolidado-asistencia.consultar');
+        Route::get('consolidado-asistencia/{asistencia}/detalle', [ConsolidadoAsistenciaController::class, 'detalle'])
+            ->name('consolidado-asistencia.detalle');
 
-    Route::resource('instituciones', InstitucionEducativaController::class)
-        ->except(['create', 'edit'])
-        ->parameters(['instituciones' => 'institucione']);
+        // Reportes PDF de asistencia
+        Route::get('instituciones/{institucione}/consolidado-asistencia/reporte1', [ConsolidadoAsistenciaController::class, 'reporte1'])
+            ->name('instituciones.consolidado-asistencia.reporte1');
+        Route::get('instituciones/{institucione}/consolidado-asistencia/reporte2', [ConsolidadoAsistenciaController::class, 'reporte2'])
+            ->name('instituciones.consolidado-asistencia.reporte2');
+    });
+    Route::middleware('permiso:instituciones.crear')->group(function () {
+        Route::resource('instituciones', InstitucionEducativaController::class)
+            ->only(['store'])
+            ->parameters(['instituciones' => 'institucione']);
+        Route::post('instituciones-masivas', [InstitucionEducativaMasivaController::class, 'store'])
+            ->name('instituciones.masivo.store');
+    });
+    Route::middleware('permiso:instituciones.editar')->group(function () {
+        Route::resource('instituciones', InstitucionEducativaController::class)
+            ->only(['update'])
+            ->parameters(['instituciones' => 'institucione']);
 
-    // Carga masiva de nuevas Instituciones Educativas
-    Route::post('instituciones-masivas', [InstitucionEducativaMasivaController::class, 'store'])
-        ->name('instituciones.masivo.store');
+        // Sub-recursos de IE: altas masivas, grados masivos, cursos masivos
+        Route::post('instituciones/{institucione}/altas-masivas', [AltaMasivaIEController::class, 'store'])
+            ->name('instituciones.altas-masivas.store');
+        Route::post('instituciones/{institucione}/grados-masivos', [GradosMasivaIEController::class, 'store'])
+            ->name('instituciones.grados-masivos.store');
+        Route::post('instituciones/{institucione}/cursos-masivos', [CursosMasivaIEController::class, 'store'])
+            ->name('instituciones.cursos-masivos.store');
 
-    // Tab Docentes/Personal de una IE (altas paginadas)
-    Route::get('instituciones/{institucione}/docentes', [InstitucionEducativaController::class, 'docentes'])
-        ->name('instituciones.docentes');
+        // Contacto de IE
+        Route::resource('instituciones.telefonos-ie', TelefonoIEController::class)
+            ->only(['store', 'update', 'destroy'])
+            ->shallow()
+            ->parameters(['instituciones' => 'institucione', 'telefonos-ie' => 'telefono']);
+        Route::patch('instituciones-telefonos/{telefono}/dar-de-baja', [TelefonoIEController::class, 'darDeBaja'])
+            ->name('instituciones.telefonos-ie.dar-de-baja');
 
-    // Carga masiva de altas para una IE
-    Route::post('instituciones/{institucione}/altas-masivas', [AltaMasivaIEController::class, 'store'])
-        ->name('instituciones.altas-masivas.store');
+        Route::resource('instituciones.emails-ie', EmailIEController::class)
+            ->only(['store', 'update', 'destroy'])
+            ->shallow()
+            ->parameters(['instituciones' => 'institucione', 'emails-ie' => 'email']);
+        Route::patch('instituciones-emails/{email}/dar-de-baja', [EmailIEController::class, 'darDeBaja'])
+            ->name('instituciones.emails-ie.dar-de-baja');
 
-    // Carga masiva de grados y secciones para una IE
-    Route::post('instituciones/{institucione}/grados-masivos', [GradosMasivaIEController::class, 'store'])
-        ->name('instituciones.grados-masivos.store');
+        Route::resource('instituciones.domicilios-ie', DomicilioIEController::class)
+            ->only(['store', 'update', 'destroy'])
+            ->shallow()
+            ->parameters(['instituciones' => 'institucione', 'domicilios-ie' => 'domicilio']);
+        Route::patch('instituciones-domicilios/{domicilio}/dar-de-baja', [DomicilioIEController::class, 'darDeBaja'])
+            ->name('instituciones.domicilios-ie.dar-de-baja');
 
-    // Carga masiva de cursos para una IE
-    Route::post('instituciones/{institucione}/cursos-masivos', [CursosMasivaIEController::class, 'store'])
-        ->name('instituciones.cursos-masivos.store');
+        // Días No Laborables por IE
+        Route::resource('instituciones.dias-no-laborables', DiasNoLaborablesController::class)
+            ->only(['store', 'update', 'destroy'])
+            ->shallow()
+            ->parameters(['instituciones' => 'institucione', 'dias-no-laborables' => 'diasNoLaborable']);
+        Route::get('instituciones/{institucione}/dias-no-laborables/generar-feriados', [DiasNoLaborablesController::class, 'generarFeriados'])
+            ->name('instituciones.dias-no-laborables.generar-feriados');
 
-    // Días No Laborables por IE
-    Route::resource('instituciones.dias-no-laborables', DiasNoLaborablesController::class)
-        ->only(['store', 'update', 'destroy'])
-        ->shallow()
-        ->parameters(['instituciones' => 'institucione', 'dias-no-laborables' => 'diasNoLaborable']);
+        // Cursos, grados, secciones
+        Route::resource('instituciones.cursos', CursoIEController::class)
+            ->only(['store', 'update', 'destroy'])
+            ->shallow()
+            ->parameters(['instituciones' => 'institucione']);
+        Route::resource('instituciones.grados', GradoIEController::class)
+            ->only(['store', 'update', 'destroy'])
+            ->shallow()
+            ->parameters(['instituciones' => 'institucione']);
+        Route::resource('grados.secciones', SeccionIEController::class)
+            ->only(['store', 'update', 'destroy'])
+            ->shallow();
+    });
+    Route::middleware('permiso:instituciones.eliminar')->group(function () {
+        Route::resource('instituciones', InstitucionEducativaController::class)
+            ->only(['destroy'])
+            ->parameters(['instituciones' => 'institucione']);
+    });
 
-    Route::get('instituciones/{institucione}/dias-no-laborables/generar-feriados', [DiasNoLaborablesController::class, 'generarFeriados'])
-        ->name('instituciones.dias-no-laborables.generar-feriados');
+    // ── Infraestructura ──────────────────────────────────────────────────────
+    Route::middleware('permiso:infraestructura.ver')->group(function () {
+        Route::resource('locales', LocalController::class)
+            ->only(['index'])
+            ->parameters(['locales' => 'local']);
+        Route::resource('dispositivos-marca', DispositivoMarcaController::class)
+            ->only(['index'])
+            ->parameters(['dispositivos-marca' => 'dispositivosMarca']);
+    });
+    Route::middleware('permiso:infraestructura.crear,infraestructura.editar')->group(function () {
+        Route::resource('locales', LocalController::class)
+            ->only(['store', 'update'])
+            ->parameters(['locales' => 'local']);
+        Route::resource('dispositivos-marca', DispositivoMarcaController::class)
+            ->only(['store'])
+            ->parameters(['dispositivos-marca' => 'dispositivosMarca']);
 
-    Route::resource('instituciones.cursos', CursoIEController::class)
-        ->only(['store', 'update', 'destroy'])
-        ->shallow()
-        ->parameters(['instituciones' => 'institucione']);
+        Route::resource('instituciones.locales-ie', LocalInstEducController::class)
+            ->only(['store', 'destroy'])
+            ->shallow()
+            ->parameters(['instituciones' => 'institucione', 'locales-ie' => 'localesIe']);
 
-    Route::resource('instituciones.grados', GradoIEController::class)
-        ->only(['store', 'update', 'destroy'])
-        ->shallow()
-        ->parameters(['instituciones' => 'institucione']);
+        Route::resource('locales-ie.relojes', RelojController::class)
+            ->only(['store', 'update', 'destroy'])
+            ->shallow()
+            ->parameters(['locales-ie' => 'localesIe', 'relojes' => 'reloje']);
 
-    Route::resource('grados.secciones', SeccionIEController::class)
-        ->only(['store', 'update', 'destroy'])
-        ->shallow();
+        Route::post('locales-ie/{localesIe}/relojes-masivos', [RelojesMasivaController::class, 'store'])
+            ->name('locales-ie.relojes-masivos.store');
 
-    // Infraestructura — Recursos independientes
-    Route::resource('locales', LocalController::class)
-        ->only(['index', 'store', 'update', 'destroy'])
-        ->parameters(['locales' => 'local']);
+        Route::post('marcaciones/cargar-excel', [CargaMarcacionesController::class, 'store'])
+            ->name('marcaciones.cargar-excel');
 
-    Route::resource('dispositivos-marca', DispositivoMarcaController::class)
-        ->only(['index', 'store', 'destroy'])
-        ->parameters(['dispositivos-marca' => 'dispositivosMarca']);
+        Route::resource('locales-ie.marcaciones-local', LocalMarcacionController::class)
+            ->only(['store', 'destroy'])
+            ->shallow()
+            ->parameters(['locales-ie' => 'localesIe', 'marcaciones-local' => 'marcacionesLocal']);
+    });
+    Route::middleware('permiso:infraestructura.eliminar')->group(function () {
+        Route::resource('locales', LocalController::class)
+            ->only(['destroy'])
+            ->parameters(['locales' => 'local']);
+        Route::resource('dispositivos-marca', DispositivoMarcaController::class)
+            ->only(['destroy'])
+            ->parameters(['dispositivos-marca' => 'dispositivosMarca']);
+    });
 
-    // Infraestructura — Sub-recursos de IE
-    Route::resource('instituciones.locales-ie', LocalInstEducController::class)
-        ->only(['store', 'destroy'])
-        ->shallow()
-        ->parameters(['instituciones' => 'institucione', 'locales-ie' => 'localesIe']);
+    // ── Horarios ─────────────────────────────────────────────────────────────
+    Route::middleware('permiso:horarios.ver')->group(function () {
+        Route::resource('horarios-cursos', HorarioCursoController::class)
+            ->only(['index'])
+            ->parameters(['horarios-cursos' => 'horarioCurso']);
 
-    Route::resource('locales-ie.relojes', RelojController::class)
-        ->only(['store', 'update', 'destroy'])
-        ->shallow()
-        ->parameters(['locales-ie' => 'localesIe', 'relojes' => 'reloje']);
+        Route::resource('horarios-trabajador', HorarioTrabajadorController::class)
+            ->only(['index', 'show'])
+            ->parameters(['horarios-trabajador' => 'horarioTrabajador']);
+    });
+    Route::middleware('permiso:horarios.crear,horarios.editar')->group(function () {
+        Route::resource('horarios-cursos', HorarioCursoController::class)
+            ->only(['store', 'update'])
+            ->parameters(['horarios-cursos' => 'horarioCurso']);
 
-    // Carga masiva de relojes para un local de IE
-    Route::post('locales-ie/{localesIe}/relojes-masivos', [RelojesMasivaController::class, 'store'])
-        ->name('locales-ie.relojes-masivos.store');
+        Route::post('horarios-masivos', [HorarioMasivoController::class, 'store'])
+            ->name('horarios-masivos.store');
 
-    Route::resource('locales-ie.marcaciones-local', LocalMarcacionController::class)
-        ->only(['store', 'destroy'])
-        ->shallow()
-        ->parameters(['locales-ie' => 'localesIe', 'marcaciones-local' => 'marcacionesLocal']);
+        Route::resource('horarios-cursos.cargas', CargaHorariaController::class)
+            ->only(['store', 'update', 'destroy'])
+            ->shallow()
+            ->parameters(['horarios-cursos' => 'horarioCurso', 'cargas' => 'cargaHoraria']);
 
-    Route::resource('horarios-cursos', HorarioCursoController::class)
-        ->only(['index', 'store', 'update', 'destroy'])
-        ->parameters(['horarios-cursos' => 'horarioCurso']);
+        // Crear / actualizar horario manual (administrativo) para trabajadores sin cursos
+        Route::post('horarios-trabajador/manual', [
+            HorarioTrabajadorController::class, 'storeManual',
+        ])->name('horarios-trabajador.manual.store');
 
-    // Carga masiva de horarios (crear + editar + asignar docente en lote)
-    Route::post('horarios-masivos', [HorarioMasivoController::class, 'store'])
-        ->name('horarios-masivos.store');
+    });
+    Route::middleware('permiso:horarios.eliminar')->group(function () {
+        Route::resource('horarios-cursos', HorarioCursoController::class)
+            ->only(['destroy'])
+            ->parameters(['horarios-cursos' => 'horarioCurso']);
+    });
 
-    Route::resource('horarios-cursos.cargas', CargaHorariaController::class)
-        ->only(['store', 'update', 'destroy'])
-        ->shallow()
-        ->parameters(['horarios-cursos' => 'horarioCurso', 'cargas' => 'cargaHoraria']);
+    // ── Trámites: Expedientes ────────────────────────────────────────────────
+    Route::middleware('permiso:tramites.ver')->group(function () {
+        Route::resource('expedientes', ExpedienteController::class)
+            ->only(['index']);
 
-    Route::resource('horarios-trabajador', HorarioTrabajadorController::class)
-        ->only(['index', 'show'])
-        ->parameters(['horarios-trabajador' => 'horarioTrabajador']);
+        Route::get('documentos-tram/{documentoTram}/descargar', [ExpedienteController::class, 'descargarDocumento'])
+            ->name('documentos-tram.descargar');
+    });
+    Route::middleware('permiso:tramites.crear')->group(function () {
+        Route::resource('expedientes', ExpedienteController::class)
+            ->only(['store']);
+    });
+    Route::middleware('permiso:tramites.anular')->group(function () {
+        Route::post('expedientes/{expediente}/anular', [ExpedienteController::class, 'anular'])
+            ->name('expedientes.anular');
+    });
 
-    // API: listar todos los horarios activos de un trabajador (para el tab Horarios en Show)
-    Route::get('trabajadores/{trabajador}/horarios', [HorarioTrabajadorController::class, 'porTrabajador'])
-        ->name('trabajadores.horarios');
-
-    // ── Trámite: Solicitudes de Permiso ──────────────────────────────────────
-    // Listado para el tab Permisos del trabajador
-    Route::get('trabajadores/{trabajador}/permisos', [PermisoController::class, 'porTrabajador'])
-        ->name('trabajadores.permisos');
-
-    // Listado paginado para el tab Permisos de una IE
-    Route::get('instituciones/{institucione}/permisos', [PermisoController::class, 'porInstitucion'])
-        ->name('instituciones.permisos');
-
-    // Altas activas de una IE (opciones del select al crear desde la IE)
-    Route::get('instituciones/{institucione}/permisos-altas', [PermisoController::class, 'altasPorInstitucion'])
-        ->name('instituciones.permisos.altas');
-
-    // Crear solicitud de permiso (expediente + sustento + detalle)
-    Route::post('permisos', [PermisoController::class, 'store'])->name('permisos.store');
-
-    // Validar (aprobar/rechazar) una solicitud — pestaña de la IE
-    Route::post('permisos/{expediente}/validar', [PermisoController::class, 'validar'])
-        ->name('permisos.validar');
-
-    // Anular una solicitud pendiente
-    Route::post('permisos/{expediente}/anular', [PermisoController::class, 'anular'])
-        ->name('permisos.anular');
-
-    // Descargar el documento de sustento
-    Route::get('documentos-tram/{documentoTram}/descargar', [PermisoController::class, 'descargarSustento'])
-        ->name('documentos-tram.descargar');
 });
 
 require __DIR__.'/settings.php';

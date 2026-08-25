@@ -30,20 +30,20 @@ class CargaHorariaService
     /**
      * Asignar un docente a un horario de curso y regenerar su horario de entrada/salida.
      */
-    public function asignar(CreateCargaHorariaDTO $dto): ConasisCargaHoraria
+    public function asignar(CreateCargaHorariaDTO $dto, ?int $turnoId = null): ConasisCargaHoraria
     {
-        return DB::transaction(function () use ($dto) {
+        return DB::transaction(function () use ($dto, $turnoId) {
             $carga = ConasisCargaHoraria::create($dto->toArray());
 
-            // Obtener el horario del curso y la IE ID
             $horarioCurso = $carga->horarioCurso;
             $ieId = $horarioCurso->seccion->grado->institucionEduc_id;
+            $turnosPorDia = $turnoId ? [$horarioCurso->nroDia => $turnoId] : [];
 
-            // Regenerar el horario del docente asignado
             $this->horarioTrabajadorService->regenerarDesdeCargas(
                 $carga->trabajador_id,
                 $horarioCurso->anio,
-                $ieId
+                $ieId,
+                $turnosPorDia,
             );
 
             return $carga;
@@ -54,12 +54,13 @@ class CargaHorariaService
      * Actualizar la asignación de un docente (cambiar trabajador, alta, fechas, condición).
      * Si cambia el trabajador, regenera el horario del anterior y del nuevo.
      */
-    public function actualizar(ConasisCargaHoraria $cargaHoraria, CreateCargaHorariaDTO $dto): ConasisCargaHoraria
+    public function actualizar(ConasisCargaHoraria $cargaHoraria, CreateCargaHorariaDTO $dto, ?int $turnoId = null): ConasisCargaHoraria
     {
-        return DB::transaction(function () use ($cargaHoraria, $dto) {
+        return DB::transaction(function () use ($cargaHoraria, $dto, $turnoId) {
             $anteriorTrabajadorId = $cargaHoraria->trabajador_id;
             $horarioCurso = $cargaHoraria->horarioCurso;
             $ieId = $horarioCurso->seccion->grado->institucionEduc_id;
+            $turnosPorDia = $turnoId ? [$horarioCurso->nroDia => $turnoId] : [];
 
             $cargaHoraria->update([
                 'trabajador_id' => $dto->trabajador_id,
@@ -69,20 +70,20 @@ class CargaHorariaService
                 'titularSuplencia' => $dto->titularSuplencia,
             ]);
 
-            // Regenerar horario del trabajador anterior si cambió
             if ($anteriorTrabajadorId !== $dto->trabajador_id) {
                 $this->horarioTrabajadorService->regenerarDesdeCargas(
                     $anteriorTrabajadorId,
                     $horarioCurso->anio,
-                    $ieId
+                    $ieId,
+                    $turnosPorDia,
                 );
             }
 
-            // Regenerar horario del trabajador actual (nuevo o mismo)
             $this->horarioTrabajadorService->regenerarDesdeCargas(
                 $dto->trabajador_id,
                 $horarioCurso->anio,
-                $ieId
+                $ieId,
+                $turnosPorDia,
             );
 
             return $cargaHoraria->fresh();

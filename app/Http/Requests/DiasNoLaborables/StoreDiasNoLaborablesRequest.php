@@ -17,11 +17,11 @@ class StoreDiasNoLaborablesRequest extends FormRequest
     {
         return [
             'institucionEduc_id' => ['required', 'integer', 'exists:t_institucionesEduc,id'],
-            'fecha'              => ['required', 'date'],
-            'feriado_id'         => ['nullable', 'integer', 'exists:param.t00_feriados,id'],
-            'observacion'        => ['nullable', 'string', 'max:200'],
-            'nacionalLocal'      => ['nullable', 'string', 'in:N,L'],
-            'recuperable'        => ['nullable', 'string', 'in:S,N'],
+            'fecha' => ['required', 'date'],
+            'feriado_id' => ['nullable', 'integer', 'exists:t00_feriados,id'],
+            'observacion' => ['nullable', 'string', 'max:200'],
+            'nacionalLocal' => ['nullable', 'string', 'in:N,L'],
+            'recuperable' => ['nullable', 'string', 'in:S,N'],
         ];
     }
 
@@ -29,10 +29,10 @@ class StoreDiasNoLaborablesRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'fecha.required'              => 'La fecha es obligatoria.',
-            'fecha.date'                  => 'La fecha no tiene un formato válido.',
+            'fecha.required' => 'La fecha es obligatoria.',
+            'fecha.date' => 'La fecha no tiene un formato válido.',
             'institucionEduc_id.required' => 'La institución educativa es obligatoria.',
-            'institucionEduc_id.exists'   => 'La institución educativa no existe.',
+            'institucionEduc_id.exists' => 'La institución educativa no existe.',
         ];
     }
 
@@ -40,11 +40,11 @@ class StoreDiasNoLaborablesRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'fecha'         => 'fecha',
-            'feriado_id'    => 'feriado',
-            'observacion'   => 'observación',
+            'fecha' => 'fecha',
+            'feriado_id' => 'feriado',
+            'observacion' => 'observación',
             'nacionalLocal' => 'ámbito',
-            'recuperable'   => 'recuperable',
+            'recuperable' => 'recuperable',
         ];
     }
 

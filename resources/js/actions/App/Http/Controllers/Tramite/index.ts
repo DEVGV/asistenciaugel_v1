@@ -1,7 +1,7 @@
-import PermisoController from './PermisoController'
+import ExpedienteController from './ExpedienteController'
 
 const Tramite = {
-    PermisoController: Object.assign(PermisoController, PermisoController),
+    ExpedienteController: Object.assign(ExpedienteController, ExpedienteController),
 }
 
 export default Tramite

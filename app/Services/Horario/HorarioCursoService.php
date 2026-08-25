@@ -30,6 +30,7 @@ class HorarioCursoService
                 'cargas.trabajador.altas' => function ($q) {
                     $q->whereNull('fechaBaja')->with(['cargo', 'institucionEducativa']);
                 },
+                'detallesIni:id,horarioCursoIni_id,turno_id,nombreTurno',
             ])
             ->where('seccion_id', $seccionId)
             ->where('anio', $anio)
@@ -47,20 +48,22 @@ class HorarioCursoService
     /**
      * Actualizar un horario de curso existente y regenerar el horario del docente asignado.
      */
-    public function actualizar(ConasisHorariosCursos $horarioCurso, UpdateHorarioCursoDTO $dto): bool
+    public function actualizar(ConasisHorariosCursos $horarioCurso, UpdateHorarioCursoDTO $dto, ?int $turnoId = null): bool
     {
-        return DB::transaction(function () use ($horarioCurso, $dto) {
+        return DB::transaction(function () use ($horarioCurso, $dto, $turnoId) {
             $updated = $horarioCurso->update($dto->toArray());
 
             if ($updated) {
-                // Si este horario de curso tiene una carga horaria (docente asignado), regenerar su horario
                 $cargas = ConasisCargaHoraria::where('horarioCurso_id', $horarioCurso->id)->get();
+                $turnosPorDia = $turnoId ? [$horarioCurso->nroDia => $turnoId] : [];
+
                 foreach ($cargas as $carga) {
                     $ieId = $horarioCurso->seccion->grado->institucionEduc_id;
                     $this->horarioTrabajadorService->regenerarDesdeCargas(
                         $carga->trabajador_id,
                         $horarioCurso->anio,
-                        $ieId
+                        $ieId,
+                        $turnosPorDia,
                     );
                 }
             }

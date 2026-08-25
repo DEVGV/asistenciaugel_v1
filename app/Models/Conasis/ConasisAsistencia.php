@@ -34,6 +34,8 @@ class ConasisAsistencia extends Model
         'ndias_extra',
         'nhoras_extra',
         'nnimu_extra',
+        'fechaDesde',
+        'fechaHasta',
         'estadoUltim_id',
         'created_by',
     ];

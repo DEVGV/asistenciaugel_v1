@@ -286,6 +286,7 @@ async function handleHorarioSubmit(data: any) {
                     titularSuplencia: data.titularSuplencia ?? 'T',
                     fechaInicio: data.fechaInicioDocente ?? null,
                     fechaFin: data.fechaFinDocente ?? null,
+                    turno_id: data.turno_id ?? null,
                 }),
             });
 

@@ -20,8 +20,6 @@ class ConasisHorariosCursos extends Model
         'curso_id',
         'diaSemana',
         'nroDia',
-        'turno_id',
-        'nombreTurno',
         'horaInicio',
         'horaFin',
         'minAcum',
@@ -41,5 +39,11 @@ class ConasisHorariosCursos extends Model
     public function cargas(): HasMany
     {
         return $this->hasMany(ConasisCargaHoraria::class, 'horarioCurso_id');
+    }
+
+    /** Detalles de horario donde este curso es el de inicio del día */
+    public function detallesIni(): HasMany
+    {
+        return $this->hasMany(ConasisDetalleHorarios::class, 'horarioCursoIni_id');
     }
 }

@@ -253,7 +253,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\Horario\HorarioCursoController::destroy
-* @see app/Http/Controllers/Horario/HorarioCursoController.php:51
+* @see app/Http/Controllers/Horario/HorarioCursoController.php:52
 * @route '/horarios-cursos/{horarioCurso}'
 */
 export const destroy = (args: { horarioCurso: number | { id: number } } | [horarioCurso: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -268,7 +268,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Horario\HorarioCursoController::destroy
-* @see app/Http/Controllers/Horario/HorarioCursoController.php:51
+* @see app/Http/Controllers/Horario/HorarioCursoController.php:52
 * @route '/horarios-cursos/{horarioCurso}'
 */
 destroy.url = (args: { horarioCurso: number | { id: number } } | [horarioCurso: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -301,7 +301,7 @@ destroy.url = (args: { horarioCurso: number | { id: number } } | [horarioCurso: 
 
 /**
 * @see \App\Http\Controllers\Horario\HorarioCursoController::destroy
-* @see app/Http/Controllers/Horario/HorarioCursoController.php:51
+* @see app/Http/Controllers/Horario/HorarioCursoController.php:52
 * @route '/horarios-cursos/{horarioCurso}'
 */
 destroy.delete = (args: { horarioCurso: number | { id: number } } | [horarioCurso: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -311,7 +311,7 @@ destroy.delete = (args: { horarioCurso: number | { id: number } } | [horarioCurs
 
 /**
 * @see \App\Http\Controllers\Horario\HorarioCursoController::destroy
-* @see app/Http/Controllers/Horario/HorarioCursoController.php:51
+* @see app/Http/Controllers/Horario/HorarioCursoController.php:52
 * @route '/horarios-cursos/{horarioCurso}'
 */
 const destroyForm = (args: { horarioCurso: number | { id: number } } | [horarioCurso: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -326,7 +326,7 @@ const destroyForm = (args: { horarioCurso: number | { id: number } } | [horarioC
 
 /**
 * @see \App\Http\Controllers\Horario\HorarioCursoController::destroy
-* @see app/Http/Controllers/Horario/HorarioCursoController.php:51
+* @see app/Http/Controllers/Horario/HorarioCursoController.php:52
 * @route '/horarios-cursos/{horarioCurso}'
 */
 destroyForm.delete = (args: { horarioCurso: number | { id: number } } | [horarioCurso: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

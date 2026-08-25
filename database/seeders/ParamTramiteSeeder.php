@@ -15,10 +15,11 @@ class ParamTramiteSeeder extends Seeder
     public function run(): void
     {
         $estados = [
-            ['codigo' => 'PEN', 'nombre' => 'Pendiente', 'abreviatura' => 'PEND'],
-            ['codigo' => 'VAL', 'nombre' => 'Validado', 'abreviatura' => 'VALI'],
-            ['codigo' => 'REC', 'nombre' => 'Rechazado', 'abreviatura' => 'RECH'],
-            ['codigo' => 'ANU', 'nombre' => 'Anulado', 'abreviatura' => 'ANUL'],
+            ['codigo' => '1', 'nombre' => 'REGISTRADO', 'abreviatura' => 'REGISTRADO'],
+            ['codigo' => '2', 'nombre' => 'APROBADO', 'abreviatura' => 'APROBADO'],
+            ['codigo' => '3', 'nombre' => 'RECHAZADO', 'abreviatura' => 'RECHAZADO'],
+            ['codigo' => '4', 'nombre' => 'AUTORIZADO', 'abreviatura' => 'AUTORIZADO'],
+            ['codigo' => '5', 'nombre' => 'ANULADO', 'abreviatura' => 'ANULADO'],
         ];
 
         foreach ($estados as $estado) {

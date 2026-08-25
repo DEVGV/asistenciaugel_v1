@@ -23,10 +23,10 @@ defineProps<{
     items: NavItem[];
 }>();
 
-const { isCurrentUrl } = useCurrentUrl();
+const { isCurrentUrl, isCurrentOrParentUrl } = useCurrentUrl();
 
 const isMainActive = (item: NavItem) => {
-    if (isCurrentUrl(item.href)) {
+    if (isCurrentOrParentUrl(item.href)) {
         return true;
     }
 
@@ -131,7 +131,7 @@ const isMainActive = (item: NavItem) => {
                 <SidebarMenuItem v-else>
                     <SidebarMenuButton
                         as-child
-                        :is-active="isCurrentUrl(item.href)"
+                        :is-active="isCurrentOrParentUrl(item.href)"
                         :tooltip="item.title"
                     >
                         <Link :href="item.href">
@@ -139,7 +139,7 @@ const isMainActive = (item: NavItem) => {
                                 :is="item.icon"
                                 v-if="item.icon"
                                 :class="
-                                    isCurrentUrl(item.href)
+                                    isCurrentOrParentUrl(item.href)
                                         ? 'scale-105 text-primary'
                                         : 'text-sidebar-foreground/60'
                                 "
@@ -147,7 +147,7 @@ const isMainActive = (item: NavItem) => {
                             />
                             <span
                                 :class="
-                                    isCurrentUrl(item.href)
+                                    isCurrentOrParentUrl(item.href)
                                         ? 'font-semibold text-foreground'
                                         : 'text-sidebar-foreground/80'
                                 "

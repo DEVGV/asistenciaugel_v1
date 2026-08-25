@@ -190,7 +190,7 @@ function selectItem(item: ZonaSimple) {
             <!-- Dropdown Menu -->
             <div
                 v-if="isOpen"
-                class="absolute z-50 mt-1 w-full animate-in overflow-hidden rounded-md border bg-background text-sm shadow-lg fade-in-0 zoom-in-95"
+                class="absolute left-0 right-0 z-50 mt-1 w-full animate-in overflow-hidden rounded-md border bg-background text-sm shadow-lg fade-in-0 zoom-in-95"
             >
                 <!-- Search Input -->
                 <div class="flex items-center border-b px-3">
@@ -241,12 +241,12 @@ function selectItem(item: ZonaSimple) {
                             <Check class="h-4 w-4" />
                         </span>
                         <div class="flex flex-col gap-0.5">
-                            <span class="line-clamp-1 font-medium">{{
+                            <span class="break-words whitespace-normal font-medium">{{
                                 item.nombre
                             }}</span>
                             <span
                                 v-if="item.abreviatura"
-                                class="text-[11px] text-muted-foreground"
+                                class="text-[11px] text-muted-foreground break-words whitespace-normal"
                                 >{{ item.abreviatura }}</span
                             >
                         </div>

@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Persona\EmailController::store
-* @see app/Http/Controllers/Persona/EmailController.php:18
+* @see app/Http/Controllers/Persona/EmailController.php:27
 * @route '/personas/{persona}/emails'
 */
 export const store = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::store
-* @see app/Http/Controllers/Persona/EmailController.php:18
+* @see app/Http/Controllers/Persona/EmailController.php:27
 * @route '/personas/{persona}/emails'
 */
 store.url = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ store.url = (args: { persona: string | number | { id: string | number } } | [per
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::store
-* @see app/Http/Controllers/Persona/EmailController.php:18
+* @see app/Http/Controllers/Persona/EmailController.php:27
 * @route '/personas/{persona}/emails'
 */
 store.post = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -59,7 +59,7 @@ store.post = (args: { persona: string | number | { id: string | number } } | [pe
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::store
-* @see app/Http/Controllers/Persona/EmailController.php:18
+* @see app/Http/Controllers/Persona/EmailController.php:27
 * @route '/personas/{persona}/emails'
 */
 const storeForm = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -69,7 +69,7 @@ const storeForm = (args: { persona: string | number | { id: string | number } } 
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::store
-* @see app/Http/Controllers/Persona/EmailController.php:18
+* @see app/Http/Controllers/Persona/EmailController.php:27
 * @route '/personas/{persona}/emails'
 */
 storeForm.post = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

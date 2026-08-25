@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::store
-* @see app/Http/Controllers/Persona/TelefonoController.php:18
+* @see app/Http/Controllers/Persona/TelefonoController.php:27
 * @route '/personas/{persona}/telefonos'
 */
 export const store = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::store
-* @see app/Http/Controllers/Persona/TelefonoController.php:18
+* @see app/Http/Controllers/Persona/TelefonoController.php:27
 * @route '/personas/{persona}/telefonos'
 */
 store.url = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ store.url = (args: { persona: string | number | { id: string | number } } | [per
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::store
-* @see app/Http/Controllers/Persona/TelefonoController.php:18
+* @see app/Http/Controllers/Persona/TelefonoController.php:27
 * @route '/personas/{persona}/telefonos'
 */
 store.post = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -59,7 +59,7 @@ store.post = (args: { persona: string | number | { id: string | number } } | [pe
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::store
-* @see app/Http/Controllers/Persona/TelefonoController.php:18
+* @see app/Http/Controllers/Persona/TelefonoController.php:27
 * @route '/personas/{persona}/telefonos'
 */
 const storeForm = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -69,7 +69,7 @@ const storeForm = (args: { persona: string | number | { id: string | number } } 
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::store
-* @see app/Http/Controllers/Persona/TelefonoController.php:18
+* @see app/Http/Controllers/Persona/TelefonoController.php:27
 * @route '/personas/{persona}/telefonos'
 */
 storeForm.post = (args: { persona: string | number | { id: string | number } } | [persona: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -81,7 +81,7 @@ store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::update
-* @see app/Http/Controllers/Persona/TelefonoController.php:26
+* @see app/Http/Controllers/Persona/TelefonoController.php:34
 * @route '/telefonos/{telefono}'
 */
 export const update = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -96,7 +96,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::update
-* @see app/Http/Controllers/Persona/TelefonoController.php:26
+* @see app/Http/Controllers/Persona/TelefonoController.php:34
 * @route '/telefonos/{telefono}'
 */
 update.url = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -129,7 +129,7 @@ update.url = (args: { telefono: string | number | { id: string | number } } | [t
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::update
-* @see app/Http/Controllers/Persona/TelefonoController.php:26
+* @see app/Http/Controllers/Persona/TelefonoController.php:34
 * @route '/telefonos/{telefono}'
 */
 update.put = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -139,7 +139,7 @@ update.put = (args: { telefono: string | number | { id: string | number } } | [t
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::update
-* @see app/Http/Controllers/Persona/TelefonoController.php:26
+* @see app/Http/Controllers/Persona/TelefonoController.php:34
 * @route '/telefonos/{telefono}'
 */
 update.patch = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -149,7 +149,7 @@ update.patch = (args: { telefono: string | number | { id: string | number } } | 
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::update
-* @see app/Http/Controllers/Persona/TelefonoController.php:26
+* @see app/Http/Controllers/Persona/TelefonoController.php:34
 * @route '/telefonos/{telefono}'
 */
 const updateForm = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -164,7 +164,7 @@ const updateForm = (args: { telefono: string | number | { id: string | number } 
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::update
-* @see app/Http/Controllers/Persona/TelefonoController.php:26
+* @see app/Http/Controllers/Persona/TelefonoController.php:34
 * @route '/telefonos/{telefono}'
 */
 updateForm.put = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -179,7 +179,7 @@ updateForm.put = (args: { telefono: string | number | { id: string | number } } 
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::update
-* @see app/Http/Controllers/Persona/TelefonoController.php:26
+* @see app/Http/Controllers/Persona/TelefonoController.php:34
 * @route '/telefonos/{telefono}'
 */
 updateForm.patch = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -196,7 +196,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::destroy
-* @see app/Http/Controllers/Persona/TelefonoController.php:42
+* @see app/Http/Controllers/Persona/TelefonoController.php:48
 * @route '/telefonos/{telefono}'
 */
 export const destroy = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -211,7 +211,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::destroy
-* @see app/Http/Controllers/Persona/TelefonoController.php:42
+* @see app/Http/Controllers/Persona/TelefonoController.php:48
 * @route '/telefonos/{telefono}'
 */
 destroy.url = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -244,7 +244,7 @@ destroy.url = (args: { telefono: string | number | { id: string | number } } | [
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::destroy
-* @see app/Http/Controllers/Persona/TelefonoController.php:42
+* @see app/Http/Controllers/Persona/TelefonoController.php:48
 * @route '/telefonos/{telefono}'
 */
 destroy.delete = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -254,7 +254,7 @@ destroy.delete = (args: { telefono: string | number | { id: string | number } } 
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::destroy
-* @see app/Http/Controllers/Persona/TelefonoController.php:42
+* @see app/Http/Controllers/Persona/TelefonoController.php:48
 * @route '/telefonos/{telefono}'
 */
 const destroyForm = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -269,7 +269,7 @@ const destroyForm = (args: { telefono: string | number | { id: string | number }
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::destroy
-* @see app/Http/Controllers/Persona/TelefonoController.php:42
+* @see app/Http/Controllers/Persona/TelefonoController.php:48
 * @route '/telefonos/{telefono}'
 */
 destroyForm.delete = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -286,7 +286,7 @@ destroy.form = destroyForm
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::darDeBaja
-* @see app/Http/Controllers/Persona/TelefonoController.php:34
+* @see app/Http/Controllers/Persona/TelefonoController.php:41
 * @route '/telefonos/{telefono}/dar-de-baja'
 */
 export const darDeBaja = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -301,7 +301,7 @@ darDeBaja.definition = {
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::darDeBaja
-* @see app/Http/Controllers/Persona/TelefonoController.php:34
+* @see app/Http/Controllers/Persona/TelefonoController.php:41
 * @route '/telefonos/{telefono}/dar-de-baja'
 */
 darDeBaja.url = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -334,7 +334,7 @@ darDeBaja.url = (args: { telefono: string | number | { id: string | number } } |
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::darDeBaja
-* @see app/Http/Controllers/Persona/TelefonoController.php:34
+* @see app/Http/Controllers/Persona/TelefonoController.php:41
 * @route '/telefonos/{telefono}/dar-de-baja'
 */
 darDeBaja.patch = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -344,7 +344,7 @@ darDeBaja.patch = (args: { telefono: string | number | { id: string | number } }
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::darDeBaja
-* @see app/Http/Controllers/Persona/TelefonoController.php:34
+* @see app/Http/Controllers/Persona/TelefonoController.php:41
 * @route '/telefonos/{telefono}/dar-de-baja'
 */
 const darDeBajaForm = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -359,7 +359,7 @@ const darDeBajaForm = (args: { telefono: string | number | { id: string | number
 
 /**
 * @see \App\Http\Controllers\Persona\TelefonoController::darDeBaja
-* @see app/Http/Controllers/Persona/TelefonoController.php:34
+* @see app/Http/Controllers/Persona/TelefonoController.php:41
 * @route '/telefonos/{telefono}/dar-de-baja'
 */
 darDeBajaForm.patch = (args: { telefono: string | number | { id: string | number } } | [telefono: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

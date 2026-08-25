@@ -15,36 +15,41 @@ class DomicilioController extends Controller
         private DomicilioService $domicilioService,
     ) {}
 
+    private function redirectToTrabajador(Personas $persona, string $message): RedirectResponse
+    {
+        $trabajador = $persona->trabajador;
+
+        return $trabajador
+            ? redirect()->route('trabajadores.show', $trabajador)->with('success', $message)
+            : redirect()->route('trabajadores.index')->with('success', $message);
+    }
+
     public function store(StoreDomicilioRequest $request, Personas $persona): RedirectResponse
     {
         $this->domicilioService->crear($persona, $request->toDTO());
 
-        return redirect()->route('personas.show', $persona)
-            ->with('success', 'Domicilio agregado exitosamente.');
+        return $this->redirectToTrabajador($persona, 'Domicilio agregado exitosamente.');
     }
 
     public function update(StoreDomicilioRequest $request, Domicilios $domicilio): RedirectResponse
     {
         $this->domicilioService->actualizar($domicilio, $request->toDTO());
 
-        return redirect()->route('personas.show', $domicilio->persona_id)
-            ->with('success', 'Domicilio actualizado exitosamente.');
+        return $this->redirectToTrabajador($domicilio->persona, 'Domicilio actualizado exitosamente.');
     }
 
     public function darDeBaja(Domicilios $domicilio): RedirectResponse
     {
         $this->domicilioService->darDeBaja($domicilio);
 
-        return redirect()->route('personas.show', $domicilio->persona_id)
-            ->with('success', 'Domicilio dado de baja exitosamente.');
+        return $this->redirectToTrabajador($domicilio->persona, 'Domicilio dado de baja exitosamente.');
     }
 
     public function destroy(Domicilios $domicilio): RedirectResponse
     {
-        $personaId = $domicilio->persona_id;
+        $persona = $domicilio->persona;
         $this->domicilioService->eliminar($domicilio);
 
-        return redirect()->route('personas.show', $personaId)
-            ->with('success', 'Domicilio eliminado exitosamente.');
+        return $this->redirectToTrabajador($persona, 'Domicilio eliminado exitosamente.');
     }
 }

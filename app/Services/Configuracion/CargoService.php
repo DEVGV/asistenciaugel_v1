@@ -7,6 +7,7 @@ use App\DTOs\Configuracion\UpdateCargoDTO;
 use App\Models\Cargos;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
 
 class CargoService
 {
@@ -16,6 +17,7 @@ class CargoService
     public function listarPaginado(Request $request): LengthAwarePaginator
     {
         return Cargos::query()
+            ->with('rolTrabajador')
             ->when($request->search, function ($query, $search) {
                 $query->where('nombre', 'ilike', "%{$search}%")
                     ->orWhere('codigo', 'ilike', "%{$search}%");
@@ -26,16 +28,25 @@ class CargoService
 
     public function crear(CreateCargoDTO $dto): Cargos
     {
-        return Cargos::create($dto->toArray());
+        $cargo = Cargos::create($dto->toArray());
+        Cache::forget('param.cargos');
+
+        return $cargo;
     }
 
     public function actualizar(Cargos $cargo, UpdateCargoDTO $dto): bool
     {
-        return $cargo->update($dto->toArray());
+        $result = $cargo->update($dto->toArray());
+        Cache::forget('param.cargos');
+
+        return $result;
     }
 
     public function eliminar(Cargos $cargo): bool
     {
-        return $cargo->update(['activo' => false]);
+        $result = $cargo->update(['activo' => false]);
+        Cache::forget('param.cargos');
+
+        return $result;
     }
 }

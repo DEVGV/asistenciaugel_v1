@@ -58,6 +58,21 @@ class AdminSeeder extends Seeder
         );
         $trabajadorId = DB::table('t_trabajador')->where('persona_id', $persona->id)->value('id');
 
+        // 4b. Crear o actualizar la entidad UGEL (necesaria para el contexto del admin)
+        $tipoUgelId = DB::table('param.t00_tipoEntidad')->where('abreviatura', 'UGEL')->value('id') ?? 1;
+        DB::table('t_entidades')->updateOrInsert(
+            ['ruc' => '20453420520'],
+            [
+                'tipoEntidad_id' => $tipoUgelId,
+                'razonSocial' => 'UGEL CAJAMARCA',
+                'razonComercial' => 'UGEL CAJAMARCA',
+                'activo' => true,
+                'created_by' => 1,
+                'created_at' => now(),
+            ]
+        );
+        $ugelId = DB::table('t_entidades')->where('ruc', '20453420520')->value('id');
+
         // 5. Crear o actualizar los permisos por defecto
         $permisosData = [
             // Personas
@@ -84,15 +99,41 @@ class AdminSeeder extends Seeder
             ['codigo' => 'entidades.editar', 'modulo' => 'entidades', 'descripcion' => 'Editar entidades existentes'],
             ['codigo' => 'entidades.eliminar', 'modulo' => 'entidades', 'descripcion' => 'Desactivar entidades'],
 
+            // Horarios
+            ['codigo' => 'horarios.ver', 'modulo' => 'horarios', 'descripcion' => 'Ver horarios de cursos y trabajadores'],
+            ['codigo' => 'horarios.crear', 'modulo' => 'horarios', 'descripcion' => 'Crear y asignar horarios'],
+            ['codigo' => 'horarios.editar', 'modulo' => 'horarios', 'descripcion' => 'Editar horarios existentes'],
+            ['codigo' => 'horarios.eliminar', 'modulo' => 'horarios', 'descripcion' => 'Eliminar horarios'],
+
+            // Infraestructura (locales, relojes, dispositivos)
+            ['codigo' => 'infraestructura.ver', 'modulo' => 'infraestructura', 'descripcion' => 'Ver locales, relojes y dispositivos de marca'],
+            ['codigo' => 'infraestructura.crear', 'modulo' => 'infraestructura', 'descripcion' => 'Crear locales, relojes y dispositivos'],
+            ['codigo' => 'infraestructura.editar', 'modulo' => 'infraestructura', 'descripcion' => 'Editar locales y relojes'],
+            ['codigo' => 'infraestructura.eliminar', 'modulo' => 'infraestructura', 'descripcion' => 'Eliminar locales y relojes'],
+
             // Asistencia
             ['codigo' => 'asistencia.ver', 'modulo' => 'asistencia', 'descripcion' => 'Ver reporte de asistencia y marcaciones'],
             ['codigo' => 'asistencia.crear', 'modulo' => 'asistencia', 'descripcion' => 'Registrar/Importar marcaciones'],
             ['codigo' => 'asistencia.editar', 'modulo' => 'asistencia', 'descripcion' => 'Editar o justificar asistencia'],
+            ['codigo' => 'asistencia.consolidar', 'modulo' => 'asistencia', 'descripcion' => 'Consolidar asistencia mensual'],
+
+            // Trámites (expedientes, justificaciones, suspensiones)
+            ['codigo' => 'tramites.ver', 'modulo' => 'tramites', 'descripcion' => 'Ver expedientes y trámites'],
+            ['codigo' => 'tramites.crear', 'modulo' => 'tramites', 'descripcion' => 'Crear expedientes y documentos de trámite'],
+            ['codigo' => 'tramites.editar', 'modulo' => 'tramites', 'descripcion' => 'Editar expedientes y trámites'],
+            ['codigo' => 'tramites.anular', 'modulo' => 'tramites', 'descripcion' => 'Anular expedientes registrados'],
+
+            // Reportes
+            ['codigo' => 'reportes.ver', 'modulo' => 'reportes', 'descripcion' => 'Ver y descargar reportes del sistema'],
 
             // Configuración
             ['codigo' => 'configuracion.ver', 'modulo' => 'configuracion', 'descripcion' => 'Ver áreas, cargos, condiciones y zonas'],
             ['codigo' => 'configuracion.editar', 'modulo' => 'configuracion', 'descripcion' => 'Gestionar áreas, cargos, condiciones y zonas'],
             ['codigo' => 'usuarios.gestionar', 'modulo' => 'configuracion', 'descripcion' => 'Gestionar usuarios, perfiles y permisos'],
+
+            // Dashboard
+            ['codigo' => 'dashboard.ver', 'modulo' => 'dashboard', 'descripcion' => 'Ver panel de control'],
+            ['codigo' => 'dashboard.admin', 'modulo' => 'dashboard', 'descripcion' => 'Ver estadísticas globales de todas las IEs'],
         ];
 
         foreach ($permisosData as $p) {
@@ -130,11 +171,18 @@ class AdminSeeder extends Seeder
         }
 
         // Asignar permisos específicos a "Director IE"
+        // Un Director solo administra su IE: ver/editar trabajadores y su IE,
+        // NO puede crear trabajadores, IEs, ni entidades.
         $directorPermisos = [
-            'personas.ver', 'personas.crear', 'personas.editar',
-            'trabajadores.ver', 'trabajadores.crear', 'trabajadores.editar',
+            'personas.ver', 'personas.editar',
+            'trabajadores.ver', 'trabajadores.editar',
             'instituciones.ver', 'instituciones.editar',
-            'asistencia.ver', 'asistencia.crear', 'asistencia.editar',
+            'horarios.ver', 'horarios.crear', 'horarios.editar',
+            'infraestructura.ver',
+            'asistencia.ver', 'asistencia.crear', 'asistencia.editar', 'asistencia.consolidar',
+            'tramites.ver', 'tramites.crear', 'tramites.editar',
+            'reportes.ver',
+            'dashboard.ver',
         ];
         $directorPermisoIds = DB::table('auth.permisos')->whereIn('codigo', $directorPermisos)->pluck('id')->toArray();
         foreach ($directorPermisoIds as $pid) {
@@ -144,7 +192,15 @@ class AdminSeeder extends Seeder
         }
 
         // Asignar permisos específicos a "Docente"
-        $docentePermisos = ['asistencia.ver'];
+        // Un Docente puede ver su ficha de trabajador (datos, horarios, asistencia, expedientes)
+        // y crear expedientes, pero NO puede crear altas ni editar datos.
+        $docentePermisos = [
+            'personas.ver',
+            'trabajadores.ver',
+            'asistencia.ver',
+            'horarios.ver',
+            'tramites.ver', 'tramites.crear',
+        ];
         $docentePermisoIds = DB::table('auth.permisos')->whereIn('codigo', $docentePermisos)->pluck('id')->toArray();
         foreach ($docentePermisoIds as $pid) {
             DB::table('auth.perfil_permisos')->updateOrInsert(
@@ -162,10 +218,11 @@ class AdminSeeder extends Seeder
             ]
         );
 
-        // 9. Asignar el perfil "Admin UGEL" al usuario (globalmente, institucionEducativa_id = null)
+        // 9. Asignar el perfil "Admin UGEL" al usuario como administrador de la UGEL creada
         DB::table('auth.usuario_perfil_ie')->updateOrInsert(
             [
                 'user_id' => $user->id,
+                'entidadUgel_id' => $ugelId,
                 'institucionEducativa_id' => null,
             ],
             [
@@ -176,8 +233,7 @@ class AdminSeeder extends Seeder
             ]
         );
 
-        // 10. Asignar todos los permisos directos al usuario administrador (globalmente, institucionEducativa_id = null)
-        // Para que coincida con la lógica de permisos directos por IE
+        // 10. Asignar todos los permisos directos al usuario administrador (sin IE específica)
         foreach ($allPermisos as $p) {
             DB::table('auth.usuario_permisos_ie')->updateOrInsert(
                 [

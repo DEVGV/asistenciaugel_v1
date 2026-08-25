@@ -14,6 +14,7 @@ interface EntidadSimple {
 const props = defineProps<{
     tipoEntidadId?: number;
     tipoEntidadCodigo?: string;
+    tipoEntidadCodigos?: string[];
     modelValue?: number | string | null;
     label?: string;
     placeholder?: string;
@@ -50,6 +51,10 @@ async function fetchData(query = '') {
                 'tipo_entidad_id',
                 String(props.tipoEntidadId),
             );
+        } else if (props.tipoEntidadCodigos && props.tipoEntidadCodigos.length > 0) {
+            props.tipoEntidadCodigos.forEach((codigo) => {
+                url.searchParams.append('tipo_entidad_codigos[]', codigo);
+            });
         } else if (props.tipoEntidadCodigo) {
             url.searchParams.append(
                 'tipo_entidad_codigo',
@@ -191,7 +196,7 @@ function selectItem(item: EntidadSimple) {
             <!-- Dropdown Menu -->
             <div
                 v-if="isOpen"
-                class="absolute z-50 mt-1 w-full animate-in overflow-hidden rounded-md border bg-background text-sm shadow-lg fade-in-0 zoom-in-95"
+                class="absolute left-0 right-0 z-50 mt-1 w-full animate-in overflow-hidden rounded-md border bg-background text-sm shadow-lg fade-in-0 zoom-in-95"
             >
                 <!-- Search Input -->
                 <div class="flex items-center border-b px-3">
@@ -241,7 +246,7 @@ function selectItem(item: EntidadSimple) {
                             <Check class="h-4 w-4" />
                         </span>
                         <div class="flex flex-col gap-0.5">
-                            <span class="line-clamp-1 font-medium">{{
+                            <span class="break-words whitespace-normal font-medium">{{
                                 item.nombre
                             }}</span>
                             <span class="text-[11px] text-muted-foreground">{{

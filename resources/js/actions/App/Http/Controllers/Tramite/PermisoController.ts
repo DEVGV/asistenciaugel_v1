@@ -375,7 +375,7 @@ store.form = storeForm
 * @see app/Http/Controllers/Tramite/PermisoController.php:53
 * @route '/permisos/{expediente}/validar'
 */
-export const validar = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const validar = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: validar.url(args, options),
     method: 'post',
 })
@@ -390,7 +390,7 @@ validar.definition = {
 * @see app/Http/Controllers/Tramite/PermisoController.php:53
 * @route '/permisos/{expediente}/validar'
 */
-validar.url = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+validar.url = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { expediente: args }
     }
@@ -423,7 +423,7 @@ validar.url = (args: { expediente: number | { id: number } } | [expediente: numb
 * @see app/Http/Controllers/Tramite/PermisoController.php:53
 * @route '/permisos/{expediente}/validar'
 */
-validar.post = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+validar.post = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: validar.url(args, options),
     method: 'post',
 })
@@ -433,7 +433,7 @@ validar.post = (args: { expediente: number | { id: number } } | [expediente: num
 * @see app/Http/Controllers/Tramite/PermisoController.php:53
 * @route '/permisos/{expediente}/validar'
 */
-const validarForm = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const validarForm = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: validar.url(args, options),
     method: 'post',
 })
@@ -443,7 +443,7 @@ const validarForm = (args: { expediente: number | { id: number } } | [expediente
 * @see app/Http/Controllers/Tramite/PermisoController.php:53
 * @route '/permisos/{expediente}/validar'
 */
-validarForm.post = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+validarForm.post = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: validar.url(args, options),
     method: 'post',
 })
@@ -455,7 +455,7 @@ validar.form = validarForm
 * @see app/Http/Controllers/Tramite/PermisoController.php:61
 * @route '/permisos/{expediente}/anular'
 */
-export const anular = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const anular = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: anular.url(args, options),
     method: 'post',
 })
@@ -470,7 +470,7 @@ anular.definition = {
 * @see app/Http/Controllers/Tramite/PermisoController.php:61
 * @route '/permisos/{expediente}/anular'
 */
-anular.url = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+anular.url = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { expediente: args }
     }
@@ -503,7 +503,7 @@ anular.url = (args: { expediente: number | { id: number } } | [expediente: numbe
 * @see app/Http/Controllers/Tramite/PermisoController.php:61
 * @route '/permisos/{expediente}/anular'
 */
-anular.post = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+anular.post = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: anular.url(args, options),
     method: 'post',
 })
@@ -513,7 +513,7 @@ anular.post = (args: { expediente: number | { id: number } } | [expediente: numb
 * @see app/Http/Controllers/Tramite/PermisoController.php:61
 * @route '/permisos/{expediente}/anular'
 */
-const anularForm = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const anularForm = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: anular.url(args, options),
     method: 'post',
 })
@@ -523,7 +523,7 @@ const anularForm = (args: { expediente: number | { id: number } } | [expediente:
 * @see app/Http/Controllers/Tramite/PermisoController.php:61
 * @route '/permisos/{expediente}/anular'
 */
-anularForm.post = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+anularForm.post = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: anular.url(args, options),
     method: 'post',
 })
@@ -535,7 +535,7 @@ anular.form = anularForm
 * @see app/Http/Controllers/Tramite/PermisoController.php:69
 * @route '/documentos-tram/{documentoTram}/descargar'
 */
-export const descargarSustento = (args: { documentoTram: number | { id: number } } | [documentoTram: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const descargarSustento = (args: { documentoTram: string | number | { id: string | number } } | [documentoTram: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: descargarSustento.url(args, options),
     method: 'get',
 })
@@ -550,7 +550,7 @@ descargarSustento.definition = {
 * @see app/Http/Controllers/Tramite/PermisoController.php:69
 * @route '/documentos-tram/{documentoTram}/descargar'
 */
-descargarSustento.url = (args: { documentoTram: number | { id: number } } | [documentoTram: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+descargarSustento.url = (args: { documentoTram: string | number | { id: string | number } } | [documentoTram: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { documentoTram: args }
     }
@@ -583,7 +583,7 @@ descargarSustento.url = (args: { documentoTram: number | { id: number } } | [doc
 * @see app/Http/Controllers/Tramite/PermisoController.php:69
 * @route '/documentos-tram/{documentoTram}/descargar'
 */
-descargarSustento.get = (args: { documentoTram: number | { id: number } } | [documentoTram: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+descargarSustento.get = (args: { documentoTram: string | number | { id: string | number } } | [documentoTram: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: descargarSustento.url(args, options),
     method: 'get',
 })
@@ -593,7 +593,7 @@ descargarSustento.get = (args: { documentoTram: number | { id: number } } | [doc
 * @see app/Http/Controllers/Tramite/PermisoController.php:69
 * @route '/documentos-tram/{documentoTram}/descargar'
 */
-descargarSustento.head = (args: { documentoTram: number | { id: number } } | [documentoTram: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+descargarSustento.head = (args: { documentoTram: string | number | { id: string | number } } | [documentoTram: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: descargarSustento.url(args, options),
     method: 'head',
 })
@@ -603,7 +603,7 @@ descargarSustento.head = (args: { documentoTram: number | { id: number } } | [do
 * @see app/Http/Controllers/Tramite/PermisoController.php:69
 * @route '/documentos-tram/{documentoTram}/descargar'
 */
-const descargarSustentoForm = (args: { documentoTram: number | { id: number } } | [documentoTram: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const descargarSustentoForm = (args: { documentoTram: string | number | { id: string | number } } | [documentoTram: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: descargarSustento.url(args, options),
     method: 'get',
 })
@@ -613,7 +613,7 @@ const descargarSustentoForm = (args: { documentoTram: number | { id: number } } 
 * @see app/Http/Controllers/Tramite/PermisoController.php:69
 * @route '/documentos-tram/{documentoTram}/descargar'
 */
-descargarSustentoForm.get = (args: { documentoTram: number | { id: number } } | [documentoTram: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+descargarSustentoForm.get = (args: { documentoTram: string | number | { id: string | number } } | [documentoTram: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: descargarSustento.url(args, options),
     method: 'get',
 })
@@ -623,7 +623,7 @@ descargarSustentoForm.get = (args: { documentoTram: number | { id: number } } | 
 * @see app/Http/Controllers/Tramite/PermisoController.php:69
 * @route '/documentos-tram/{documentoTram}/descargar'
 */
-descargarSustentoForm.head = (args: { documentoTram: number | { id: number } } | [documentoTram: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+descargarSustentoForm.head = (args: { documentoTram: string | number | { id: string | number } } | [documentoTram: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: descargarSustento.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',

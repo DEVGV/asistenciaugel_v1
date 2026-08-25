@@ -2,6 +2,7 @@
 
 namespace App\Services\InstitucionEducativa;
 
+use App\Models\AltasTrabajadores;
 use App\Models\Areas;
 use App\Models\Cargos;
 use App\Models\Conasis\ConasisLocalesInstEduc;
@@ -52,6 +53,10 @@ class AltaMasivaIEService
         $validas = [];
         $errores = [];
 
+        // Rastrear rangos aceptados dentro del propio batch para detectar
+        // solapamientos entre filas del mismo lote (clave: trabajador_id).
+        $rangosBatch = []; // [trabajador_id => [[inicio, fin], ...]]
+
         foreach ($filas as $idx => $fila) {
             $rowNum    = $idx + 1;
             $fila      = array_map(fn ($v) => $v === '' ? null : $v, $fila);
@@ -82,9 +87,34 @@ class AltaMasivaIEService
                 $rowErrors[] = "localInstEduc_id {$fila['localInstEduc_id']} no pertenece a esta IE";
             }
 
+            // ── Validación de solapamiento de períodos ──
+            if (empty($rowErrors) && isset($fila['trabajador_id'], $fila['fechaInicio'])) {
+                $tid   = (int) $fila['trabajador_id'];
+                $start = $fila['fechaInicio'];
+                $end   = $fila['fechaFin'] ?? null;
+
+                // 1) Contra la BD
+                if (AltasTrabajadores::tieneAltaSolapada($tid, $ie->id, $start, $end)) {
+                    $rowErrors[] = "El trabajador ya tiene un alta activa en esta IE que se solapa con el período {$start}" . ($end ? " - {$end}" : ' (abierto)');
+                }
+
+                // 2) Contra otras filas ya aceptadas del mismo lote
+                if (empty($rowErrors) && isset($rangosBatch[$tid])) {
+                    foreach ($rangosBatch[$tid] as [$bStart, $bEnd]) {
+                        if ($this->rangosSeSolapan($start, $end, $bStart, $bEnd)) {
+                            $rowErrors[] = "El trabajador tiene otra fila en este lote con período solapado ({$bStart}" . ($bEnd ? " - {$bEnd}" : ' abierto') . ')';
+                            break;
+                        }
+                    }
+                }
+            }
+
             if ($rowErrors) {
                 $errores[$rowNum] = implode('; ', $rowErrors);
             } else {
+                $tid = (int) $fila['trabajador_id'];
+                $rangosBatch[$tid][] = [$fila['fechaInicio'], $fila['fechaFin'] ?? null];
+
                 $fila['institucionEducativa_id'] = $ie->id;
                 $fila['created_by']              = $createdBy;
                 $fila['fechaAlta']               = $fila['fechaAlta'] ?? $ahora;
@@ -121,5 +151,19 @@ class AltaMasivaIEService
         $ids = array_unique(array_column($filas, $campo));
 
         return $model::whereIn('id', $ids)->pluck('id')->flip();
+    }
+
+    /**
+     * Determina si dos rangos de fechas se solapan.
+     * Un extremo null se interpreta como infinito (período abierto).
+     */
+    private function rangosSeSolapan(string $s1, ?string $e1, string $s2, ?string $e2): bool
+    {
+        // s1 <= e2 (true si e2 es null / abierto)
+        $cond1 = $e2 === null || $s1 <= $e2;
+        // s2 <= e1 (true si e1 es null / abierto)
+        $cond2 = $e1 === null || $s2 <= $e1;
+
+        return $cond1 && $cond2;
     }
 }

@@ -417,6 +417,7 @@ async function enviar() {
         const data = await res.json();
 
         if (!res.ok) {
+            console.error('Horario masivo error:', JSON.stringify(data, null, 2));
             errorGeneral.value = data.message ?? 'Error del servidor.';
             // Marcar errores de validación laravel (campo filas.N.campo)
             if (data.errors) {
@@ -430,6 +431,17 @@ async function enviar() {
                                 const campo = key.split('.').pop() ?? 'error';
                                 filas.value[localIdx]._errors[campo] = msgs[0];
                             }
+                        }
+                    },
+                );
+            }
+            // Marcar errores por fila del servicio (cuando ningún registro se procesó)
+            if (data.errores) {
+                Object.entries(data.errores as Record<number, string>).forEach(
+                    ([rowNum, msg]) => {
+                        const localIdx = filaRowMap[Number(rowNum)];
+                        if (localIdx !== undefined) {
+                            filas.value[localIdx]._errors['_row'] = msg as string;
                         }
                     },
                 );

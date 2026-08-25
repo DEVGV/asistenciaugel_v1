@@ -16,11 +16,11 @@ class UpdateDiasNoLaborablesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'fecha'         => ['required', 'date'],
-            'feriado_id'    => ['nullable', 'integer', 'exists:param.t00_feriados,id'],
-            'observacion'   => ['nullable', 'string', 'max:200'],
+            'fecha' => ['required', 'date'],
+            'feriado_id' => ['nullable', 'integer', 'exists:t00_feriados,id'],
+            'observacion' => ['nullable', 'string', 'max:200'],
             'nacionalLocal' => ['nullable', 'string', 'in:N,L'],
-            'recuperable'   => ['nullable', 'string', 'in:S,N'],
+            'recuperable' => ['nullable', 'string', 'in:S,N'],
         ];
     }
 
@@ -29,7 +29,7 @@ class UpdateDiasNoLaborablesRequest extends FormRequest
     {
         return [
             'fecha.required' => 'La fecha es obligatoria.',
-            'fecha.date'     => 'La fecha no tiene un formato válido.',
+            'fecha.date' => 'La fecha no tiene un formato válido.',
         ];
     }
 
@@ -37,11 +37,11 @@ class UpdateDiasNoLaborablesRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'fecha'         => 'fecha',
-            'feriado_id'    => 'feriado',
-            'observacion'   => 'observación',
+            'fecha' => 'fecha',
+            'feriado_id' => 'feriado',
+            'observacion' => 'observación',
             'nacionalLocal' => 'ámbito',
-            'recuperable'   => 'recuperable',
+            'recuperable' => 'recuperable',
         ];
     }
 

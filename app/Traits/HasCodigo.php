@@ -38,7 +38,7 @@ trait HasCodigo
         $padLength = $this->getCodigoPadLength();
 
         $lastCodigo = static::query()
-            ->where($column, 'like', "{$prefix}%")
+            ->where($column, '~', "^{$prefix}\\d+$")
             ->orderByRaw("CAST(SUBSTRING({$column} FROM '\\d+$') AS INTEGER) DESC")
             ->value($column);
 

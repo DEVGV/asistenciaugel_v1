@@ -9,6 +9,7 @@ import {
     UserX,
 } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
+import { usePermisos } from '@/composables/usePermisos';
 import AltaTrabajadorController from '@/actions/App/Http/Controllers/Trabajador/AltaTrabajadorController';
 import ConfirmModal from '@/components/shared/ConfirmModal.vue';
 import StatusBadge from '@/components/shared/StatusBadge.vue';
@@ -36,6 +37,8 @@ const props = defineProps<{
     altas: AltaTrabajador[];
     trabajadorId: number;
 }>();
+
+const { can } = usePermisos();
 
 // ─── Modal Alta (Crear / Editar) ───
 const showAltaModal = ref(false);
@@ -115,7 +118,7 @@ function estaActiva(alta: AltaTrabajador): boolean {
                 Historial de vinculaciones laborales del trabajador con
                 instituciones educativas.
             </p>
-            <Button size="sm" @click="openAltaCreate">
+            <Button v-if="can('trabajadores.crear')" size="sm" @click="openAltaCreate">
                 <Plus class="mr-2 h-4 w-4" /> Nueva Alta
             </Button>
         </div>
@@ -245,12 +248,13 @@ function estaActiva(alta: AltaTrabajador): boolean {
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                     <DropdownMenuItem
+                                        v-if="can('trabajadores.editar')"
                                         @click="openAltaEdit(alta)"
                                     >
                                         <Pencil class="mr-2 h-4 w-4" /> Editar
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
-                                        v-if="estaActiva(alta)"
+                                        v-if="estaActiva(alta) && can('trabajadores.editar')"
                                         @click="openBaja(alta)"
                                         class="text-destructive focus:text-destructive"
                                     >
@@ -258,7 +262,7 @@ function estaActiva(alta: AltaTrabajador): boolean {
                                         Baja
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
-                                        v-if="estaActiva(alta)"
+                                        v-if="estaActiva(alta) && can('trabajadores.eliminar')"
                                         @click="confirmDelete(alta)"
                                         class="text-destructive focus:text-destructive"
                                     >

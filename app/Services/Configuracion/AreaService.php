@@ -7,6 +7,7 @@ use App\DTOs\Configuracion\UpdateAreaDTO;
 use App\Models\Areas;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
 
 class AreaService
 {
@@ -26,16 +27,25 @@ class AreaService
 
     public function crear(CreateAreaDTO $dto): Areas
     {
-        return Areas::create($dto->toArray());
+        $area = Areas::create($dto->toArray());
+        Cache::forget('param.areas');
+
+        return $area;
     }
 
     public function actualizar(Areas $area, UpdateAreaDTO $dto): bool
     {
-        return $area->update($dto->toArray());
+        $result = $area->update($dto->toArray());
+        Cache::forget('param.areas');
+
+        return $result;
     }
 
     public function eliminar(Areas $area): bool
     {
-        return $area->update(['activo' => false]);
+        $result = $area->update(['activo' => false]);
+        Cache::forget('param.areas');
+
+        return $result;
     }
 }

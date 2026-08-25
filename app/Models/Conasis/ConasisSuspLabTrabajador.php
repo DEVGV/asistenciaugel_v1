@@ -25,6 +25,7 @@ class ConasisSuspLabTrabajador extends Model
         'totalHoras',
         'marcaApli',
         'observacion',
+        'turno',
         'expediente_id',
         'created_by',
     ];

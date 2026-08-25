@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckPermiso;
 use App\Http\Middleware\EnsureContextoSeleccionado;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -15,6 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*');
+
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
         $middleware->web(append: [
@@ -25,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'contexto' => EnsureContextoSeleccionado::class,
+            'permiso' => CheckPermiso::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

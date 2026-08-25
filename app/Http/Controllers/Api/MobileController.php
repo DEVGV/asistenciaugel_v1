@@ -11,6 +11,8 @@ use App\Models\Conasis\ConasisMarcaciones;
 use App\Models\Conasis\MobileBiometricCredential;
 use App\Models\Trabajador;
 use App\Models\User;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +23,8 @@ use Illuminate\Validation\Rule;
 
 class MobileController extends Controller
 {
+    private const MARKING_DISTANCE_THRESHOLD_METERS = 500.0;
+
     public function login(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -67,6 +71,15 @@ class MobileController extends Controller
         return response()->json(['message' => 'Sesion movil cerrada.']);
     }
 
+    public function config(): JsonResponse
+    {
+        return response()->json([
+            'data' => [
+                'permission_request' => $this->mobilePermissionRequestConfig(),
+            ],
+        ]);
+    }
+
     public function me(Request $request): JsonResponse
     {
         $trabajador = $this->currentTrabajador($request);
@@ -78,6 +91,7 @@ class MobileController extends Controller
         $today = today();
         $altas = $this->activeAltas($trabajador, $today)->get();
         $credential = $this->credentialFor($trabajador);
+        $localesPorAlta = $this->activeLocalesMarcacionForAltas($trabajador, $altas->pluck('id'), $today);
 
         return response()->json([
             'data' => [
@@ -100,9 +114,15 @@ class MobileController extends Controller
                     'fecha_inicio' => $alta->fechaInicio,
                     'fecha_fin' => $alta->fechaFin,
                     'local_marcacion' => $this->formatLocalMarcacion(
-                        $this->activeLocalMarcacion($trabajador, $alta, $today)
+                        $localesPorAlta[$alta->id] ?? null
                     ),
                 ])->values(),
+                'permission_request_url' => url('/expedientes/create'),
+                'permission_request_label' => 'Solicitar Permiso',
+                'permission_request' => [
+                    'url' => url('/expedientes/create'),
+                    'label' => 'Solicitar Permiso',
+                ],
             ],
         ]);
     }
@@ -204,8 +224,17 @@ class MobileController extends Controller
 
         if (! $context['allowed']) {
             return response()->json([
-                'message' => 'La marcacion movil no esta habilitada para este trabajador.',
+                'message' => $this->markingDeniedMessage($context['checks']),
                 'checks' => $context['checks'],
+                'schedule' => $context['schedule'],
+            ], 422);
+        }
+
+        $location = $this->markingLocationValidation($context['localMarcacion'], $validated);
+        if (! $location['allowed']) {
+            return response()->json([
+                'message' => $location['message'],
+                'location' => $location,
             ], 422);
         }
 
@@ -279,7 +308,7 @@ class MobileController extends Controller
                 'codigo' => $this->mobileMarkCode($trabajador),
                 'fechaMarcacion' => now(),
                 'fechaRegistro' => now(),
-                'tipo' => 'A',
+                'tipo' => $context['schedule']['mark_type'] ?? 'E',
                 'medioMarcacion' => 'M',
                 'procesado' => false,
                 'utm_huso' => $validated['utm_huso'] ?? null,
@@ -294,6 +323,8 @@ class MobileController extends Controller
             'data' => [
                 'mark' => $this->formatMark($mark),
                 'biometric' => $this->formatCredential($credential->refresh()),
+                'location' => $location,
+                'schedule' => $context['schedule'],
             ],
         ], 201);
     }
@@ -321,6 +352,7 @@ class MobileController extends Controller
         $today = today();
 
         $horarios = ConasisHorariosTrabajador::query()
+            ->with(['altaTrabajador.institucionEducativa', 'institucionEduc'])
             ->where('trabajador_id', $trabajador->id)
             ->where('activo', true)
             ->whereDate('fechaInicio', '<=', $today)
@@ -328,7 +360,19 @@ class MobileController extends Controller
             ->orderBy('fechaInicio')
             ->get();
 
+        $localesPorAlta = $this->activeLocalesMarcacionForAltas(
+            $trabajador,
+            $horarios->pluck('altaTrabajador_id')->filter()->unique()->values(),
+            $today
+        );
+
         $detalles = ConasisDetalleHorarios::query()
+            ->with([
+                'horarioTrabajador.altaTrabajador.institucionEducativa',
+                'horarioTrabajador.institucionEduc',
+                'horarioCursoIni.curso',
+                'horarioCursoIni.seccion.grado',
+            ])
             ->whereIn('horarioTrabajador_id', $horarios->pluck('id'))
             ->where('aplicar', true)
             ->orderBy('nroDia')
@@ -337,25 +381,35 @@ class MobileController extends Controller
 
         return response()->json([
             'data' => [
-                'horarios' => $horarios->map(fn (ConasisHorariosTrabajador $horario): array => [
+                'horarios' => $horarios->map(fn (ConasisHorariosTrabajador $horario): array => array_merge([
                     'id' => $horario->id,
                     'nombre' => $horario->nombre,
                     'tipo_horario' => $horario->tipoHorario,
                     'fecha_inicio' => $horario->fechaInicio,
                     'fecha_fin' => $horario->fechaFin,
-                ])->values(),
-                'detalles' => $detalles->map(fn (ConasisDetalleHorarios $detalle): array => [
-                    'id' => $detalle->id,
-                    'horario_trabajador_id' => $detalle->horarioTrabajador_id,
-                    'dia_semana' => $detalle->diaSemana,
-                    'nro_dia' => $detalle->nroDia,
-                    'entrada_inicio' => $detalle->entHoraInicio,
-                    'entrada_fin' => $detalle->entHoraFin,
-                    'entrada_tolerancia' => $detalle->entTolerancia,
-                    'salida_inicio' => $detalle->salHoraInicio,
-                    'salida_fin' => $detalle->salHoraFin,
-                    'salida_tolerancia' => $detalle->salTolerancia,
-                ])->values(),
+                ], $this->scheduleAssignmentPayload(
+                    $horario,
+                    $localesPorAlta[$horario->altaTrabajador_id] ?? null
+                )))->values(),
+                'detalles' => $detalles->map(function (ConasisDetalleHorarios $detalle) use ($localesPorAlta): array {
+                    $horario = $detalle->horarioTrabajador;
+
+                    return array_merge([
+                        'id' => $detalle->id,
+                        'horario_trabajador_id' => $detalle->horarioTrabajador_id,
+                        'dia_semana' => $detalle->diaSemana,
+                        'nro_dia' => $detalle->nroDia,
+                        'entrada_inicio' => $detalle->entHoraInicio,
+                        'entrada_fin' => $detalle->entHoraFin,
+                        'entrada_tolerancia' => $detalle->entTolerancia,
+                        'salida_inicio' => $detalle->salHoraInicio,
+                        'salida_fin' => $detalle->salHoraFin,
+                        'salida_tolerancia' => $detalle->salTolerancia,
+                    ], $this->scheduleAssignmentPayload(
+                        $horario,
+                        $horario ? ($localesPorAlta[$horario->altaTrabajador_id] ?? null) : null
+                    ), $this->scheduleCoursePayload($detalle));
+                })->values(),
             ],
         ]);
     }
@@ -414,6 +468,21 @@ class MobileController extends Controller
             ->first();
     }
 
+    private function activeLocalesMarcacionForAltas(Trabajador $trabajador, mixed $altaIds, mixed $date)
+    {
+        return ConasisLocalesMarcacion::query()
+            ->with('localInstEduc.local')
+            ->where('trabajador_id', $trabajador->id)
+            ->whereIn('altaTrabajador_id', collect($altaIds)->filter()->unique()->values())
+            ->whereDate('fechaInicio', '<=', $date)
+            ->where(fn ($query) => $query->whereNull('fechaFin')->orWhereDate('fechaFin', '>=', $date))
+            ->orderBy('altaTrabajador_id')
+            ->orderByDesc('fechaInicio')
+            ->get()
+            ->unique('altaTrabajador_id')
+            ->keyBy('altaTrabajador_id');
+    }
+
     private function markingContext(Trabajador $trabajador, ?int $altaTrabajadorId): array
     {
         $today = today();
@@ -432,6 +501,8 @@ class MobileController extends Controller
             'trabajador_activo' => true,
             'alta_vigente' => filled($alta),
             'asignado_marcacion_movil' => filled($localMarcacion),
+            'horario_marcacion' => (bool) ($schedule['can_mark_now'] ?? false),
+            'marca_no_duplicada' => ! (bool) ($schedule['already_marked'] ?? false),
             'biometria_facial_aprobada' => $this->faceCredentialReady($credential),
             'metodo_biometrico_habilitado' => $this->faceCredentialReady($credential) || $credential->local_biometric_enabled,
             'biometria_no_bloqueada' => ! ($credential->blocked_until && $credential->blocked_until->isFuture()),
@@ -441,6 +512,7 @@ class MobileController extends Controller
             'allowed' => $checks['trabajador_activo']
                 && $checks['alta_vigente']
                 && $checks['asignado_marcacion_movil']
+                && $checks['horario_marcacion']
                 && $checks['metodo_biometrico_habilitado']
                 && $checks['biometria_no_bloqueada'],
             'checks' => $checks,
@@ -453,10 +525,20 @@ class MobileController extends Controller
     private function scheduleSnapshot(Trabajador $trabajador, ?AltasTrabajadores $alta): array
     {
         if (! $alta) {
-            return ['has_active_schedule' => false, 'today_windows' => []];
+            return [
+                'has_active_schedule' => false,
+                'has_today_schedule' => false,
+                'can_mark_now' => false,
+                'already_marked' => false,
+                'mark_type' => null,
+                'mark_label' => null,
+                'active_window' => null,
+                'today_windows' => [],
+            ];
         }
 
         $today = today();
+        $now = now();
         $currentDay = (int) $today->dayOfWeekIso;
 
         $horarios = ConasisHorariosTrabajador::query()
@@ -467,22 +549,245 @@ class MobileController extends Controller
             ->where(fn ($query) => $query->whereNull('fechaFin')->orWhereDate('fechaFin', '>=', $today))
             ->pluck('id');
 
-        $windows = ConasisDetalleHorarios::query()
+        $details = ConasisDetalleHorarios::query()
             ->whereIn('horarioTrabajador_id', $horarios)
             ->where('aplicar', true)
             ->where('nroDia', $currentDay)
-            ->get()
-            ->map(fn (ConasisDetalleHorarios $detalle): array => [
-                'entrada_inicio' => $detalle->entHoraInicio,
-                'entrada_fin' => $detalle->entHoraFin,
-                'salida_inicio' => $detalle->salHoraInicio,
-                'salida_fin' => $detalle->salHoraFin,
-            ])
+            ->orderBy('entHoraInicio')
+            ->get();
+
+        $todayMarks = ConasisMarcaciones::query()
+            ->where('trabajador_id', $trabajador->id)
+            ->where('altaTrabajador_id', $alta->id)
+            ->where('medioMarcacion', 'M')
+            ->whereIn('tipo', ['E', 'S'])
+            ->whereDate('fechaMarcacion', $today)
+            ->get(['tipo', 'fechaMarcacion']);
+
+        $windows = $details
+            ->flatMap(function (ConasisDetalleHorarios $detalle) use ($now, $todayMarks): array {
+                return array_values(array_filter(
+                    $this->scheduleShiftWindows($detalle, $now, $todayMarks)
+                ));
+            })
+            ->sortBy('sort_time')
             ->values();
+        $activeWindow = $windows->first(
+            fn (array $window): bool => (bool) $window['is_current'] && ! (bool) $window['already_marked'] && (bool) $window['can_mark_now']
+        );
+        $currentWindow = $windows->first(fn (array $window): bool => (bool) $window['is_current']);
+        $publicWindows = $windows
+            ->map(function (array $window): array {
+                unset($window['starts_at'], $window['ends_at'], $window['sort_time']);
+
+                return $window;
+            })
+            ->values();
+        $publicActiveWindow = $activeWindow;
+        if ($publicActiveWindow) {
+            unset($publicActiveWindow['starts_at'], $publicActiveWindow['ends_at'], $publicActiveWindow['sort_time']);
+        }
+        $maxTolerance = $publicWindows->max('tolerancia_minutos') ?? 0;
 
         return [
             'has_active_schedule' => $horarios->isNotEmpty(),
-            'today_windows' => $windows,
+            'has_today_schedule' => $publicWindows->isNotEmpty(),
+            'can_mark_now' => filled($activeWindow),
+            'already_marked' => $currentWindow ? (bool) $currentWindow['already_marked'] : false,
+            'mark_type' => $activeWindow['mark_type'] ?? null,
+            'mark_label' => $activeWindow['mark_label'] ?? null,
+            'active_window' => $publicActiveWindow,
+            'start_grace_minutes' => 0,
+            'end_grace_minutes' => $maxTolerance,
+            'max_tolerance_minutes' => $maxTolerance,
+            'today_windows' => $publicWindows,
+        ];
+    }
+
+    private function scheduleShiftWindows(
+        ConasisDetalleHorarios $detalle,
+        CarbonInterface $now,
+        mixed $todayMarks
+    ): array {
+        $startTime = $detalle->entHoraInicio;
+        if (! filled($startTime)) {
+            return [];
+        }
+
+        $endTime = $detalle->salHoraFin ?? $detalle->salHoraInicio;
+        if (! filled($endTime)) {
+            return [];
+        }
+
+        $shiftStart = $now->copy()->setTimeFromTimeString($startTime);
+        $shiftEnd = $now->copy()->setTimeFromTimeString($endTime);
+
+        if ($shiftEnd->lessThanOrEqualTo($shiftStart)) {
+            $shiftEnd->addDay();
+        }
+
+        $isCurrent = $now->betweenIncluded($shiftStart, $shiftEnd);
+
+        $hasMarkedE = $todayMarks->contains(function (ConasisMarcaciones $mark) use ($shiftStart, $shiftEnd): bool {
+            if ($mark->tipo !== 'E' || ! $mark->fechaMarcacion) {
+                return false;
+            }
+
+            return Carbon::parse($mark->fechaMarcacion)->betweenIncluded($shiftStart, $shiftEnd);
+        });
+
+        $hasMarkedS = $todayMarks->contains(function (ConasisMarcaciones $mark) use ($shiftStart, $shiftEnd): bool {
+            if ($mark->tipo !== 'S' || ! $mark->fechaMarcacion) {
+                return false;
+            }
+
+            return Carbon::parse($mark->fechaMarcacion)->betweenIncluded($shiftStart, $shiftEnd);
+        });
+
+        $toleranceMinutes = max(
+            (int) ($detalle->entTolerancia ?? 0),
+            (int) ($detalle->salTolerancia ?? 0)
+        );
+
+        $windowE = [
+            'detalle_horario_id' => $detalle->id,
+            'mark_type' => 'E',
+            'mark_label' => 'Entrada',
+            'entrada_inicio' => $detalle->entHoraInicio,
+            'entrada_fin' => $detalle->entHoraFin,
+            'entrada_tolerancia' => max(0, (int) ($detalle->entTolerancia ?? 0)),
+            'salida_inicio' => $detalle->salHoraInicio,
+            'salida_fin' => $detalle->salHoraFin,
+            'salida_tolerancia' => max(0, (int) ($detalle->salTolerancia ?? 0)),
+            'marcacion_inicio' => $shiftStart->format('H:i:s'),
+            'marcacion_fin' => $shiftEnd->format('H:i:s'),
+            'tolerancia_minutos' => $toleranceMinutes,
+            'can_mark_now' => $isCurrent && ! $hasMarkedE,
+            'is_current' => $isCurrent,
+            'already_marked' => $hasMarkedE,
+            'starts_at' => $shiftStart,
+            'ends_at' => $shiftEnd,
+            'sort_time' => $shiftStart->format('H:i:s').'E',
+        ];
+
+        $windowS = [
+            'detalle_horario_id' => $detalle->id,
+            'mark_type' => 'S',
+            'mark_label' => 'Salida',
+            'entrada_inicio' => $detalle->entHoraInicio,
+            'entrada_fin' => $detalle->entHoraFin,
+            'entrada_tolerancia' => max(0, (int) ($detalle->entTolerancia ?? 0)),
+            'salida_inicio' => $detalle->salHoraInicio,
+            'salida_fin' => $detalle->salHoraFin,
+            'salida_tolerancia' => max(0, (int) ($detalle->salTolerancia ?? 0)),
+            'marcacion_inicio' => $shiftStart->format('H:i:s'),
+            'marcacion_fin' => $shiftEnd->format('H:i:s'),
+            'tolerancia_minutos' => $toleranceMinutes,
+            'can_mark_now' => $isCurrent && $hasMarkedE && ! $hasMarkedS,
+            'is_current' => $isCurrent,
+            'already_marked' => $hasMarkedS,
+            'starts_at' => $shiftStart,
+            'ends_at' => $shiftEnd,
+            'sort_time' => $shiftStart->format('H:i:s').'S',
+        ];
+
+        return [$windowE, $windowS];
+    }
+
+    private function markingDeniedMessage(array $checks): string
+    {
+        if (! ($checks['alta_vigente'] ?? false)) {
+            return 'No existe alta vigente para la institucion seleccionada.';
+        }
+        if (! ($checks['asignado_marcacion_movil'] ?? false)) {
+            return 'No existe local de marcacion movil vigente para esta asignacion.';
+        }
+        if (! ($checks['marca_no_duplicada'] ?? true)) {
+            return 'Ya existe una marca registrada para esta ventana horaria.';
+        }
+        if (! ($checks['horario_marcacion'] ?? false)) {
+            return 'La marcacion solo esta permitida durante la ventana de entrada o salida del turno.';
+        }
+        if (! ($checks['metodo_biometrico_habilitado'] ?? false)) {
+            return 'El docente no tiene un metodo biometrico habilitado para marcacion movil.';
+        }
+        if (! ($checks['biometria_no_bloqueada'] ?? false)) {
+            return 'La validacion biometrica se encuentra bloqueada temporalmente.';
+        }
+
+        return 'La marcacion movil no esta habilitada para este trabajador.';
+    }
+
+    private function markingLocationValidation(?ConasisLocalesMarcacion $localMarcacion, array $data): array
+    {
+        $local = $localMarcacion?->localInstEduc?->local;
+        if (! $local) {
+            return [
+                'allowed' => false,
+                'message' => 'No existe local de marcacion con coordenadas para validar ubicacion.',
+            ];
+        }
+
+        foreach (['utm_huso', 'utm_base', 'utm_x_este', 'utm_y_norte'] as $field) {
+            if (! filled($data[$field] ?? null)) {
+                return [
+                    'allowed' => false,
+                    'message' => 'Debe activar el GPS y permitir la ubicacion antes de marcar.',
+                ];
+            }
+        }
+
+        if (! filled($local->utm_huso) || ! filled($local->utm_banda)
+            || ! filled($local->utm_x_este) || ! filled($local->utm_y_norte)) {
+            return [
+                'allowed' => false,
+                'message' => 'El local de marcacion no tiene coordenadas UTM completas.',
+            ];
+        }
+
+        $mobileZone = (int) $data['utm_huso'];
+        $localZone = (int) $local->utm_huso;
+        $mobileBand = strtoupper(trim((string) $data['utm_base']));
+        $localBand = strtoupper(trim((string) $local->utm_banda));
+
+        if ($mobileZone !== $localZone || $mobileBand !== $localBand) {
+            return [
+                'allowed' => false,
+                'message' => 'La ubicacion enviada no corresponde a la zona UTM del local.',
+                'mobile_zone' => $mobileZone,
+                'mobile_band' => $mobileBand,
+                'local_zone' => $localZone,
+                'local_band' => $localBand,
+            ];
+        }
+
+        $dx = (float) $data['utm_x_este'] - (float) $local->utm_x_este;
+        $dy = (float) $data['utm_y_norte'] - (float) $local->utm_y_norte;
+        $distance = round(sqrt(($dx * $dx) + ($dy * $dy)), 2);
+
+        return [
+            'allowed' => $distance <= self::MARKING_DISTANCE_THRESHOLD_METERS,
+            'message' => $distance <= self::MARKING_DISTANCE_THRESHOLD_METERS
+                ? 'Ubicacion validada dentro del local.'
+                : sprintf(
+                    'Estas a %.2f metros del local. El maximo permitido es %.0f metros.',
+                    $distance,
+                    self::MARKING_DISTANCE_THRESHOLD_METERS
+                ),
+            'distance_meters' => $distance,
+            'threshold_meters' => self::MARKING_DISTANCE_THRESHOLD_METERS,
+            'mobile_utm' => [
+                'huso' => $mobileZone,
+                'base' => $mobileBand,
+                'x_este' => round((float) $data['utm_x_este'], 2),
+                'y_norte' => round((float) $data['utm_y_norte'], 2),
+            ],
+            'local_utm' => [
+                'huso' => $localZone,
+                'base' => $localBand,
+                'x_este' => round((float) $local->utm_x_este, 2),
+                'y_norte' => round((float) $local->utm_y_norte, 2),
+            ],
         ];
     }
 
@@ -612,6 +917,14 @@ class MobileController extends Controller
         return 'MOB'.now()->format('YmdHis').$workerSuffix;
     }
 
+    private function mobilePermissionRequestConfig(): array
+    {
+        return [
+            'label' => trim((string) config('mobile.permission_request.label', 'Solicitar Permiso')) ?: 'Solicitar Permiso',
+            'url' => trim((string) config('mobile.permission_request.url', '')),
+        ];
+    }
+
     private function formatCredential(MobileBiometricCredential $credential): array
     {
         $faceStatus = $credential->face_status;
@@ -639,6 +952,77 @@ class MobileController extends Controller
     {
         return $credential->face_status === MobileBiometricCredential::STATUS_APPROVED
             && filled($credential->face_embedding);
+    }
+
+    private function scheduleAssignmentPayload(
+        ?ConasisHorariosTrabajador $horario,
+        ?ConasisLocalesMarcacion $localMarcacion
+    ): array {
+        if (! $horario) {
+            return [
+                'alta_trabajador_id' => null,
+                'institucion_educativa_id' => null,
+                'institucion_nombre' => null,
+                'local_marcacion_id' => null,
+                'local_inst_educ_id' => null,
+                'local_id' => null,
+                'local_nombre' => null,
+                'local_marcacion' => null,
+            ];
+        }
+
+        $alta = $horario->altaTrabajador;
+        $institucion = $horario->institucionEduc ?? $alta?->institucionEducativa;
+        $local = $localMarcacion?->localInstEduc?->local;
+
+        return [
+            'alta_trabajador_id' => $horario->altaTrabajador_id,
+            'institucion_educativa_id' => $horario->institucionEduc_id ?? $alta?->institucionEducativa_id,
+            'institucion_nombre' => $institucion?->nombreLegal,
+            'local_marcacion_id' => $localMarcacion?->id,
+            'local_inst_educ_id' => $localMarcacion?->localInstEduc_id,
+            'local_id' => $local?->id,
+            'local_nombre' => $local?->nombre,
+            'local_marcacion' => $this->formatLocalMarcacion($localMarcacion),
+        ];
+    }
+
+    private function scheduleCoursePayload(ConasisDetalleHorarios $detalle): array
+    {
+        $horarioCurso = $detalle->horarioCursoIni;
+        $curso = $horarioCurso?->curso;
+        $seccion = $horarioCurso?->seccion;
+        $grado = $seccion?->grado;
+        $cursoNombre = $curso?->nombre ?? $detalle->nombreTurno;
+
+        return [
+            'horario_curso_id' => $horarioCurso?->id,
+            'curso_id' => $curso?->id,
+            'curso_nombre' => $cursoNombre,
+            'nombre_curso' => $cursoNombre,
+            'seccion_id' => $seccion?->id,
+            'seccion_nombre' => $seccion?->nombre,
+            'grado_id' => $grado?->id,
+            'grado_nombre' => $grado?->nombre,
+            'horario_curso' => $horarioCurso ? [
+                'id' => $horarioCurso->id,
+                'curso' => $curso ? [
+                    'id' => $curso->id,
+                    'nombre' => $curso->nombre,
+                    'sigla' => $curso->sigla,
+                ] : null,
+                'seccion' => $seccion ? [
+                    'id' => $seccion->id,
+                    'nombre' => $seccion->nombre,
+                    'sigla' => $seccion->sigla,
+                    'grado' => $grado ? [
+                        'id' => $grado->id,
+                        'nombre' => $grado->nombre,
+                        'sigla' => $grado->sigla,
+                    ] : null,
+                ] : null,
+            ] : null,
+        ];
     }
 
     private function formatLocalMarcacion(?ConasisLocalesMarcacion $localMarcacion): ?array
@@ -669,6 +1053,7 @@ class MobileController extends Controller
             'id' => $mark->id,
             'fecha_marcacion' => $mark->fechaMarcacion,
             'tipo' => $mark->tipo,
+            'tipo_label' => $mark->tipo === 'S' ? 'Salida' : 'Entrada',
             'medio_marcacion' => $mark->medioMarcacion,
             'procesado' => (bool) $mark->procesado,
             'alta_trabajador_id' => $mark->altaTrabajador_id,

@@ -38,9 +38,9 @@ class StoreRegistroTrabajadorRequest extends FormRequest
             // ── Datos de Alta (condicionales) ──
             'institucionEducativa_id' => ['required_if:incluir_alta,true', 'nullable', 'integer', 'exists:t_institucionesEduc,id'],
             'condicionLaboral_id' => ['required_if:incluir_alta,true', 'nullable', 'integer', 'exists:t_condicionesLaborales,id'],
-            'tipoContrato_id' => ['required_if:incluir_alta,true', 'nullable', 'integer', 'exists:param.t12_tipoContrato,id'],
-            'rolTrabajador_id' => ['nullable', 'integer', 'exists:param.t00_rolTrabajador,id'],
-            'situacionLaboral_id' => ['required_if:incluir_alta,true', 'nullable', 'integer', 'exists:param.t15_situacionLaboral,id'],
+            'tipoContrato_id' => ['required_if:incluir_alta,true', 'nullable', 'integer', 'exists:t12_tipoContrato,id'],
+            'rolTrabajador_id' => ['nullable', 'integer', 'exists:t00_rolTrabajador,id'],
+            'situacionLaboral_id' => ['required_if:incluir_alta,true', 'nullable', 'integer', 'exists:t15_situacionLaboral,id'],
             'area_id' => ['required_if:incluir_alta,true', 'nullable', 'integer', 'exists:t_areas,id'],
             'cargo_id' => ['required_if:incluir_alta,true', 'nullable', 'integer', 'exists:t_cargos,id'],
             'codigoAirsp' => ['nullable', 'string', 'max:20'],
@@ -56,7 +56,7 @@ class StoreRegistroTrabajadorRequest extends FormRequest
             'localInstEduc_id' => [
                 'nullable',
                 'integer',
-                Rule::exists('conasis.t_localesInstEduc', 'id')
+                Rule::exists('t_localesInstEduc', 'id')
                     ->where('institucionEduc_id', $this->input('institucionEducativa_id')),
             ],
         ];

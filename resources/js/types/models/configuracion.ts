@@ -16,6 +16,8 @@ export interface Cargo {
     rolTrabajador_id: number | null;
     created_by: number | null;
     activo: boolean;
+    // Relaciones
+    rol_trabajador?: { id: number; nombre: string | null };
 }
 
 export interface CondicionLaboral {

@@ -20,6 +20,8 @@ declare module '@inertiajs/core' {
             name: string;
             auth: Auth;
             contexto: ContextoActivo | null;
+            permisos: string[];
+            perfilActivo: string | null;
             sidebarOpen: boolean;
             [key: string]: unknown;
         };

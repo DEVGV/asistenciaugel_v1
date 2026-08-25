@@ -31,8 +31,8 @@ final readonly class UpdateInstEducDTO
             tipoInstEduc_id: isset($data['tipoInstEduc_id']) ? (int) $data['tipoInstEduc_id'] : null,
             modalidadFormativa_id: (int) $data['modalidadFormativa_id'],
             nivelCiclo_id: (int) $data['nivelCiclo_id'],
-            fechaInicio: $data['fechaInicio'] ?? null,
-            fechaFin: $data['fechaFin'] ?? null,
+            fechaInicio: $data['fechaInicio'] ?? null, // preservado del modelo
+            fechaFin: $data['fechaFin'] ?? null,       // preservado del modelo
         );
     }
 

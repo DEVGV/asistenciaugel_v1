@@ -35,6 +35,7 @@ const TURNOS = [
 ];
 
 const cursoError = ref<string | null>(null);
+const horaError = ref<string | null>(null);
 const cursoContainerRef = ref<HTMLElement | null>(null);
 
 const DAYS = [
@@ -105,7 +106,7 @@ function resetForm() {
     if (props.horarioCurso) {
         cursoId.value = props.horarioCurso.curso_id;
         nroDia.value = props.horarioCurso.nroDia;
-        turnoId.value = props.horarioCurso.turno_id ?? null;
+        turnoId.value = (props.horarioCurso as any).detalles_ini?.[0]?.turno_id ?? null;
         horaInicio.value = props.horarioCurso.horaInicio.substring(0, 5);
         horaFin.value = props.horarioCurso.horaFin.substring(0, 5);
 
@@ -181,6 +182,12 @@ function handleSubmit() {
         return;
     }
     cursoError.value = null;
+
+    if (horaFin.value && horaInicio.value && horaFin.value <= horaInicio.value) {
+        horaError.value = 'La hora de fin debe ser posterior a la hora de inicio.';
+        return;
+    }
+    horaError.value = null;
 
     emit('submit', {
         id: props.horarioCurso?.id,
@@ -273,29 +280,35 @@ defineExpose({ handleSubmit });
         </div>
 
         <!-- Horas -->
-        <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-1.5">
-                <Label for="horaInicio" class="text-sm font-semibold"
-                    >Hora de Inicio</Label
-                >
-                <Input
-                    id="horaInicio"
-                    type="time"
-                    v-model="horaInicio"
-                    class="w-full"
-                />
+        <div class="space-y-1.5">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                    <Label for="horaInicio" class="text-sm font-semibold"
+                        >Hora de Inicio</Label
+                    >
+                    <Input
+                        id="horaInicio"
+                        type="time"
+                        v-model="horaInicio"
+                        class="w-full"
+                        @input="horaError = null"
+                    />
+                </div>
+                <div class="space-y-1.5">
+                    <Label for="horaFin" class="text-sm font-semibold"
+                        >Hora de Fin</Label
+                    >
+                    <Input
+                        id="horaFin"
+                        type="time"
+                        v-model="horaFin"
+                        class="w-full"
+                        :class="horaError ? 'border-red-500 ring-1 ring-red-500' : ''"
+                        @input="horaError = null"
+                    />
+                </div>
             </div>
-            <div class="space-y-1.5">
-                <Label for="horaFin" class="text-sm font-semibold"
-                    >Hora de Fin</Label
-                >
-                <Input
-                    id="horaFin"
-                    type="time"
-                    v-model="horaFin"
-                    class="w-full"
-                />
-            </div>
+            <InputError :message="horaError" class="mt-1" />
         </div>
 
         <!-- ── Divisor ──────────────────────────────────────────────────────── -->

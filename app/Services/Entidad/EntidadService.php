@@ -34,15 +34,21 @@ class EntidadService
      */
     public function buscarParaSelect(Request $request): \Illuminate\Database\Eloquent\Collection
     {
-        $tipoId     = $request->integer('tipo_entidad_id') ?: null;
-        $tipoCodigo = $request->string('tipo_entidad_codigo')->trim() ?: null;
-        $selectedId = $request->integer('selected_id') ?: null;
-        $search     = $request->string('q')->trim();
+        $tipoId      = $request->integer('tipo_entidad_id') ?: null;
+        $tipoCodigo  = $request->string('tipo_entidad_codigo')->trim() ?: null;
+        $tipoCodigos = $request->input('tipo_entidad_codigos', []);
+        $selectedId  = $request->integer('selected_id') ?: null;
+        $search      = $request->string('q')->trim();
 
         $query = Entidades::query()->select('id', 'razonSocial as nombre', 'ruc as codigo');
 
         if ($tipoId) {
             $query->where('tipoEntidad_id', $tipoId);
+        } elseif (!empty($tipoCodigos)) {
+            $query->whereHas('tipoEntidad', function ($q) use ($tipoCodigos) {
+                $q->whereIn('codigo', $tipoCodigos)
+                  ->orWhereIn('abreviatura', $tipoCodigos);
+            });
         } elseif ($tipoCodigo) {
             $query->whereHas('tipoEntidad', function ($q) use ($tipoCodigo) {
                 $q->where('codigo', $tipoCodigo)

@@ -1,5 +1,6 @@
 import type { LocalInstEduc } from './infraestructura';
 import type { ParamSimple } from './params';
+import type { Telefono, Email, Domicilio } from './persona';
 
 export interface Entidad {
     id: number;
@@ -35,6 +36,9 @@ export interface InstitucionEducativa {
     grados?: GradoIE[];
     locales_inst_educ?: LocalInstEduc[];
     dias_no_laborables?: DiasNoLaborable[];
+    telefonos?: Telefono[];
+    emails?: Email[];
+    domicilios?: Domicilio[];
 }
 
 export interface CursoIE {

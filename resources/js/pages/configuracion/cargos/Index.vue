@@ -5,6 +5,7 @@ import { ref, watch } from 'vue';
 import CargoController from '@/actions/App/Http/Controllers/Configuracion/CargoController';
 import ConfirmModal from '@/components/shared/ConfirmModal.vue';
 import FormModal from '@/components/shared/FormModal.vue';
+import ParamSelect from '@/components/shared/ParamSelect.vue';
 import { Button } from '@/components/ui/button';
 import StatusBadge from '@/components/shared/StatusBadge.vue';
 import {
@@ -150,6 +151,7 @@ function executeDelete() {
                         <TableHead>Código</TableHead>
                         <TableHead>Nombre</TableHead>
                         <TableHead>Abreviatura</TableHead>
+                        <TableHead>Rol Trabajador</TableHead>
                         <TableHead>Estado</TableHead>
                         <TableHead class="text-right">Acciones</TableHead>
                     </TableRow>
@@ -166,6 +168,9 @@ function executeDelete() {
                             cargo.nombre
                         }}</TableCell>
                         <TableCell>{{ cargo.abreviatura || '-' }}</TableCell>
+                        <TableCell class="text-sm text-muted-foreground">{{
+                            cargo.rol_trabajador?.nombre || '-'
+                        }}</TableCell>
                         <TableCell>
                             <StatusBadge :active="cargo.activo" />
                         </TableCell>
@@ -206,7 +211,7 @@ function executeDelete() {
                         </TableCell>
                     </TableRow>
                     <TableRow v-if="props.cargos.data.length === 0">
-                        <TableCell colspan="5" class="h-24 text-center"
+                        <TableCell colspan="6" class="h-24 text-center"
                             >No hay cargos registrados.</TableCell
                         >
                     </TableRow>
@@ -281,6 +286,12 @@ function executeDelete() {
                         placeholder="Ej: DIR"
                     />
                 </div>
+                <ParamSelect
+                    v-model="form.rolTrabajador_id"
+                    type="roles-trabajador"
+                    label="Rol Trabajador"
+                    :error="form.errors.rolTrabajador_id"
+                />
                 <div class="mt-2 flex items-center space-x-2">
                     <input
                         id="activo"

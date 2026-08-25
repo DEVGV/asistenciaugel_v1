@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Api\MobileController::enrollFace
-* @see app/Http/Controllers/Api/MobileController.php:110
+* @see app/Http/Controllers/Api/MobileController.php:130
 * @route '/api/mobile/biometria/enrolar-rostro'
 */
 export const enrollFace = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ enrollFace.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enrollFace
-* @see app/Http/Controllers/Api/MobileController.php:110
+* @see app/Http/Controllers/Api/MobileController.php:130
 * @route '/api/mobile/biometria/enrolar-rostro'
 */
 enrollFace.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ enrollFace.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enrollFace
-* @see app/Http/Controllers/Api/MobileController.php:110
+* @see app/Http/Controllers/Api/MobileController.php:130
 * @route '/api/mobile/biometria/enrolar-rostro'
 */
 enrollFace.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -35,7 +35,7 @@ enrollFace.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enrollFace
-* @see app/Http/Controllers/Api/MobileController.php:110
+* @see app/Http/Controllers/Api/MobileController.php:130
 * @route '/api/mobile/biometria/enrolar-rostro'
 */
 const enrollFaceForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -45,7 +45,7 @@ const enrollFaceForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enrollFace
-* @see app/Http/Controllers/Api/MobileController.php:110
+* @see app/Http/Controllers/Api/MobileController.php:130
 * @route '/api/mobile/biometria/enrolar-rostro'
 */
 enrollFaceForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -57,7 +57,7 @@ enrollFace.form = enrollFaceForm
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enableLocal
-* @see app/Http/Controllers/Api/MobileController.php:149
+* @see app/Http/Controllers/Api/MobileController.php:169
 * @route '/api/mobile/biometria/local-device/habilitar'
 */
 export const enableLocal = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -72,7 +72,7 @@ enableLocal.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enableLocal
-* @see app/Http/Controllers/Api/MobileController.php:149
+* @see app/Http/Controllers/Api/MobileController.php:169
 * @route '/api/mobile/biometria/local-device/habilitar'
 */
 enableLocal.url = (options?: RouteQueryOptions) => {
@@ -81,7 +81,7 @@ enableLocal.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enableLocal
-* @see app/Http/Controllers/Api/MobileController.php:149
+* @see app/Http/Controllers/Api/MobileController.php:169
 * @route '/api/mobile/biometria/local-device/habilitar'
 */
 enableLocal.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -91,7 +91,7 @@ enableLocal.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enableLocal
-* @see app/Http/Controllers/Api/MobileController.php:149
+* @see app/Http/Controllers/Api/MobileController.php:169
 * @route '/api/mobile/biometria/local-device/habilitar'
 */
 const enableLocalForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -101,7 +101,7 @@ const enableLocalForm = (options?: RouteQueryOptions): RouteFormDefinition<'post
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enableLocal
-* @see app/Http/Controllers/Api/MobileController.php:149
+* @see app/Http/Controllers/Api/MobileController.php:169
 * @route '/api/mobile/biometria/local-device/habilitar'
 */
 enableLocalForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

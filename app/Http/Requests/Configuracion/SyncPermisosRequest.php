@@ -14,8 +14,8 @@ class SyncPermisosRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'permiso_ids'   => ['required', 'array'],
-            'permiso_ids.*' => ['integer', 'exists:auth.permisos,id'],
+            'permiso_ids' => ['required', 'array'],
+            'permiso_ids.*' => ['integer', 'exists:permisos,id'],
         ];
     }
 

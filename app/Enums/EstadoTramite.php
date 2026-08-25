@@ -4,17 +4,19 @@ namespace App\Enums;
 
 enum EstadoTramite: string
 {
-    case Pendiente = 'PEN';
-    case Validado = 'VAL';
-    case Rechazado = 'REC';
-    case Anulado = 'ANU';
+    case Registrado = '1';
+    case Aprobado = '2';
+    case Rechazado = '3';
+    case Autorizado = '4';
+    case Anulado = '5';
 
     public function nombre(): string
     {
         return match ($this) {
-            self::Pendiente => 'Pendiente',
-            self::Validado => 'Validado',
+            self::Registrado => 'Registrado',
+            self::Aprobado => 'Aprobado',
             self::Rechazado => 'Rechazado',
+            self::Autorizado => 'Autorizado',
             self::Anulado => 'Anulado',
         };
     }

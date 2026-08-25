@@ -289,6 +289,7 @@ function executeDelete() {
                     ? 'Editar Condición Laboral'
                     : 'Nueva Condición Laboral'
             "
+            max-width="xl"
             :processing="form.processing"
             @submit="submitForm"
         >
@@ -307,26 +308,31 @@ function executeDelete() {
                         {{ form.errors.nombre }}
                     </p>
                 </div>
-                <div class="grid gap-2">
-                    <Label for="abreviatura">Abreviatura</Label>
-                    <Input
-                        id="abreviatura"
-                        v-model="form.abreviatura"
-                        placeholder="Ej: CAS"
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div class="grid gap-2">
+                        <Label for="abreviatura">Abreviatura</Label>
+                        <Input
+                            id="abreviatura"
+                            v-model="form.abreviatura"
+                            placeholder="Ej: CAS"
+                        />
+                    </div>
+                    <ParamSelect
+                        v-model="form.regimenLaboral_id"
+                        type="regimenes-laborales"
+                        label="Régimen Laboral *"
+                        :error="form.errors.regimenLaboral_id"
                     />
                 </div>
-                <ParamSelect
-                    v-model="form.regimenLaboral_id"
-                    type="regimenes-laborales"
-                    label="Régimen Laboral *"
-                    :error="form.errors.regimenLaboral_id"
-                />
+
                 <ParamSelect
                     v-model="form.tipoTrabajador_id"
                     type="tipos-trabajador"
                     label="Tipo de Trabajador *"
                     :error="form.errors.tipoTrabajador_id"
                 />
+
                 <div class="grid gap-2">
                     <Label for="descripcion">Descripción</Label>
                     <Input

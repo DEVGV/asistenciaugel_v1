@@ -36,6 +36,8 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $contextoService = app(ContextoService::class);
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -43,7 +45,13 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user()?->load('trabajador.persona'),
             ],
             'contexto' => fn () => $request->user()
-                ? app(ContextoService::class)->compartir($request->user())
+                ? $contextoService->compartir($request->user())
+                : null,
+            'permisos' => fn () => $request->user()
+                ? $request->user()->permisosParaIe($contextoService->ieId())
+                : [],
+            'perfilActivo' => fn () => $request->user()
+                ? $request->user()->perfilActivoParaIe($contextoService->ieId())
                 : null,
             'flash' => [
                 'success' => $request->session()->get('success'),

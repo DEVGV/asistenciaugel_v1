@@ -24,6 +24,7 @@ class StoreCargaHorariaRequest extends FormRequest
             'fechaInicio' => ['nullable', 'date'],
             'fechaFin' => ['nullable', 'date', 'after_or_equal:fechaInicio'],
             'titularSuplencia' => ['nullable', 'string', 'max:1'],
+            'turno_id' => ['nullable', 'integer', 'in:1,2,3'],
         ];
     }
 

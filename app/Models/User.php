@@ -59,11 +59,15 @@ class User extends Authenticatable
 
     /**
      * Obtiene los códigos de permiso del usuario para una IE específica.
-     * Los permisos globales (IE null) siempre aplican.
+     *
+     * Fuentes de permisos (unión):
+     * 1. Permisos directos (usuario_permisos_ie) para la IE o globales (IE null).
+     * 2. Permisos heredados del perfil asignado en la IE o globalmente.
      */
     public function permisosParaIe(?int $ieId): array
     {
-        return $this->permisosIe()
+        // 1. Permisos directos
+        $directos = $this->permisosIe()
             ->where(function ($q) use ($ieId) {
                 $q->where('institucionEducativa_id', $ieId)
                     ->orWhereNull('institucionEducativa_id');
@@ -71,7 +75,22 @@ class User extends Authenticatable
             ->with('permiso')
             ->get()
             ->pluck('permiso.codigo')
-            ->filter()
+            ->filter();
+
+        // 2. Permisos heredados del perfil
+        $dePerfil = $this->perfilesIe()
+            ->where('activo', true)
+            ->where(function ($q) use ($ieId) {
+                // Perfil asignado a esta IE, o admin de UGEL (IE null), o admin global (ambos null)
+                $q->where('institucionEducativa_id', $ieId)
+                    ->orWhereNull('institucionEducativa_id');
+            })
+            ->with('perfil.permisos')
+            ->get()
+            ->flatMap(fn ($asignacion) => $asignacion->perfil?->permisos?->pluck('codigo') ?? collect())
+            ->filter();
+
+        return $directos->merge($dePerfil)
             ->unique()
             ->values()
             ->toArray();
@@ -83,6 +102,50 @@ class User extends Authenticatable
     public function tienePermiso(string $codigoPermiso, ?int $ieId = null): bool
     {
         return in_array($codigoPermiso, $this->permisosParaIe($ieId));
+    }
+
+    /**
+     * Verifica si el usuario tiene al menos uno de los permisos indicados.
+     */
+    public function tieneAlgunPermiso(array $codigos, ?int $ieId = null): bool
+    {
+        $permisos = $this->permisosParaIe($ieId);
+
+        foreach ($codigos as $codigo) {
+            if (in_array($codigo, $permisos)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Obtiene el nombre del perfil activo del usuario para la IE del contexto.
+     * Si es admin de UGEL o global, devuelve ese perfil.
+     */
+    public function perfilActivoParaIe(?int $ieId): ?string
+    {
+        $asignacion = $this->perfilesIe()
+            ->where('activo', true)
+            ->with('perfil')
+            ->orderByRaw("CASE
+                WHEN \"institucionEducativa_id\" = ? THEN 1
+                WHEN \"institucionEducativa_id\" IS NULL AND \"entidadUgel_id\" IS NOT NULL THEN 2
+                WHEN \"institucionEducativa_id\" IS NULL AND \"entidadUgel_id\" IS NULL THEN 3
+                ELSE 4
+            END", [$ieId ?? 0])
+            ->first();
+
+        return $asignacion?->perfil?->nombre;
+    }
+
+    /**
+     * Verifica si el perfil activo del usuario para la IE dada es "Docente".
+     */
+    public function esDocente(?int $ieId): bool
+    {
+        return $this->perfilActivoParaIe($ieId) === 'Docente';
     }
 
     /**

@@ -15,36 +15,41 @@ class EmailController extends Controller
         private EmailService $emailService,
     ) {}
 
+    private function redirectToTrabajador(Personas $persona, string $message): RedirectResponse
+    {
+        $trabajador = $persona->trabajador;
+
+        return $trabajador
+            ? redirect()->route('trabajadores.show', $trabajador)->with('success', $message)
+            : redirect()->route('trabajadores.index')->with('success', $message);
+    }
+
     public function store(StoreEmailRequest $request, Personas $persona): RedirectResponse
     {
         $this->emailService->crear($persona, $request->toDTO());
 
-        return redirect()->route('personas.show', $persona)
-            ->with('success', 'Email agregado exitosamente.');
+        return $this->redirectToTrabajador($persona, 'Email agregado exitosamente.');
     }
 
     public function update(StoreEmailRequest $request, Emails $email): RedirectResponse
     {
         $this->emailService->actualizar($email, $request->toDTO());
 
-        return redirect()->route('personas.show', $email->persona_id)
-            ->with('success', 'Email actualizado exitosamente.');
+        return $this->redirectToTrabajador($email->persona, 'Email actualizado exitosamente.');
     }
 
     public function darDeBaja(Emails $email): RedirectResponse
     {
         $this->emailService->darDeBaja($email);
 
-        return redirect()->route('personas.show', $email->persona_id)
-            ->with('success', 'Email dado de baja exitosamente.');
+        return $this->redirectToTrabajador($email->persona, 'Email dado de baja exitosamente.');
     }
 
     public function destroy(Emails $email): RedirectResponse
     {
-        $personaId = $email->persona_id;
+        $persona = $email->persona;
         $this->emailService->eliminar($email);
 
-        return redirect()->route('personas.show', $personaId)
-            ->with('success', 'Email eliminado exitosamente.');
+        return $this->redirectToTrabajador($persona, 'Email eliminado exitosamente.');
     }
 }

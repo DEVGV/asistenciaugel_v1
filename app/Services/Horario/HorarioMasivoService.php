@@ -21,13 +21,6 @@ class HorarioMasivoService
      * Crea o actualiza horarios de cursos de forma masiva, incluyendo la asignación
      * de docentes, y regenera el HorarioTrabajador al final para todos los afectados.
      *
-     * Casuísticas:
-     *  - id nulo   → crear; si ya existe duplicado (sección+curso+día+año) → actualizar
-     *  - id número → actualizar el HorarioCurso existente
-     *  - trabajador_id presente → crear o actualizar CargaHoraria para ese HorarioCurso
-     *  - Si cambia el docente → se regenera también el horario del anterior
-     *  - Regeneración agrupada al final: una sola llamada por trabajador+IE+año
-     *
      * @param  array<int, array<string, mixed>>  $filas  Validadas por StoreHorarioMasivoRequest
      * @return array{
      *     creados: int,
@@ -39,11 +32,11 @@ class HorarioMasivoService
      */
     public function procesarMasivo(array $filas): array
     {
-        $creados         = 0;
-        $actualizados    = 0;
-        $docentesAsig    = 0;
-        $docentesActual  = 0;
-        $errores         = [];
+        $creados = 0;
+        $actualizados = 0;
+        $docentesAsig = 0;
+        $docentesActual = 0;
+        $errores = [];
 
         // Pre-cargar IDs válidos de trabajadores para evitar N+1
         $trabIds = collect($filas)
@@ -59,79 +52,90 @@ class HorarioMasivoService
 
         // Acumulador para regeneración agrupada: trabId → anio → [ieId, ...]
         $afectados = [];
+        // Turnos seleccionados por el usuario: trabId → anio → ieId → nroDia → turno_id
+        $turnosPorAfectado = [];
 
-        DB::transaction(function () use (
-            $filas,
-            $validTrabajadores,
-            &$creados,
-            &$actualizados,
-            &$docentesAsig,
-            &$docentesActual,
-            &$errores,
-            &$afectados
-        ) {
+        DB::beginTransaction();
+
+        try {
             foreach ($filas as $idx => $fila) {
                 $rowNum = $idx + 1;
+                $savepoint = "row_{$idx}";
+
+                DB::unprepared("SAVEPOINT {$savepoint}");
 
                 try {
                     $horarioCurso = $this->resolverHorarioCurso($fila, $rowNum, $errores, $creados, $actualizados);
+
+                    if ($horarioCurso === null) {
+                        DB::unprepared("RELEASE SAVEPOINT {$savepoint}");
+
+                        continue;
+                    }
+
+                    if (! empty($fila['trabajador_id'])) {
+                        $trabajadorId = (int) $fila['trabajador_id'];
+
+                        if (! isset($validTrabajadores[$trabajadorId])) {
+                            $errores[$rowNum] = ($errores[$rowNum] ?? '')
+                                ." Trabajador id={$trabajadorId} no existe.";
+                        } else {
+                            $this->resolverCargaHoraria(
+                                $horarioCurso,
+                                $fila,
+                                $trabajadorId,
+                                $afectados,
+                                $docentesAsig,
+                                $docentesActual,
+                            );
+
+                            // Recoger turno seleccionado para pasarlo a regenerarDesdeCargas
+                            if (! empty($fila['turno_id'])) {
+                                $ieId = $horarioCurso->seccion->grado->institucionEduc_id ?? null;
+                                if ($ieId) {
+                                    $turnosPorAfectado[$trabajadorId][$fila['anio']][$ieId][$fila['nroDia']] = (int) $fila['turno_id'];
+                                }
+                            }
+                        }
+                    }
+
+                    DB::unprepared("RELEASE SAVEPOINT {$savepoint}");
                 } catch (\Throwable $e) {
-                    $errores[$rowNum] = 'Error al guardar horario: ' . $e->getMessage();
-                    continue;
-                }
-
-                if ($horarioCurso === null) {
-                    continue;
-                }
-
-                if (empty($fila['trabajador_id'])) {
-                    continue;
-                }
-
-                $trabajadorId = (int) $fila['trabajador_id'];
-
-                if (! isset($validTrabajadores[$trabajadorId])) {
-                    $errores[$rowNum] = ($errores[$rowNum] ?? '')
-                        . " Trabajador id={$trabajadorId} no existe.";
-                    continue;
-                }
-
-                try {
-                    $this->resolverCargaHoraria(
-                        $horarioCurso,
-                        $fila,
-                        $trabajadorId,
-                        $afectados,
-                        $docentesAsig,
-                        $docentesActual,
-                    );
-                } catch (\Throwable $e) {
-                    $errores[$rowNum] = ($errores[$rowNum] ?? '')
-                        . ' Error al asignar docente: ' . $e->getMessage();
+                    DB::unprepared("ROLLBACK TO SAVEPOINT {$savepoint}");
+                    $errores[$rowNum] = 'Error al guardar horario: '.$e->getMessage();
+                    \Log::warning("HorarioMasivo fila {$rowNum}: ".$e->getMessage());
                 }
             }
-        });
+
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
 
         // Regenerar HorarioTrabajador fuera de la transacción principal,
-        // una sola vez por trabajador+IE+año
+        // una sola vez por trabajador+IE+año, pasando los turnos seleccionados
         foreach ($afectados as $trabId => $anios) {
             foreach ($anios as $anio => $ieIds) {
                 foreach (array_unique($ieIds) as $ieId) {
+                    $turnosDia = $turnosPorAfectado[$trabId][$anio][$ieId] ?? [];
+
                     $this->horarioTrabajadorService->regenerarDesdeCargas(
                         (int) $trabId,
                         (int) $anio,
                         (int) $ieId,
+                        $turnosDia,
                     );
                 }
             }
         }
 
         return [
-            'creados'              => $creados,
-            'actualizados'         => $actualizados,
-            'docentes_asignados'   => $docentesAsig,
+            'creados' => $creados,
+            'actualizados' => $actualizados,
+            'docentes_asignados' => $docentesAsig,
             'docentes_actualizados' => $docentesActual,
-            'errores'              => $errores,
+            'errores' => $errores,
         ];
     }
 
@@ -144,7 +148,7 @@ class HorarioMasivoService
      * Devuelve el modelo resultante, o null si hubo un error registrado en $errores.
      *
      * @param  array<string, mixed>  $fila
-     * @param  array<int, string>    $errores  Pasado por referencia
+     * @param  array<int, string>  $errores  Pasado por referencia
      */
     private function resolverHorarioCurso(
         array $fila,
@@ -153,13 +157,13 @@ class HorarioMasivoService
         int &$creados,
         int &$actualizados
     ): ?ConasisHorariosCursos {
-        $diaMap    = [1 => 'L', 2 => 'M', 3 => 'X', 4 => 'J', 5 => 'V', 6 => 'S', 7 => 'D'];
+        $diaMap = [1 => 'L', 2 => 'M', 3 => 'X', 4 => 'J', 5 => 'V', 6 => 'S', 7 => 'D'];
         $diaSemana = $fila['diaSemana'] ?? ($diaMap[$fila['nroDia']] ?? 'L');
-        $minAcum   = $this->calcularMinAcum($fila['horaInicio'], $fila['horaFin']);
+        $minAcum = $this->calcularMinAcum($fila['horaInicio'], $fila['horaFin']);
 
         $datos = array_merge($fila, [
-            'diaSemana'  => $diaSemana,
-            'minAcum'    => $minAcum,
+            'diaSemana' => $diaSemana,
+            'minAcum' => $minAcum,
             'created_by' => auth()->id() ?? 1,
         ]);
 
@@ -181,9 +185,9 @@ class HorarioMasivoService
         // Verificar duplicado sección+curso+día+año
         $existente = ConasisHorariosCursos::where([
             'seccion_id' => $fila['seccion_id'],
-            'curso_id'   => $fila['curso_id'],
-            'nroDia'     => $fila['nroDia'],
-            'anio'       => $fila['anio'],
+            'curso_id' => $fila['curso_id'],
+            'nroDia' => $fila['nroDia'],
+            'anio' => $fila['anio'],
         ])->first();
 
         if ($existente) {
@@ -205,8 +209,8 @@ class HorarioMasivoService
      * Crea o actualiza la CargaHoraria para un HorarioCurso dado.
      * Acumula los trabajadores afectados para regenerar su horario al final.
      *
-     * @param  array<string, mixed>                       $fila
-     * @param  array<int, array<int, array<int>>>         $afectados  Pasado por referencia
+     * @param  array<string, mixed>  $fila
+     * @param  array<int, array<int, array<int>>>  $afectados  Pasado por referencia
      */
     private function resolverCargaHoraria(
         ConasisHorariosCursos $horarioCurso,
@@ -220,13 +224,13 @@ class HorarioMasivoService
         $anio = $fila['anio'];
 
         $dto = CreateCargaHorariaDTO::from([
-            'horarioCurso_id'   => $horarioCurso->id,
-            'trabajador_id'     => $trabajadorId,
+            'horarioCurso_id' => $horarioCurso->id,
+            'trabajador_id' => $trabajadorId,
             'altaTrabajador_id' => $fila['altaTrabajador_id'] ?? null,
-            'titularSuplencia'  => $fila['titularSuplencia'] ?? 'T',
-            'fechaInicio'       => $fila['fechaInicioDocente'] ?? null,
-            'fechaFin'          => $fila['fechaFinDocente'] ?? null,
-            'created_by'        => auth()->id() ?? 1,
+            'titularSuplencia' => $fila['titularSuplencia'] ?? 'T',
+            'fechaInicio' => $fila['fechaInicioDocente'] ?? null,
+            'fechaFin' => $fila['fechaFinDocente'] ?? null,
+            'created_by' => auth()->id() ?? 1,
         ]);
 
         $cargaExistente = ! empty($fila['carga_id'])

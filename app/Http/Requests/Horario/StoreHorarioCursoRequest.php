@@ -29,6 +29,17 @@ class StoreHorarioCursoRequest extends FormRequest
         ];
     }
 
+    public function withValidator(\Illuminate\Contracts\Validation\Validator $validator): void
+    {
+        $validator->after(function (\Illuminate\Contracts\Validation\Validator $v) {
+            $inicio = $this->input('horaInicio');
+            $fin = $this->input('horaFin');
+            if ($inicio && $fin && $fin <= $inicio) {
+                $v->errors()->add('horaFin', 'La hora de fin debe ser posterior a la hora de inicio.');
+            }
+        });
+    }
+
     public function toDTO(): CreateHorarioCursoDTO
     {
         return CreateHorarioCursoDTO::from($this->validated());

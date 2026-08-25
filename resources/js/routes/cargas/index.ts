@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\Horario\CargaHorariaController::update
-* @see app/Http/Controllers/Horario/CargaHorariaController.php:27
+* @see app/Http/Controllers/Horario/CargaHorariaController.php:28
 * @route '/cargas/{cargaHoraria}'
 */
 export const update = (args: { cargaHoraria: number | { id: number } } | [cargaHoraria: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -16,7 +16,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Horario\CargaHorariaController::update
-* @see app/Http/Controllers/Horario/CargaHorariaController.php:27
+* @see app/Http/Controllers/Horario/CargaHorariaController.php:28
 * @route '/cargas/{cargaHoraria}'
 */
 update.url = (args: { cargaHoraria: number | { id: number } } | [cargaHoraria: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ update.url = (args: { cargaHoraria: number | { id: number } } | [cargaHoraria: n
 
 /**
 * @see \App\Http\Controllers\Horario\CargaHorariaController::update
-* @see app/Http/Controllers/Horario/CargaHorariaController.php:27
+* @see app/Http/Controllers/Horario/CargaHorariaController.php:28
 * @route '/cargas/{cargaHoraria}'
 */
 update.put = (args: { cargaHoraria: number | { id: number } } | [cargaHoraria: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -59,7 +59,7 @@ update.put = (args: { cargaHoraria: number | { id: number } } | [cargaHoraria: n
 
 /**
 * @see \App\Http\Controllers\Horario\CargaHorariaController::update
-* @see app/Http/Controllers/Horario/CargaHorariaController.php:27
+* @see app/Http/Controllers/Horario/CargaHorariaController.php:28
 * @route '/cargas/{cargaHoraria}'
 */
 update.patch = (args: { cargaHoraria: number | { id: number } } | [cargaHoraria: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -69,7 +69,7 @@ update.patch = (args: { cargaHoraria: number | { id: number } } | [cargaHoraria:
 
 /**
 * @see \App\Http\Controllers\Horario\CargaHorariaController::update
-* @see app/Http/Controllers/Horario/CargaHorariaController.php:27
+* @see app/Http/Controllers/Horario/CargaHorariaController.php:28
 * @route '/cargas/{cargaHoraria}'
 */
 const updateForm = (args: { cargaHoraria: number | { id: number } } | [cargaHoraria: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -84,7 +84,7 @@ const updateForm = (args: { cargaHoraria: number | { id: number } } | [cargaHora
 
 /**
 * @see \App\Http\Controllers\Horario\CargaHorariaController::update
-* @see app/Http/Controllers/Horario/CargaHorariaController.php:27
+* @see app/Http/Controllers/Horario/CargaHorariaController.php:28
 * @route '/cargas/{cargaHoraria}'
 */
 updateForm.put = (args: { cargaHoraria: number | { id: number } } | [cargaHoraria: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -99,7 +99,7 @@ updateForm.put = (args: { cargaHoraria: number | { id: number } } | [cargaHorari
 
 /**
 * @see \App\Http\Controllers\Horario\CargaHorariaController::update
-* @see app/Http/Controllers/Horario/CargaHorariaController.php:27
+* @see app/Http/Controllers/Horario/CargaHorariaController.php:28
 * @route '/cargas/{cargaHoraria}'
 */
 updateForm.patch = (args: { cargaHoraria: number | { id: number } } | [cargaHoraria: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -116,7 +116,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\Horario\CargaHorariaController::destroy
-* @see app/Http/Controllers/Horario/CargaHorariaController.php:37
+* @see app/Http/Controllers/Horario/CargaHorariaController.php:39
 * @route '/cargas/{cargaHoraria}'
 */
 export const destroy = (args: { cargaHoraria: number | { id: number } } | [cargaHoraria: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -131,7 +131,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Horario\CargaHorariaController::destroy
-* @see app/Http/Controllers/Horario/CargaHorariaController.php:37
+* @see app/Http/Controllers/Horario/CargaHorariaController.php:39
 * @route '/cargas/{cargaHoraria}'
 */
 destroy.url = (args: { cargaHoraria: number | { id: number } } | [cargaHoraria: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -164,7 +164,7 @@ destroy.url = (args: { cargaHoraria: number | { id: number } } | [cargaHoraria: 
 
 /**
 * @see \App\Http\Controllers\Horario\CargaHorariaController::destroy
-* @see app/Http/Controllers/Horario/CargaHorariaController.php:37
+* @see app/Http/Controllers/Horario/CargaHorariaController.php:39
 * @route '/cargas/{cargaHoraria}'
 */
 destroy.delete = (args: { cargaHoraria: number | { id: number } } | [cargaHoraria: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -174,7 +174,7 @@ destroy.delete = (args: { cargaHoraria: number | { id: number } } | [cargaHorari
 
 /**
 * @see \App\Http\Controllers\Horario\CargaHorariaController::destroy
-* @see app/Http/Controllers/Horario/CargaHorariaController.php:37
+* @see app/Http/Controllers/Horario/CargaHorariaController.php:39
 * @route '/cargas/{cargaHoraria}'
 */
 const destroyForm = (args: { cargaHoraria: number | { id: number } } | [cargaHoraria: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -189,7 +189,7 @@ const destroyForm = (args: { cargaHoraria: number | { id: number } } | [cargaHor
 
 /**
 * @see \App\Http\Controllers\Horario\CargaHorariaController::destroy
-* @see app/Http/Controllers/Horario/CargaHorariaController.php:37
+* @see app/Http/Controllers/Horario/CargaHorariaController.php:39
 * @route '/cargas/{cargaHoraria}'
 */
 destroyForm.delete = (args: { cargaHoraria: number | { id: number } } | [cargaHoraria: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

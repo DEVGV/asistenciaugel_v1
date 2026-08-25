@@ -16,7 +16,8 @@ class CargaHorariaController extends Controller
 
     public function store(StoreCargaHorariaRequest $request): JsonResponse
     {
-        $carga = $this->cargaHorariaService->asignar($request->toDTO());
+        $turnoId = $request->input('turno_id') ? (int) $request->input('turno_id') : null;
+        $carga = $this->cargaHorariaService->asignar($request->toDTO(), $turnoId);
 
         return response()->json([
             'message' => 'Docente asignado al curso con éxito.',
@@ -26,7 +27,8 @@ class CargaHorariaController extends Controller
 
     public function update(StoreCargaHorariaRequest $request, ConasisCargaHoraria $cargaHoraria): JsonResponse
     {
-        $carga = $this->cargaHorariaService->actualizar($cargaHoraria, $request->toDTO());
+        $turnoId = $request->input('turno_id') ? (int) $request->input('turno_id') : null;
+        $carga = $this->cargaHorariaService->actualizar($cargaHoraria, $request->toDTO(), $turnoId);
 
         return response()->json([
             'message' => 'Asignación actualizada con éxito.',

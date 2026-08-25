@@ -60,7 +60,7 @@ store.form = storeForm
 * @see app/Http/Controllers/Tramite/PermisoController.php:53
 * @route '/permisos/{expediente}/validar'
 */
-export const validar = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const validar = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: validar.url(args, options),
     method: 'post',
 })
@@ -75,7 +75,7 @@ validar.definition = {
 * @see app/Http/Controllers/Tramite/PermisoController.php:53
 * @route '/permisos/{expediente}/validar'
 */
-validar.url = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+validar.url = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { expediente: args }
     }
@@ -108,7 +108,7 @@ validar.url = (args: { expediente: number | { id: number } } | [expediente: numb
 * @see app/Http/Controllers/Tramite/PermisoController.php:53
 * @route '/permisos/{expediente}/validar'
 */
-validar.post = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+validar.post = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: validar.url(args, options),
     method: 'post',
 })
@@ -118,7 +118,7 @@ validar.post = (args: { expediente: number | { id: number } } | [expediente: num
 * @see app/Http/Controllers/Tramite/PermisoController.php:53
 * @route '/permisos/{expediente}/validar'
 */
-const validarForm = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const validarForm = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: validar.url(args, options),
     method: 'post',
 })
@@ -128,7 +128,7 @@ const validarForm = (args: { expediente: number | { id: number } } | [expediente
 * @see app/Http/Controllers/Tramite/PermisoController.php:53
 * @route '/permisos/{expediente}/validar'
 */
-validarForm.post = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+validarForm.post = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: validar.url(args, options),
     method: 'post',
 })
@@ -140,7 +140,7 @@ validar.form = validarForm
 * @see app/Http/Controllers/Tramite/PermisoController.php:61
 * @route '/permisos/{expediente}/anular'
 */
-export const anular = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const anular = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: anular.url(args, options),
     method: 'post',
 })
@@ -155,7 +155,7 @@ anular.definition = {
 * @see app/Http/Controllers/Tramite/PermisoController.php:61
 * @route '/permisos/{expediente}/anular'
 */
-anular.url = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+anular.url = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { expediente: args }
     }
@@ -188,7 +188,7 @@ anular.url = (args: { expediente: number | { id: number } } | [expediente: numbe
 * @see app/Http/Controllers/Tramite/PermisoController.php:61
 * @route '/permisos/{expediente}/anular'
 */
-anular.post = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+anular.post = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: anular.url(args, options),
     method: 'post',
 })
@@ -198,7 +198,7 @@ anular.post = (args: { expediente: number | { id: number } } | [expediente: numb
 * @see app/Http/Controllers/Tramite/PermisoController.php:61
 * @route '/permisos/{expediente}/anular'
 */
-const anularForm = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const anularForm = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: anular.url(args, options),
     method: 'post',
 })
@@ -208,7 +208,7 @@ const anularForm = (args: { expediente: number | { id: number } } | [expediente:
 * @see app/Http/Controllers/Tramite/PermisoController.php:61
 * @route '/permisos/{expediente}/anular'
 */
-anularForm.post = (args: { expediente: number | { id: number } } | [expediente: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+anularForm.post = (args: { expediente: string | number | { id: string | number } } | [expediente: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: anular.url(args, options),
     method: 'post',
 })

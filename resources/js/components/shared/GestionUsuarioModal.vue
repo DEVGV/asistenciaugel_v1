@@ -9,6 +9,7 @@
  *   :user-id        → carga vía /api/usuarios/{id}/datos
  */
 import { ref, watch, computed, onMounted } from 'vue';
+import { toast } from 'vue-sonner';
 import {
     KeyRound,
     ShieldCheck,
@@ -109,6 +110,7 @@ const permisosCargando = ref(false);
 const permisosSeleccionados = ref<Set<number>>(new Set());
 const savingPermisos = ref(false);
 const permisosSaved = ref(false);
+const permisosError = ref<string | null>(null);
 
 // Plantilla de perfil
 const perfilPlantillaId = ref<number | null>(null);
@@ -210,6 +212,7 @@ async function cargarPermisosIe(ieId: number | null) {
     permisosCargando.value = true;
     permisosSeleccionados.value = new Set();
     permisosSaved.value = false;
+    permisosError.value = null;
     perfilPlantillaId.value = null;
     try {
         const param = ieId === null ? 'null' : String(ieId);
@@ -260,7 +263,10 @@ async function executeRevocar() {
             showRevocarConfirm.value = false;
             perfilAEliminar.value = null;
             await cargarDatos();
+            toast.success('Acceso revocado');
             emit('updated');
+        } else {
+            toast.error('Error al revocar acceso');
         }
     } finally {
         revocando.value = false;
@@ -292,7 +298,10 @@ async function submitAsignarUgel() {
             asignarUgelId.value = null;
             section.value = 'main';
             await cargarDatos();
+            toast.success('Acceso UGEL asignado');
             emit('updated');
+        } else {
+            toast.error('Error al asignar acceso UGEL');
         }
     } finally {
         savingAsignarUgel.value = false;
@@ -323,7 +332,10 @@ async function submitAsignarIe() {
             asignarIeId.value = null;
             section.value = 'main';
             await cargarDatos();
+            toast.success('Perfil asignado a IE');
             emit('updated');
+        } else {
+            toast.error('Error al asignar perfil');
         }
     } finally {
         savingAsignarIe.value = false;
@@ -339,6 +351,7 @@ function resetState() {
     passwordData.value = { password: '', password_confirmation: '', error: '' };
     perfilPlantillaId.value = null;
     permisosSaved.value = false;
+    permisosError.value = null;
     perfilesAsignados.value = [];
     asignarUgelPerfilId.value = null;
     asignarUgelId.value = null;
@@ -403,6 +416,7 @@ watch(perfilPlantillaId, (val) => {
 async function guardarPermisos() {
     if (!usuario.value || ieSeleccionada.value === undefined) return;
     savingPermisos.value = true;
+    permisosError.value = null;
     try {
         const res = await fetch(
             `/api/usuarios/${usuario.value.id}/permisos-ie`,
@@ -422,11 +436,18 @@ async function guardarPermisos() {
         );
         if (!res.ok) {
             const d = await res.json().catch(() => ({}));
-            error.value = d?.error ?? 'Error al guardar permisos';
+            const msg = d?.error ?? 'Error al guardar permisos';
+            permisosError.value = msg;
+            toast.error(msg);
         } else {
             permisosSaved.value = true;
+            toast.success('Permisos guardados correctamente');
             emit('updated');
         }
+    } catch {
+        const msg = 'Error de conexión al guardar permisos';
+        permisosError.value = msg;
+        toast.error(msg);
     } finally {
         savingPermisos.value = false;
     }
@@ -476,6 +497,7 @@ async function submitPassword() {
                 error: '',
             };
             section.value = 'main';
+            toast.success('Contraseña actualizada');
         }
     } finally {
         savingPassword.value = false;
@@ -497,6 +519,11 @@ async function executeToggle() {
         });
         showToggleConfirm.value = false;
         await cargarDatos();
+        toast.success(
+            usuario.value?.activo
+                ? 'Usuario activado'
+                : 'Usuario desactivado',
+        );
         emit('updated');
     } finally {
         togglingActivo.value = false;
@@ -867,6 +894,14 @@ const ieLabel = computed(() => {
                                 class="ml-auto text-xs font-medium text-green-600"
                                 >✓ Guardado</span
                             >
+                        </div>
+
+                        <!-- Error al guardar (inline, no destruye la vista) -->
+                        <div
+                            v-if="permisosError"
+                            class="mb-4 rounded border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
+                        >
+                            {{ permisosError }}
                         </div>
 
                         <!-- Plantilla desde perfil -->

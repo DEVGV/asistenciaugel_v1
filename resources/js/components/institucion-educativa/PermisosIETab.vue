@@ -1,78 +1,91 @@
 <script setup lang="ts">
-import { router, useForm } from '@inertiajs/vue3';
 import { useDebounceFn } from '@vueuse/core';
 import {
     AlertCircle,
     ChevronLeft,
     ChevronRight,
     ClipboardCheck,
+    Eye,
+    FileCheck,
     Plus,
     RefreshCw,
     Search,
 } from 'lucide-vue-next';
 import { onMounted, ref, watch } from 'vue';
-import ConfirmModal from '@/components/shared/ConfirmModal.vue';
-import FormModal from '@/components/shared/FormModal.vue';
-import PermisoFormModal from '@/components/tramite/PermisoFormModal.vue';
-import PermisosList from '@/components/tramite/PermisosList.vue';
+import ExpedienteDetailModal from '@/components/tramite/ExpedienteDetailModal.vue';
+import ExpedienteFormModal from '@/components/tramite/ExpedienteFormModal.vue';
+import RegistroDirectoModal from '@/components/tramite/RegistroDirectoModal.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import type {
-    AltaPermisoOption,
-    ExpedientePermiso,
-} from '@/types/models/tramite';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+import { usePermisos } from '@/composables/usePermisos';
+import { TIPO_EXPEDIENTE_LABELS, estadoLabel, type Expediente } from '@/types/models/tramite';
 
 const props = defineProps<{
     institucionId: number;
 }>();
 
-const ESTADO_FILTROS = [
-    { value: '', label: 'Todos' },
-    { value: 'PEN', label: 'Pendientes' },
-    { value: 'VAL', label: 'Validados' },
-    { value: 'REC', label: 'Rechazados' },
-] as const;
+const { can, esAdmin, esDirector } = usePermisos();
 
-const permisos = ref<ExpedientePermiso[]>([]);
+const expedientes = ref<Expediente[]>([]);
 const loading = ref(false);
 const error = ref(false);
-const estadoFiltro = ref<string>('');
 const search = ref('');
 const page = ref(1);
 const lastPage = ref(1);
 const total = ref(0);
+const showModal = ref(false);
+const showDirectoModal = ref(false);
 
-async function loadPermisos() {
+// Modal de detalle
+const showDetailModal = ref(false);
+const selectedExpedienteId = ref<number | null>(null);
+
+function openDetail(exp: Expediente) {
+    selectedExpedienteId.value = exp.id;
+    showDetailModal.value = true;
+}
+
+const ESTADO_CLASES: Record<string, string> = {
+    '1': 'bg-amber-100 text-amber-700 ring-1 ring-amber-200',
+    '2': 'bg-sky-100 text-sky-700 ring-1 ring-sky-200',
+    '3': 'bg-red-100 text-red-700 ring-1 ring-red-200',
+    '4': 'bg-blue-100 text-blue-700 ring-1 ring-blue-200',
+    '5': 'bg-muted text-muted-foreground ring-1 ring-border',
+};
+
+function nombreTrabajador(exp: Expediente): string {
+    const p = exp.trabajador?.persona;
+    if (!p) return '—';
+    return [p.paterno, p.materno, p.nombre].filter(Boolean).join(' ');
+}
+
+async function loadExpedientes() {
     loading.value = true;
     error.value = false;
 
     try {
-        const params = new URLSearchParams({
-            page: String(page.value),
-        });
-
-        if (estadoFiltro.value) {
-            params.set('estado', estadoFiltro.value);
-        }
-
-        if (search.value) {
-            params.set('search', search.value);
-        }
+        const params = new URLSearchParams({ page: String(page.value) });
+        if (search.value) params.set('search', search.value);
 
         const res = await fetch(
-            `/instituciones/${props.institucionId}/permisos?${params}`,
+            `/api/instituciones/${props.institucionId}/expedientes?${params}`,
             { headers: { Accept: 'application/json' } },
         );
 
-        if (!res.ok) {
-            throw new Error();
-        }
+        if (!res.ok) throw new Error();
 
         const result = await res.json();
-        permisos.value = result.data;
+        expedientes.value = result.data ?? [];
         lastPage.value = result.last_page ?? 1;
-        total.value = result.total ?? result.data.length;
+        total.value = result.total ?? result.data?.length ?? 0;
     } catch {
         error.value = true;
     } finally {
@@ -80,104 +93,15 @@ async function loadPermisos() {
     }
 }
 
-onMounted(() => loadPermisos());
-
-watch(estadoFiltro, () => {
-    page.value = 1;
-    loadPermisos();
-});
-
-watch(page, () => loadPermisos());
+onMounted(() => loadExpedientes());
+watch(page, () => loadExpedientes());
 
 const debouncedSearch = useDebounceFn(() => {
     page.value = 1;
-    loadPermisos();
+    loadExpedientes();
 }, 350);
 
 watch(search, () => debouncedSearch());
-
-// ── Crear ─────────────────────────────────────────────────────────────────────
-const showFormModal = ref(false);
-const altasOptions = ref<AltaPermisoOption[]>([]);
-const altasLoaded = ref(false);
-
-async function openCreate() {
-    if (!altasLoaded.value) {
-        try {
-            const res = await fetch(
-                `/instituciones/${props.institucionId}/permisos-altas`,
-                { headers: { Accept: 'application/json' } },
-            );
-            const result = await res.json();
-            altasOptions.value = result.data;
-            altasLoaded.value = true;
-        } catch {
-            altasOptions.value = [];
-        }
-    }
-
-    showFormModal.value = true;
-}
-
-// ── Validar ───────────────────────────────────────────────────────────────────
-const validarPermiso = ref<ExpedientePermiso | null>(null);
-const validando = ref(false);
-
-function confirmarValidar() {
-    if (!validarPermiso.value) {
-        return;
-    }
-
-    validando.value = true;
-
-    router.post(
-        `/permisos/${validarPermiso.value.id}/validar`,
-        { estado: 'VAL' },
-        {
-            preserveScroll: true,
-            preserveState: true,
-            onSuccess: () => {
-                validarPermiso.value = null;
-                loadPermisos();
-            },
-            onFinish: () => {
-                validando.value = false;
-            },
-        },
-    );
-}
-
-// ── Rechazar ──────────────────────────────────────────────────────────────────
-const showRechazoModal = ref(false);
-const rechazoPermiso = ref<ExpedientePermiso | null>(null);
-
-const rechazoForm = useForm({
-    estado: 'REC',
-    observacion: '',
-});
-
-function openRechazo(permiso: ExpedientePermiso) {
-    rechazoPermiso.value = permiso;
-    rechazoForm.reset();
-    rechazoForm.clearErrors();
-    showRechazoModal.value = true;
-}
-
-function submitRechazo() {
-    if (!rechazoPermiso.value) {
-        return;
-    }
-
-    rechazoForm.post(`/permisos/${rechazoPermiso.value.id}/validar`, {
-        preserveScroll: true,
-        preserveState: true,
-        onSuccess: () => {
-            showRechazoModal.value = false;
-            rechazoPermiso.value = null;
-            loadPermisos();
-        },
-    });
-}
 </script>
 
 <template>
@@ -186,7 +110,7 @@ function submitRechazo() {
         <div class="flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-2">
                 <ClipboardCheck class="h-5 w-5 text-primary" />
-                <h2 class="text-base font-bold">Permisos del Personal</h2>
+                <h2 class="text-base font-bold">Expedientes</h2>
                 <span
                     v-if="!loading && !error"
                     class="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground"
@@ -200,97 +124,130 @@ function submitRechazo() {
                     variant="ghost"
                     size="icon"
                     class="h-8 w-8"
-                    title="Recargar"
                     :disabled="loading"
-                    @click="loadPermisos"
+                    @click="loadExpedientes"
                 >
-                    <RefreshCw
-                        class="h-4 w-4"
-                        :class="{ 'animate-spin': loading }"
-                    />
+                    <RefreshCw class="h-4 w-4" :class="{ 'animate-spin': loading }" />
                 </Button>
-                <Button size="sm" class="h-8 text-xs" @click="openCreate">
+                <Button v-if="esDirector || esAdmin" size="sm" variant="outline" class="h-8 text-xs" @click="showDirectoModal = true">
+                    <FileCheck class="mr-1 h-3.5 w-3.5" />
+                    Registrar permiso
+                </Button>
+                <Button v-if="can('tramites.crear')" size="sm" class="h-8 text-xs" @click="showModal = true">
                     <Plus class="mr-1 h-3.5 w-3.5" />
-                    Nueva Solicitud
+                    Nuevo expediente
                 </Button>
             </div>
         </div>
 
-        <!-- Filtros -->
-        <div class="flex flex-wrap items-center gap-2">
-            <div class="flex gap-1 rounded-lg border bg-muted/30 p-1">
-                <button
-                    v-for="filtro in ESTADO_FILTROS"
-                    :key="filtro.value"
-                    type="button"
-                    class="rounded-md px-3 py-1 text-xs font-medium transition-colors"
-                    :class="
-                        estadoFiltro === filtro.value
-                            ? 'bg-background text-foreground shadow-xs'
-                            : 'text-muted-foreground hover:text-foreground'
-                    "
-                    @click="estadoFiltro = filtro.value"
-                >
-                    {{ filtro.label }}
-                </button>
-            </div>
-
-            <div class="relative">
-                <Search
-                    class="absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
-                />
-                <Input
-                    v-model="search"
-                    placeholder="Buscar trabajador…"
-                    class="h-8 w-56 pl-8 text-xs"
-                />
-            </div>
+        <!-- Búsqueda -->
+        <div class="relative w-full sm:w-64">
+            <Search class="absolute top-2.5 left-2.5 h-3.5 w-3.5 text-muted-foreground" />
+            <Input v-model="search" placeholder="Buscar trabajador…" class="h-8 pl-8 text-xs" />
         </div>
 
         <!-- Error -->
         <div
             v-if="error"
-            class="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/20 dark:text-red-300"
+            class="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
         >
             <AlertCircle class="h-4 w-4 shrink-0" />
-            Error al cargar las solicitudes. Intente nuevamente.
+            Error al cargar los expedientes. Intente nuevamente.
         </div>
 
         <!-- Skeleton -->
-        <div v-else-if="loading" class="space-y-3">
-            <div
-                v-for="i in 3"
-                :key="i"
-                class="h-28 animate-pulse rounded-xl border bg-muted/30"
-            />
+        <div v-else-if="loading" class="rounded-lg border bg-card">
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>Código</TableHead>
+                        <TableHead>Trabajador</TableHead>
+                        <TableHead>Tipo</TableHead>
+                        <TableHead>Asunto</TableHead>
+                        <TableHead>Fecha</TableHead>
+                        <TableHead>Estado</TableHead>
+                        <TableHead class="w-16" />
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    <TableRow v-for="i in 3" :key="i">
+                        <TableCell><div class="h-4 w-16 animate-pulse rounded bg-muted" /></TableCell>
+                        <TableCell><div class="h-4 w-32 animate-pulse rounded bg-muted" /></TableCell>
+                        <TableCell><div class="h-4 w-20 animate-pulse rounded bg-muted" /></TableCell>
+                        <TableCell><div class="h-4 w-40 animate-pulse rounded bg-muted" /></TableCell>
+                        <TableCell><div class="h-4 w-24 animate-pulse rounded bg-muted" /></TableCell>
+                        <TableCell><div class="h-6 w-20 animate-pulse rounded bg-muted" /></TableCell>
+                        <TableCell><div class="h-8 w-8 animate-pulse rounded bg-muted" /></TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
         </div>
 
         <!-- Vacío -->
         <div
-            v-else-if="permisos.length === 0"
-            class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed py-14 text-center"
+            v-else-if="expedientes.length === 0"
+            class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed py-14 text-center bg-card"
         >
             <ClipboardCheck class="mb-3 h-10 w-10 text-muted-foreground/40" />
-            <p class="text-sm font-medium text-muted-foreground">
-                Sin solicitudes de permiso para los filtros seleccionados.
-            </p>
+            <p class="text-sm font-medium text-muted-foreground">Sin expedientes para los filtros seleccionados.</p>
+            <Button v-if="can('tramites.crear')" size="sm" variant="outline" class="mt-4" @click="showModal = true">
+                <Plus class="mr-1.5 h-3.5 w-3.5" />
+                Nuevo expediente
+            </Button>
         </div>
 
         <!-- Lista -->
         <template v-else>
-            <PermisosList
-                :permisos="permisos"
-                show-trabajador
-                can-validate
-                @validar="validarPermiso = $event"
-                @rechazar="openRechazo"
-            />
+            <div class="rounded-lg border bg-card">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Código</TableHead>
+                            <TableHead>Trabajador</TableHead>
+                            <TableHead>Tipo</TableHead>
+                            <TableHead>Asunto</TableHead>
+                            <TableHead>Fecha</TableHead>
+                            <TableHead>Estado</TableHead>
+                            <TableHead class="w-16" />
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        <TableRow v-for="exp in expedientes" :key="exp.id">
+                            <TableCell class="font-mono text-xs font-semibold text-primary">
+                                {{ exp.codigo ?? `EXP-${exp.id}` }}
+                            </TableCell>
+                            <TableCell class="text-sm">
+                                {{ nombreTrabajador(exp) }}
+                            </TableCell>
+                            <TableCell class="text-sm">
+                                {{ exp.tipoExpediente ? TIPO_EXPEDIENTE_LABELS[exp.tipoExpediente] : '—' }}
+                            </TableCell>
+                            <TableCell class="max-w-xs truncate text-sm">
+                                {{ exp.asunto }}
+                            </TableCell>
+                            <TableCell class="text-sm">
+                                {{ exp.fecha }}
+                            </TableCell>
+                            <TableCell>
+                                <span
+                                    class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                                    :class="ESTADO_CLASES[exp.estado?.codigo ?? ''] ?? ESTADO_CLASES['1']"
+                                >
+                                    {{ estadoLabel(exp) }}
+                                </span>
+                            </TableCell>
+                            <TableCell class="text-right">
+                                <Button variant="ghost" size="sm" @click="openDetail(exp)" title="Ver detalle">
+                                    <Eye class="h-4 w-4" />
+                                </Button>
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </div>
 
             <!-- Paginación -->
-            <div
-                v-if="lastPage > 1"
-                class="flex items-center justify-center gap-3"
-            >
+            <div v-if="lastPage > 1" class="flex items-center justify-center gap-3">
                 <Button
                     variant="outline"
                     size="sm"
@@ -300,9 +257,7 @@ function submitRechazo() {
                 >
                     <ChevronLeft class="h-4 w-4" />
                 </Button>
-                <span class="text-xs text-muted-foreground">
-                    Página {{ page }} de {{ lastPage }}
-                </span>
+                <span class="text-xs text-muted-foreground">Página {{ page }} de {{ lastPage }}</span>
                 <Button
                     variant="outline"
                     size="sm"
@@ -316,49 +271,23 @@ function submitRechazo() {
         </template>
     </div>
 
-    <!-- Modal crear -->
-    <PermisoFormModal
-        v-model:show="showFormModal"
-        :altas="altasOptions"
-        alta-label="Trabajador"
-        @success="loadPermisos"
+    <!-- Modal crear expediente -->
+    <ExpedienteFormModal
+        v-model:show="showModal"
+        :institucion-id="props.institucionId"
+        @success="loadExpedientes"
     />
 
-    <!-- Confirmar validación -->
-    <ConfirmModal
-        :show="validarPermiso !== null"
-        title="Validar Solicitud"
-        :description="`¿Validar la solicitud ${validarPermiso?.codigo ?? ''}? El permiso quedará aprobado.`"
-        confirm-text="Validar"
-        :processing="validando"
-        @update:show="validarPermiso = $event ? validarPermiso : null"
-        @confirm="confirmarValidar"
+    <!-- Modal detalle expediente -->
+    <ExpedienteDetailModal
+        v-model:show="showDetailModal"
+        :expediente-id="selectedExpedienteId"
     />
 
-    <!-- Modal rechazo -->
-    <FormModal
-        v-model:show="showRechazoModal"
-        title="Rechazar Solicitud"
-        :description="`Indique el motivo del rechazo de ${rechazoPermiso?.codigo ?? 'la solicitud'}.`"
-        :processing="rechazoForm.processing"
-        submit-text="Rechazar"
-        @submit="submitRechazo"
-    >
-        <div class="grid gap-2">
-            <Label>Motivo del rechazo *</Label>
-            <Input
-                v-model="rechazoForm.observacion"
-                placeholder="Ej.: Sustento ilegible, fechas incorrectas…"
-                :class="{
-                    'border-destructive': rechazoForm.errors.observacion,
-                }"
-            />
-            <p
-                v-if="rechazoForm.errors.observacion"
-                class="text-sm text-destructive"
-            >
-                {{ rechazoForm.errors.observacion }}
-            </p>
-        </div>
-    </FormModal>
+    <!-- Modal registro directo -->
+    <RegistroDirectoModal
+        v-model:show="showDirectoModal"
+        :institucion-id="props.institucionId"
+        @success="loadExpedientes"
+    />
 </template>

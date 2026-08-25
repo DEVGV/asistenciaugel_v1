@@ -20,7 +20,7 @@ class StoreLocalMarcacionRequest extends FormRequest
         return [
             'trabajador_id' => ['required', 'integer', 'exists:t_trabajador,id'],
             'altaTrabajador_id' => ['nullable', 'integer', 'exists:t_altasTrabajadores,id'],
-            'localInstEduc_id' => ['required', 'integer', 'exists:conasis.t_localesInstEduc,id'],
+            'localInstEduc_id' => ['required', 'integer', 'exists:t_localesInstEduc,id'],
             'fechaInicio' => ['nullable', 'date'],
             'fechaFin' => ['nullable', 'date', 'after_or_equal:fechaInicio'],
         ];

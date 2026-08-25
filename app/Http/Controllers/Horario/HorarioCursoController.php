@@ -40,7 +40,8 @@ class HorarioCursoController extends Controller
 
     public function update(UpdateHorarioCursoRequest $request, ConasisHorariosCursos $horarioCurso): JsonResponse
     {
-        $this->horarioCursoService->actualizar($horarioCurso, $request->toDTO());
+        $turnoId = $request->input('turno_id') ? (int) $request->input('turno_id') : null;
+        $this->horarioCursoService->actualizar($horarioCurso, $request->toDTO(), $turnoId);
 
         return response()->json([
             'message' => 'Horario de curso actualizado con éxito.',

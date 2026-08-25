@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\Persona\EmailController::update
-* @see app/Http/Controllers/Persona/EmailController.php:26
+* @see app/Http/Controllers/Persona/EmailController.php:34
 * @route '/emails/{email}'
 */
 export const update = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -16,7 +16,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::update
-* @see app/Http/Controllers/Persona/EmailController.php:26
+* @see app/Http/Controllers/Persona/EmailController.php:34
 * @route '/emails/{email}'
 */
 update.url = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ update.url = (args: { email: string | number | { id: string | number } } | [emai
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::update
-* @see app/Http/Controllers/Persona/EmailController.php:26
+* @see app/Http/Controllers/Persona/EmailController.php:34
 * @route '/emails/{email}'
 */
 update.put = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -59,7 +59,7 @@ update.put = (args: { email: string | number | { id: string | number } } | [emai
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::update
-* @see app/Http/Controllers/Persona/EmailController.php:26
+* @see app/Http/Controllers/Persona/EmailController.php:34
 * @route '/emails/{email}'
 */
 update.patch = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -69,7 +69,7 @@ update.patch = (args: { email: string | number | { id: string | number } } | [em
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::update
-* @see app/Http/Controllers/Persona/EmailController.php:26
+* @see app/Http/Controllers/Persona/EmailController.php:34
 * @route '/emails/{email}'
 */
 const updateForm = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -84,7 +84,7 @@ const updateForm = (args: { email: string | number | { id: string | number } } |
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::update
-* @see app/Http/Controllers/Persona/EmailController.php:26
+* @see app/Http/Controllers/Persona/EmailController.php:34
 * @route '/emails/{email}'
 */
 updateForm.put = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -99,7 +99,7 @@ updateForm.put = (args: { email: string | number | { id: string | number } } | [
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::update
-* @see app/Http/Controllers/Persona/EmailController.php:26
+* @see app/Http/Controllers/Persona/EmailController.php:34
 * @route '/emails/{email}'
 */
 updateForm.patch = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -116,7 +116,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::destroy
-* @see app/Http/Controllers/Persona/EmailController.php:42
+* @see app/Http/Controllers/Persona/EmailController.php:48
 * @route '/emails/{email}'
 */
 export const destroy = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -131,7 +131,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::destroy
-* @see app/Http/Controllers/Persona/EmailController.php:42
+* @see app/Http/Controllers/Persona/EmailController.php:48
 * @route '/emails/{email}'
 */
 destroy.url = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -164,7 +164,7 @@ destroy.url = (args: { email: string | number | { id: string | number } } | [ema
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::destroy
-* @see app/Http/Controllers/Persona/EmailController.php:42
+* @see app/Http/Controllers/Persona/EmailController.php:48
 * @route '/emails/{email}'
 */
 destroy.delete = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -174,7 +174,7 @@ destroy.delete = (args: { email: string | number | { id: string | number } } | [
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::destroy
-* @see app/Http/Controllers/Persona/EmailController.php:42
+* @see app/Http/Controllers/Persona/EmailController.php:48
 * @route '/emails/{email}'
 */
 const destroyForm = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -189,7 +189,7 @@ const destroyForm = (args: { email: string | number | { id: string | number } } 
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::destroy
-* @see app/Http/Controllers/Persona/EmailController.php:42
+* @see app/Http/Controllers/Persona/EmailController.php:48
 * @route '/emails/{email}'
 */
 destroyForm.delete = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -206,7 +206,7 @@ destroy.form = destroyForm
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::darDeBaja
-* @see app/Http/Controllers/Persona/EmailController.php:34
+* @see app/Http/Controllers/Persona/EmailController.php:41
 * @route '/emails/{email}/dar-de-baja'
 */
 export const darDeBaja = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -221,7 +221,7 @@ darDeBaja.definition = {
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::darDeBaja
-* @see app/Http/Controllers/Persona/EmailController.php:34
+* @see app/Http/Controllers/Persona/EmailController.php:41
 * @route '/emails/{email}/dar-de-baja'
 */
 darDeBaja.url = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -254,7 +254,7 @@ darDeBaja.url = (args: { email: string | number | { id: string | number } } | [e
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::darDeBaja
-* @see app/Http/Controllers/Persona/EmailController.php:34
+* @see app/Http/Controllers/Persona/EmailController.php:41
 * @route '/emails/{email}/dar-de-baja'
 */
 darDeBaja.patch = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -264,7 +264,7 @@ darDeBaja.patch = (args: { email: string | number | { id: string | number } } | 
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::darDeBaja
-* @see app/Http/Controllers/Persona/EmailController.php:34
+* @see app/Http/Controllers/Persona/EmailController.php:41
 * @route '/emails/{email}/dar-de-baja'
 */
 const darDeBajaForm = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -279,7 +279,7 @@ const darDeBajaForm = (args: { email: string | number | { id: string | number } 
 
 /**
 * @see \App\Http\Controllers\Persona\EmailController::darDeBaja
-* @see app/Http/Controllers/Persona/EmailController.php:34
+* @see app/Http/Controllers/Persona/EmailController.php:41
 * @route '/emails/{email}/dar-de-baja'
 */
 darDeBajaForm.patch = (args: { email: string | number | { id: string | number } } | [email: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

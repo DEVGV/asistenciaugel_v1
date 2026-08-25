@@ -51,6 +51,9 @@ class InstitucionEducativaService
             'localesInstEduc.relojes',
             'localesInstEduc.localesMarcacion.trabajador.persona',
             'diasNoLaborables' => fn ($q) => $q->where('activo', true)->orderBy('fecha')->with('feriado'),
+            'telefonos' => fn ($q) => $q->with('operador')->orderBy('fechaInicio'),
+            'emails' => fn ($q) => $q->orderBy('fechaInicio'),
+            'domicilios' => fn ($q) => $q->with('zona')->orderBy('fechaInicio'),
         ]);
     }
 
@@ -85,7 +88,12 @@ class InstitucionEducativaService
 
     public function actualizar(InstitucionesEduc $ie, UpdateInstEducDTO $dto): bool
     {
-        return $ie->update($dto->toArray());
+        $data = $dto->toArray();
+
+        // Las fechas nunca se modifican desde el formulario de edición
+        unset($data['fechaInicio'], $data['fechaFin']);
+
+        return $ie->update($data);
     }
 
     public function eliminar(InstitucionesEduc $ie): bool

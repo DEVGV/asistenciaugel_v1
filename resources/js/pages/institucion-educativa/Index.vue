@@ -11,6 +11,7 @@ import {
     Upload,
 } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
+import { usePermisos } from '@/composables/usePermisos';
 import InstitucionEducativaController from '@/actions/App/Http/Controllers/InstitucionEducativa/InstitucionEducativaController';
 import InstitucionMasivaGrid from '@/components/institucion-educativa/InstitucionMasivaGrid.vue';
 import ConfirmModal from '@/components/shared/ConfirmModal.vue';
@@ -57,6 +58,8 @@ const props = defineProps<{
     filters: { search?: string };
 }>();
 
+const { can } = usePermisos();
+
 // ─── Búsqueda en Vivo ───
 const search = ref(props.filters.search || '');
 let searchTimeout: any = null;
@@ -93,8 +96,6 @@ const form = useForm({
     tipoInstEduc_id: null as number | null,
     modalidadFormativa_id: null as number | null,
     nivelCiclo_id: null as number | null,
-    fechaInicio: '',
-    fechaFin: '',
 });
 
 watch(showModal, (val) => {
@@ -125,8 +126,6 @@ function openEditModal(ie: InstitucionEducativa) {
     form.tipoInstEduc_id = ie.tipoInstEduc_id;
     form.modalidadFormativa_id = ie.modalidadFormativa_id;
     form.nivelCiclo_id = ie.nivelCiclo_id;
-    form.fechaInicio = ie.fechaInicio || '';
-    form.fechaFin = ie.fechaFin || '';
     showModal.value = true;
 }
 
@@ -207,7 +206,7 @@ function onMasivoSuccess() {
                     secciones.
                 </p>
             </div>
-            <div class="flex items-center gap-2">
+            <div v-if="can('instituciones.crear')" class="flex items-center gap-2">
                 <Button variant="outline" @click="showMasivoModal = true">
                     <Upload class="mr-2 h-4 w-4" />
                     Carga Masiva
@@ -314,19 +313,22 @@ function onMasivoSuccess() {
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
+                                        v-if="can('instituciones.editar')"
                                         @click="openEditModal(ie)"
                                     >
                                         <Pencil class="mr-2 h-4 w-4" />
                                         <span>Editar</span>
                                     </DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem
-                                        @click="confirmDelete(ie)"
-                                        class="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
-                                    >
-                                        <Trash2 class="mr-2 h-4 w-4" />
-                                        <span>Eliminar</span>
-                                    </DropdownMenuItem>
+                                    <template v-if="can('instituciones.eliminar')">
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem
+                                            @click="confirmDelete(ie)"
+                                            class="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
+                                        >
+                                            <Trash2 class="mr-2 h-4 w-4" />
+                                            <span>Eliminar</span>
+                                        </DropdownMenuItem>
+                                    </template>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </TableCell>
@@ -454,7 +456,7 @@ function onMasivoSuccess() {
                     :error="form.errors.entidadUgel_id"
                 />
                 <EntidadSelect
-                    tipoEntidadCodigo="IE"
+                    :tipo-entidad-codigos="['UGEL', 'IE']"
                     v-model="form.entidadAdmin_id"
                     label="Entidad Admin"
                     placeholder="Seleccionar Entidad Administradora..."
@@ -488,20 +490,6 @@ function onMasivoSuccess() {
                     placeholder="Seleccionar nivel..."
                     :error="form.errors.nivelCiclo_id"
                 />
-                <div class="grid gap-2">
-                    <Label>Fecha Inicio</Label>
-                    <Input v-model="form.fechaInicio" type="date" />
-                </div>
-                <div class="grid gap-2">
-                    <Label>Fecha Fin</Label>
-                    <Input v-model="form.fechaFin" type="date" />
-                    <p
-                        v-if="form.errors.fechaFin"
-                        class="text-sm text-destructive"
-                    >
-                        {{ form.errors.fechaFin }}
-                    </p>
-                </div>
             </div>
         </FormModal>
 

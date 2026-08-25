@@ -2,6 +2,7 @@
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { Plus, Pencil, Trash2, ChevronDown, Upload } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
+import { usePermisos } from '@/composables/usePermisos';
 import EntidadController from '@/actions/App/Http/Controllers/Entidad/EntidadController';
 import EntidadForm from '@/components/entidad/EntidadForm.vue';
 import EntidadMasivaGrid from '@/components/entidad/EntidadMasivaGrid.vue';
@@ -48,6 +49,8 @@ const props = defineProps<{
     entidades: PaginatedResponse<Entidad>;
     filters: { search?: string };
 }>();
+
+const { can, canAny } = usePermisos();
 
 // Estado del Modal
 const showModal = ref(false);
@@ -155,7 +158,7 @@ function onMasivoSuccess(count: number) {
     <div class="flex flex-col gap-4 p-4">
         <div class="flex items-center justify-between">
             <h1 class="text-2xl font-bold tracking-tight">Entidades</h1>
-            <div class="flex items-center gap-2">
+            <div v-if="canAny(['entidades.crear', 'entidades.editar'])" class="flex items-center gap-2">
                 <Button variant="outline" @click="showMasivoModal = true">
                     <Upload class="mr-2 h-4 w-4" />
                     Carga Masiva
@@ -217,19 +220,22 @@ function onMasivoSuccess(count: number) {
                                         >Acciones</DropdownMenuLabel
                                     >
                                     <DropdownMenuItem
+                                        v-if="can('entidades.editar')"
                                         @click="openEditModal(entidad)"
                                     >
                                         <Pencil class="mr-2 h-4 w-4" />
                                         <span>Editar</span>
                                     </DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem
-                                        @click="confirmDeleteEntidad(entidad)"
-                                        class="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
-                                    >
-                                        <Trash2 class="mr-2 h-4 w-4" />
-                                        <span>Eliminar</span>
-                                    </DropdownMenuItem>
+                                    <template v-if="can('entidades.eliminar')">
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem
+                                            @click="confirmDeleteEntidad(entidad)"
+                                            class="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
+                                        >
+                                            <Trash2 class="mr-2 h-4 w-4" />
+                                            <span>Eliminar</span>
+                                        </DropdownMenuItem>
+                                    </template>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </TableCell>

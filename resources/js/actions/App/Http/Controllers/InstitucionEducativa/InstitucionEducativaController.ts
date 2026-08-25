@@ -81,62 +81,6 @@ indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 index.form = indexForm
 
 /**
-* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::store
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:39
-* @route '/instituciones'
-*/
-export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: store.url(options),
-    method: 'post',
-})
-
-store.definition = {
-    methods: ["post"],
-    url: '/instituciones',
-} satisfies RouteDefinition<["post"]>
-
-/**
-* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::store
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:39
-* @route '/instituciones'
-*/
-store.url = (options?: RouteQueryOptions) => {
-    return store.definition.url + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::store
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:39
-* @route '/instituciones'
-*/
-store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: store.url(options),
-    method: 'post',
-})
-
-/**
-* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::store
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:39
-* @route '/instituciones'
-*/
-const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: store.url(options),
-    method: 'post',
-})
-
-/**
-* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::store
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:39
-* @route '/instituciones'
-*/
-storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: store.url(options),
-    method: 'post',
-})
-
-store.form = storeForm
-
-/**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::show
 * @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:47
 * @route '/instituciones/{institucione}'
@@ -242,37 +186,30 @@ showForm.head = (args: { institucione: string | number | { id: string | number }
 show.form = showForm
 
 /**
-* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::update
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:78
-* @route '/instituciones/{institucione}'
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::showTab
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:54
+* @route '/instituciones/{institucione}/{tab}'
 */
-export const update = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
-    url: update.url(args, options),
-    method: 'put',
+export const showTab = (args: { institucione: string | number | { id: string | number }, tab: string | number } | [institucione: string | number | { id: string | number }, tab: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: showTab.url(args, options),
+    method: 'get',
 })
 
-update.definition = {
-    methods: ["put","patch"],
-    url: '/instituciones/{institucione}',
-} satisfies RouteDefinition<["put","patch"]>
+showTab.definition = {
+    methods: ["get","head"],
+    url: '/instituciones/{institucione}/{tab}',
+} satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::update
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:78
-* @route '/instituciones/{institucione}'
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::showTab
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:54
+* @route '/instituciones/{institucione}/{tab}'
 */
-update.url = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
-    if (typeof args === 'string' || typeof args === 'number') {
-        args = { institucione: args }
-    }
-
-    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-        args = { institucione: args.id }
-    }
-
+showTab.url = (args: { institucione: string | number | { id: string | number }, tab: string | number } | [institucione: string | number | { id: string | number }, tab: string | number ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             institucione: args[0],
+            tab: args[1],
         }
     }
 
@@ -282,173 +219,75 @@ update.url = (args: { institucione: string | number | { id: string | number } } 
         institucione: typeof args.institucione === 'object'
         ? args.institucione.id
         : args.institucione,
+        tab: args.tab,
     }
 
-    return update.definition.url
+    return showTab.definition.url
             .replace('{institucione}', parsedArgs.institucione.toString())
+            .replace('{tab}', parsedArgs.tab.toString())
             .replace(/\/+$/, '') + queryParams(options)
 }
 
 /**
-* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::update
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:78
-* @route '/instituciones/{institucione}'
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::showTab
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:54
+* @route '/instituciones/{institucione}/{tab}'
 */
-update.put = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
-    url: update.url(args, options),
-    method: 'put',
+showTab.get = (args: { institucione: string | number | { id: string | number }, tab: string | number } | [institucione: string | number | { id: string | number }, tab: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: showTab.url(args, options),
+    method: 'get',
 })
 
 /**
-* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::update
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:78
-* @route '/instituciones/{institucione}'
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::showTab
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:54
+* @route '/instituciones/{institucione}/{tab}'
 */
-update.patch = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
-    url: update.url(args, options),
-    method: 'patch',
+showTab.head = (args: { institucione: string | number | { id: string | number }, tab: string | number } | [institucione: string | number | { id: string | number }, tab: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: showTab.url(args, options),
+    method: 'head',
 })
 
 /**
-* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::update
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:78
-* @route '/instituciones/{institucione}'
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::showTab
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:54
+* @route '/instituciones/{institucione}/{tab}'
 */
-const updateForm = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: update.url(args, {
+const showTabForm = (args: { institucione: string | number | { id: string | number }, tab: string | number } | [institucione: string | number | { id: string | number }, tab: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: showTab.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::showTab
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:54
+* @route '/instituciones/{institucione}/{tab}'
+*/
+showTabForm.get = (args: { institucione: string | number | { id: string | number }, tab: string | number } | [institucione: string | number | { id: string | number }, tab: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: showTab.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::showTab
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:54
+* @route '/instituciones/{institucione}/{tab}'
+*/
+showTabForm.head = (args: { institucione: string | number | { id: string | number }, tab: string | number } | [institucione: string | number | { id: string | number }, tab: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: showTab.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'PUT',
+            _method: 'HEAD',
             ...(options?.query ?? options?.mergeQuery ?? {}),
         }
     }),
-    method: 'post',
+    method: 'get',
 })
 
-/**
-* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::update
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:78
-* @route '/instituciones/{institucione}'
-*/
-updateForm.put = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: update.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'PUT',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'post',
-})
-
-/**
-* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::update
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:78
-* @route '/instituciones/{institucione}'
-*/
-updateForm.patch = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: update.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'PATCH',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'post',
-})
-
-update.form = updateForm
-
-/**
-* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::destroy
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:86
-* @route '/instituciones/{institucione}'
-*/
-export const destroy = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
-    url: destroy.url(args, options),
-    method: 'delete',
-})
-
-destroy.definition = {
-    methods: ["delete"],
-    url: '/instituciones/{institucione}',
-} satisfies RouteDefinition<["delete"]>
-
-/**
-* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::destroy
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:86
-* @route '/instituciones/{institucione}'
-*/
-destroy.url = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
-    if (typeof args === 'string' || typeof args === 'number') {
-        args = { institucione: args }
-    }
-
-    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-        args = { institucione: args.id }
-    }
-
-    if (Array.isArray(args)) {
-        args = {
-            institucione: args[0],
-        }
-    }
-
-    args = applyUrlDefaults(args)
-
-    const parsedArgs = {
-        institucione: typeof args.institucione === 'object'
-        ? args.institucione.id
-        : args.institucione,
-    }
-
-    return destroy.definition.url
-            .replace('{institucione}', parsedArgs.institucione.toString())
-            .replace(/\/+$/, '') + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::destroy
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:86
-* @route '/instituciones/{institucione}'
-*/
-destroy.delete = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
-    url: destroy.url(args, options),
-    method: 'delete',
-})
-
-/**
-* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::destroy
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:86
-* @route '/instituciones/{institucione}'
-*/
-const destroyForm = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: destroy.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'DELETE',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'post',
-})
-
-/**
-* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::destroy
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:86
-* @route '/instituciones/{institucione}'
-*/
-destroyForm.delete = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: destroy.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'DELETE',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'post',
-})
-
-destroy.form = destroyForm
+showTab.form = showTabForm
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::docentes
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:54
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:68
 * @route '/instituciones/{institucione}/docentes'
 */
 export const docentes = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -463,7 +302,7 @@ docentes.definition = {
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::docentes
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:54
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:68
 * @route '/instituciones/{institucione}/docentes'
 */
 docentes.url = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -496,7 +335,7 @@ docentes.url = (args: { institucione: string | number | { id: string | number } 
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::docentes
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:54
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:68
 * @route '/instituciones/{institucione}/docentes'
 */
 docentes.get = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -506,7 +345,7 @@ docentes.get = (args: { institucione: string | number | { id: string | number } 
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::docentes
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:54
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:68
 * @route '/instituciones/{institucione}/docentes'
 */
 docentes.head = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -516,7 +355,7 @@ docentes.head = (args: { institucione: string | number | { id: string | number }
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::docentes
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:54
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:68
 * @route '/instituciones/{institucione}/docentes'
 */
 const docentesForm = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -526,7 +365,7 @@ const docentesForm = (args: { institucione: string | number | { id: string | num
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::docentes
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:54
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:68
 * @route '/instituciones/{institucione}/docentes'
 */
 docentesForm.get = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -536,7 +375,7 @@ docentesForm.get = (args: { institucione: string | number | { id: string | numbe
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::docentes
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:54
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:68
 * @route '/instituciones/{institucione}/docentes'
 */
 docentesForm.head = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -550,6 +389,267 @@ docentesForm.head = (args: { institucione: string | number | { id: string | numb
 })
 
 docentes.form = docentesForm
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::store
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:39
+* @route '/instituciones'
+*/
+export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: store.url(options),
+    method: 'post',
+})
+
+store.definition = {
+    methods: ["post"],
+    url: '/instituciones',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::store
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:39
+* @route '/instituciones'
+*/
+store.url = (options?: RouteQueryOptions) => {
+    return store.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::store
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:39
+* @route '/instituciones'
+*/
+store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: store.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::store
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:39
+* @route '/instituciones'
+*/
+const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: store.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::store
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:39
+* @route '/instituciones'
+*/
+storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: store.url(options),
+    method: 'post',
+})
+
+store.form = storeForm
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::update
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:92
+* @route '/instituciones/{institucione}'
+*/
+export const update = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+    url: update.url(args, options),
+    method: 'put',
+})
+
+update.definition = {
+    methods: ["put","patch"],
+    url: '/instituciones/{institucione}',
+} satisfies RouteDefinition<["put","patch"]>
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::update
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:92
+* @route '/instituciones/{institucione}'
+*/
+update.url = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { institucione: args }
+    }
+
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { institucione: args.id }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            institucione: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        institucione: typeof args.institucione === 'object'
+        ? args.institucione.id
+        : args.institucione,
+    }
+
+    return update.definition.url
+            .replace('{institucione}', parsedArgs.institucione.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::update
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:92
+* @route '/instituciones/{institucione}'
+*/
+update.put = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+    url: update.url(args, options),
+    method: 'put',
+})
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::update
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:92
+* @route '/instituciones/{institucione}'
+*/
+update.patch = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: update.url(args, options),
+    method: 'patch',
+})
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::update
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:92
+* @route '/instituciones/{institucione}'
+*/
+const updateForm = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: update.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PUT',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::update
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:92
+* @route '/instituciones/{institucione}'
+*/
+updateForm.put = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: update.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PUT',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::update
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:92
+* @route '/instituciones/{institucione}'
+*/
+updateForm.patch = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: update.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PATCH',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+update.form = updateForm
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::destroy
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:100
+* @route '/instituciones/{institucione}'
+*/
+export const destroy = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+    url: destroy.url(args, options),
+    method: 'delete',
+})
+
+destroy.definition = {
+    methods: ["delete"],
+    url: '/instituciones/{institucione}',
+} satisfies RouteDefinition<["delete"]>
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::destroy
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:100
+* @route '/instituciones/{institucione}'
+*/
+destroy.url = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { institucione: args }
+    }
+
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { institucione: args.id }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            institucione: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        institucione: typeof args.institucione === 'object'
+        ? args.institucione.id
+        : args.institucione,
+    }
+
+    return destroy.definition.url
+            .replace('{institucione}', parsedArgs.institucione.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::destroy
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:100
+* @route '/instituciones/{institucione}'
+*/
+destroy.delete = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+    url: destroy.url(args, options),
+    method: 'delete',
+})
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::destroy
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:100
+* @route '/instituciones/{institucione}'
+*/
+const destroyForm = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: destroy.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::destroy
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:100
+* @route '/instituciones/{institucione}'
+*/
+destroyForm.delete = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: destroy.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+destroy.form = destroyForm
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::search
@@ -634,7 +734,7 @@ search.form = searchForm
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::detallesJson
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:71
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:85
 * @route '/api/instituciones/{institucione}/detalles'
 */
 export const detallesJson = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -649,7 +749,7 @@ detallesJson.definition = {
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::detallesJson
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:71
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:85
 * @route '/api/instituciones/{institucione}/detalles'
 */
 detallesJson.url = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -682,7 +782,7 @@ detallesJson.url = (args: { institucione: string | number | { id: string | numbe
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::detallesJson
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:71
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:85
 * @route '/api/instituciones/{institucione}/detalles'
 */
 detallesJson.get = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -692,7 +792,7 @@ detallesJson.get = (args: { institucione: string | number | { id: string | numbe
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::detallesJson
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:71
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:85
 * @route '/api/instituciones/{institucione}/detalles'
 */
 detallesJson.head = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -702,7 +802,7 @@ detallesJson.head = (args: { institucione: string | number | { id: string | numb
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::detallesJson
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:71
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:85
 * @route '/api/instituciones/{institucione}/detalles'
 */
 const detallesJsonForm = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -712,7 +812,7 @@ const detallesJsonForm = (args: { institucione: string | number | { id: string |
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::detallesJson
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:71
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:85
 * @route '/api/instituciones/{institucione}/detalles'
 */
 detallesJsonForm.get = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -722,7 +822,7 @@ detallesJsonForm.get = (args: { institucione: string | number | { id: string | n
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::detallesJson
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:71
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:85
 * @route '/api/instituciones/{institucione}/detalles'
 */
 detallesJsonForm.head = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -739,7 +839,7 @@ detallesJson.form = detallesJsonForm
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::locales
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:64
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:78
 * @route '/api/instituciones/{institucione}/locales'
 */
 export const locales = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -754,7 +854,7 @@ locales.definition = {
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::locales
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:64
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:78
 * @route '/api/instituciones/{institucione}/locales'
 */
 locales.url = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -787,7 +887,7 @@ locales.url = (args: { institucione: string | number | { id: string | number } }
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::locales
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:64
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:78
 * @route '/api/instituciones/{institucione}/locales'
 */
 locales.get = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -797,7 +897,7 @@ locales.get = (args: { institucione: string | number | { id: string | number } }
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::locales
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:64
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:78
 * @route '/api/instituciones/{institucione}/locales'
 */
 locales.head = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -807,7 +907,7 @@ locales.head = (args: { institucione: string | number | { id: string | number } 
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::locales
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:64
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:78
 * @route '/api/instituciones/{institucione}/locales'
 */
 const localesForm = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -817,7 +917,7 @@ const localesForm = (args: { institucione: string | number | { id: string | numb
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::locales
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:64
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:78
 * @route '/api/instituciones/{institucione}/locales'
 */
 localesForm.get = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -827,7 +927,7 @@ localesForm.get = (args: { institucione: string | number | { id: string | number
 
 /**
 * @see \App\Http\Controllers\InstitucionEducativa\InstitucionEducativaController::locales
-* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:64
+* @see app/Http/Controllers/InstitucionEducativa/InstitucionEducativaController.php:78
 * @route '/api/instituciones/{institucione}/locales'
 */
 localesForm.head = (args: { institucione: string | number | { id: string | number } } | [institucione: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -842,6 +942,6 @@ localesForm.head = (args: { institucione: string | number | { id: string | numbe
 
 locales.form = localesForm
 
-const InstitucionEducativaController = { index, store, show, update, destroy, docentes, search, detallesJson, locales }
+const InstitucionEducativaController = { index, show, showTab, docentes, store, update, destroy, search, detallesJson, locales }
 
 export default InstitucionEducativaController

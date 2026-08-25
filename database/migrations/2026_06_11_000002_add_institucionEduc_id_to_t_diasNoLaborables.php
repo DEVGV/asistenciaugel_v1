@@ -12,7 +12,7 @@ return new class extends Migration
             $table->bigInteger('institucionEduc_id')->nullable()->after('feriado_id');
             $table->foreign('institucionEduc_id')
                 ->references('id')
-                ->on('public.t_institucionesEduc');
+                ->on('t_institucionesEduc');
         });
     }
 

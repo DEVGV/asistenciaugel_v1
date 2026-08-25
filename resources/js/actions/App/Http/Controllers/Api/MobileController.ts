@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Api\MobileController::login
-* @see app/Http/Controllers/Api/MobileController.php:24
+* @see app/Http/Controllers/Api/MobileController.php:28
 * @route '/api/mobile/login'
 */
 export const login = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ login.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::login
-* @see app/Http/Controllers/Api/MobileController.php:24
+* @see app/Http/Controllers/Api/MobileController.php:28
 * @route '/api/mobile/login'
 */
 login.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ login.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::login
-* @see app/Http/Controllers/Api/MobileController.php:24
+* @see app/Http/Controllers/Api/MobileController.php:28
 * @route '/api/mobile/login'
 */
 login.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -35,7 +35,7 @@ login.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::login
-* @see app/Http/Controllers/Api/MobileController.php:24
+* @see app/Http/Controllers/Api/MobileController.php:28
 * @route '/api/mobile/login'
 */
 const loginForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -45,7 +45,7 @@ const loginForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::login
-* @see app/Http/Controllers/Api/MobileController.php:24
+* @see app/Http/Controllers/Api/MobileController.php:28
 * @route '/api/mobile/login'
 */
 loginForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -57,7 +57,7 @@ login.form = loginForm
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::me
-* @see app/Http/Controllers/Api/MobileController.php:70
+* @see app/Http/Controllers/Api/MobileController.php:83
 * @route '/api/mobile/me'
 */
 export const me = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -72,7 +72,7 @@ me.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::me
-* @see app/Http/Controllers/Api/MobileController.php:70
+* @see app/Http/Controllers/Api/MobileController.php:83
 * @route '/api/mobile/me'
 */
 me.url = (options?: RouteQueryOptions) => {
@@ -81,7 +81,7 @@ me.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::me
-* @see app/Http/Controllers/Api/MobileController.php:70
+* @see app/Http/Controllers/Api/MobileController.php:83
 * @route '/api/mobile/me'
 */
 me.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -91,7 +91,7 @@ me.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::me
-* @see app/Http/Controllers/Api/MobileController.php:70
+* @see app/Http/Controllers/Api/MobileController.php:83
 * @route '/api/mobile/me'
 */
 me.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -101,7 +101,7 @@ me.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::me
-* @see app/Http/Controllers/Api/MobileController.php:70
+* @see app/Http/Controllers/Api/MobileController.php:83
 * @route '/api/mobile/me'
 */
 const meForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -111,7 +111,7 @@ const meForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::me
-* @see app/Http/Controllers/Api/MobileController.php:70
+* @see app/Http/Controllers/Api/MobileController.php:83
 * @route '/api/mobile/me'
 */
 meForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -121,7 +121,7 @@ meForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::me
-* @see app/Http/Controllers/Api/MobileController.php:70
+* @see app/Http/Controllers/Api/MobileController.php:83
 * @route '/api/mobile/me'
 */
 meForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -137,8 +137,89 @@ meForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 me.form = meForm
 
 /**
+* @see \App\Http\Controllers\Api\MobileController::config
+* @see app/Http/Controllers/Api/MobileController.php:74
+* @route '/api/mobile/config'
+*/
+export const config = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: config.url(options),
+    method: 'get',
+})
+
+config.definition = {
+    methods: ["get","head"],
+    url: '/api/mobile/config',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\Api\MobileController::config
+* @see app/Http/Controllers/Api/MobileController.php:74
+* @route '/api/mobile/config'
+*/
+config.url = (options?: RouteQueryOptions) => {
+    return config.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Api\MobileController::config
+* @see app/Http/Controllers/Api/MobileController.php:74
+* @route '/api/mobile/config'
+*/
+config.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: config.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Api\MobileController::config
+* @see app/Http/Controllers/Api/MobileController.php:74
+* @route '/api/mobile/config'
+*/
+config.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: config.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\Api\MobileController::config
+* @see app/Http/Controllers/Api/MobileController.php:74
+* @route '/api/mobile/config'
+*/
+const configForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: config.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Api\MobileController::config
+* @see app/Http/Controllers/Api/MobileController.php:74
+* @route '/api/mobile/config'
+*/
+configForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: config.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Api\MobileController::config
+* @see app/Http/Controllers/Api/MobileController.php:74
+* @route '/api/mobile/config'
+*/
+configForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: config.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+config.form = configForm
+
+/**
 * @see \App\Http\Controllers\Api\MobileController::logout
-* @see app/Http/Controllers/Api/MobileController.php:61
+* @see app/Http/Controllers/Api/MobileController.php:65
 * @route '/api/mobile/logout'
 */
 export const logout = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -153,7 +234,7 @@ logout.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::logout
-* @see app/Http/Controllers/Api/MobileController.php:61
+* @see app/Http/Controllers/Api/MobileController.php:65
 * @route '/api/mobile/logout'
 */
 logout.url = (options?: RouteQueryOptions) => {
@@ -162,7 +243,7 @@ logout.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::logout
-* @see app/Http/Controllers/Api/MobileController.php:61
+* @see app/Http/Controllers/Api/MobileController.php:65
 * @route '/api/mobile/logout'
 */
 logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -172,7 +253,7 @@ logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::logout
-* @see app/Http/Controllers/Api/MobileController.php:61
+* @see app/Http/Controllers/Api/MobileController.php:65
 * @route '/api/mobile/logout'
 */
 const logoutForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -182,7 +263,7 @@ const logoutForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> =>
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::logout
-* @see app/Http/Controllers/Api/MobileController.php:61
+* @see app/Http/Controllers/Api/MobileController.php:65
 * @route '/api/mobile/logout'
 */
 logoutForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -194,7 +275,7 @@ logout.form = logoutForm
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enrollFace
-* @see app/Http/Controllers/Api/MobileController.php:110
+* @see app/Http/Controllers/Api/MobileController.php:130
 * @route '/api/mobile/biometria/enrolar-rostro'
 */
 export const enrollFace = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -209,7 +290,7 @@ enrollFace.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enrollFace
-* @see app/Http/Controllers/Api/MobileController.php:110
+* @see app/Http/Controllers/Api/MobileController.php:130
 * @route '/api/mobile/biometria/enrolar-rostro'
 */
 enrollFace.url = (options?: RouteQueryOptions) => {
@@ -218,7 +299,7 @@ enrollFace.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enrollFace
-* @see app/Http/Controllers/Api/MobileController.php:110
+* @see app/Http/Controllers/Api/MobileController.php:130
 * @route '/api/mobile/biometria/enrolar-rostro'
 */
 enrollFace.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -228,7 +309,7 @@ enrollFace.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enrollFace
-* @see app/Http/Controllers/Api/MobileController.php:110
+* @see app/Http/Controllers/Api/MobileController.php:130
 * @route '/api/mobile/biometria/enrolar-rostro'
 */
 const enrollFaceForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -238,7 +319,7 @@ const enrollFaceForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enrollFace
-* @see app/Http/Controllers/Api/MobileController.php:110
+* @see app/Http/Controllers/Api/MobileController.php:130
 * @route '/api/mobile/biometria/enrolar-rostro'
 */
 enrollFaceForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -250,7 +331,7 @@ enrollFace.form = enrollFaceForm
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enableLocalBiometric
-* @see app/Http/Controllers/Api/MobileController.php:149
+* @see app/Http/Controllers/Api/MobileController.php:169
 * @route '/api/mobile/biometria/local-device/habilitar'
 */
 export const enableLocalBiometric = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -265,7 +346,7 @@ enableLocalBiometric.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enableLocalBiometric
-* @see app/Http/Controllers/Api/MobileController.php:149
+* @see app/Http/Controllers/Api/MobileController.php:169
 * @route '/api/mobile/biometria/local-device/habilitar'
 */
 enableLocalBiometric.url = (options?: RouteQueryOptions) => {
@@ -274,7 +355,7 @@ enableLocalBiometric.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enableLocalBiometric
-* @see app/Http/Controllers/Api/MobileController.php:149
+* @see app/Http/Controllers/Api/MobileController.php:169
 * @route '/api/mobile/biometria/local-device/habilitar'
 */
 enableLocalBiometric.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -284,7 +365,7 @@ enableLocalBiometric.post = (options?: RouteQueryOptions): RouteDefinition<'post
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enableLocalBiometric
-* @see app/Http/Controllers/Api/MobileController.php:149
+* @see app/Http/Controllers/Api/MobileController.php:169
 * @route '/api/mobile/biometria/local-device/habilitar'
 */
 const enableLocalBiometricForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -294,7 +375,7 @@ const enableLocalBiometricForm = (options?: RouteQueryOptions): RouteFormDefinit
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::enableLocalBiometric
-* @see app/Http/Controllers/Api/MobileController.php:149
+* @see app/Http/Controllers/Api/MobileController.php:169
 * @route '/api/mobile/biometria/local-device/habilitar'
 */
 enableLocalBiometricForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -306,7 +387,7 @@ enableLocalBiometric.form = enableLocalBiometricForm
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::prevalidate
-* @see app/Http/Controllers/Api/MobileController.php:163
+* @see app/Http/Controllers/Api/MobileController.php:183
 * @route '/api/mobile/marcaciones/prevalidar'
 */
 export const prevalidate = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -321,7 +402,7 @@ prevalidate.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::prevalidate
-* @see app/Http/Controllers/Api/MobileController.php:163
+* @see app/Http/Controllers/Api/MobileController.php:183
 * @route '/api/mobile/marcaciones/prevalidar'
 */
 prevalidate.url = (options?: RouteQueryOptions) => {
@@ -330,7 +411,7 @@ prevalidate.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::prevalidate
-* @see app/Http/Controllers/Api/MobileController.php:163
+* @see app/Http/Controllers/Api/MobileController.php:183
 * @route '/api/mobile/marcaciones/prevalidar'
 */
 prevalidate.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -340,7 +421,7 @@ prevalidate.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::prevalidate
-* @see app/Http/Controllers/Api/MobileController.php:163
+* @see app/Http/Controllers/Api/MobileController.php:183
 * @route '/api/mobile/marcaciones/prevalidar'
 */
 const prevalidateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -350,7 +431,7 @@ const prevalidateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::prevalidate
-* @see app/Http/Controllers/Api/MobileController.php:163
+* @see app/Http/Controllers/Api/MobileController.php:183
 * @route '/api/mobile/marcaciones/prevalidar'
 */
 prevalidateForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -362,7 +443,7 @@ prevalidate.form = prevalidateForm
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::storeMark
-* @see app/Http/Controllers/Api/MobileController.php:186
+* @see app/Http/Controllers/Api/MobileController.php:206
 * @route '/api/mobile/marcaciones'
 */
 export const storeMark = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -377,7 +458,7 @@ storeMark.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::storeMark
-* @see app/Http/Controllers/Api/MobileController.php:186
+* @see app/Http/Controllers/Api/MobileController.php:206
 * @route '/api/mobile/marcaciones'
 */
 storeMark.url = (options?: RouteQueryOptions) => {
@@ -386,7 +467,7 @@ storeMark.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::storeMark
-* @see app/Http/Controllers/Api/MobileController.php:186
+* @see app/Http/Controllers/Api/MobileController.php:206
 * @route '/api/mobile/marcaciones'
 */
 storeMark.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -396,7 +477,7 @@ storeMark.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::storeMark
-* @see app/Http/Controllers/Api/MobileController.php:186
+* @see app/Http/Controllers/Api/MobileController.php:206
 * @route '/api/mobile/marcaciones'
 */
 const storeMarkForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -406,7 +487,7 @@ const storeMarkForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'>
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::storeMark
-* @see app/Http/Controllers/Api/MobileController.php:186
+* @see app/Http/Controllers/Api/MobileController.php:206
 * @route '/api/mobile/marcaciones'
 */
 storeMarkForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -418,7 +499,7 @@ storeMark.form = storeMarkForm
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::marks
-* @see app/Http/Controllers/Api/MobileController.php:301
+* @see app/Http/Controllers/Api/MobileController.php:332
 * @route '/api/mobile/marcaciones'
 */
 export const marks = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -433,7 +514,7 @@ marks.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::marks
-* @see app/Http/Controllers/Api/MobileController.php:301
+* @see app/Http/Controllers/Api/MobileController.php:332
 * @route '/api/mobile/marcaciones'
 */
 marks.url = (options?: RouteQueryOptions) => {
@@ -442,7 +523,7 @@ marks.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::marks
-* @see app/Http/Controllers/Api/MobileController.php:301
+* @see app/Http/Controllers/Api/MobileController.php:332
 * @route '/api/mobile/marcaciones'
 */
 marks.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -452,7 +533,7 @@ marks.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::marks
-* @see app/Http/Controllers/Api/MobileController.php:301
+* @see app/Http/Controllers/Api/MobileController.php:332
 * @route '/api/mobile/marcaciones'
 */
 marks.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -462,7 +543,7 @@ marks.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::marks
-* @see app/Http/Controllers/Api/MobileController.php:301
+* @see app/Http/Controllers/Api/MobileController.php:332
 * @route '/api/mobile/marcaciones'
 */
 const marksForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -472,7 +553,7 @@ const marksForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::marks
-* @see app/Http/Controllers/Api/MobileController.php:301
+* @see app/Http/Controllers/Api/MobileController.php:332
 * @route '/api/mobile/marcaciones'
 */
 marksForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -482,7 +563,7 @@ marksForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::marks
-* @see app/Http/Controllers/Api/MobileController.php:301
+* @see app/Http/Controllers/Api/MobileController.php:332
 * @route '/api/mobile/marcaciones'
 */
 marksForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -499,7 +580,7 @@ marks.form = marksForm
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::schedule
-* @see app/Http/Controllers/Api/MobileController.php:318
+* @see app/Http/Controllers/Api/MobileController.php:349
 * @route '/api/mobile/horario'
 */
 export const schedule = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -514,7 +595,7 @@ schedule.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::schedule
-* @see app/Http/Controllers/Api/MobileController.php:318
+* @see app/Http/Controllers/Api/MobileController.php:349
 * @route '/api/mobile/horario'
 */
 schedule.url = (options?: RouteQueryOptions) => {
@@ -523,7 +604,7 @@ schedule.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::schedule
-* @see app/Http/Controllers/Api/MobileController.php:318
+* @see app/Http/Controllers/Api/MobileController.php:349
 * @route '/api/mobile/horario'
 */
 schedule.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -533,7 +614,7 @@ schedule.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::schedule
-* @see app/Http/Controllers/Api/MobileController.php:318
+* @see app/Http/Controllers/Api/MobileController.php:349
 * @route '/api/mobile/horario'
 */
 schedule.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -543,7 +624,7 @@ schedule.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::schedule
-* @see app/Http/Controllers/Api/MobileController.php:318
+* @see app/Http/Controllers/Api/MobileController.php:349
 * @route '/api/mobile/horario'
 */
 const scheduleForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -553,7 +634,7 @@ const scheduleForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::schedule
-* @see app/Http/Controllers/Api/MobileController.php:318
+* @see app/Http/Controllers/Api/MobileController.php:349
 * @route '/api/mobile/horario'
 */
 scheduleForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -563,7 +644,7 @@ scheduleForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
 
 /**
 * @see \App\Http\Controllers\Api\MobileController::schedule
-* @see app/Http/Controllers/Api/MobileController.php:318
+* @see app/Http/Controllers/Api/MobileController.php:349
 * @route '/api/mobile/horario'
 */
 scheduleForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -578,6 +659,6 @@ scheduleForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 
 schedule.form = scheduleForm
 
-const MobileController = { login, me, logout, enrollFace, enableLocalBiometric, prevalidate, storeMark, marks, schedule }
+const MobileController = { login, me, config, logout, enrollFace, enableLocalBiometric, prevalidate, storeMark, marks, schedule }
 
 export default MobileController

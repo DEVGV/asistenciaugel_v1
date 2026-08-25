@@ -31,6 +31,8 @@ return new class extends Migration
             $table->decimal('ndias_extra', 15, 4)->nullable();
             $table->decimal('nhoras_extra', 15, 4)->nullable();
             $table->decimal('nnimu_extra', 15, 4)->nullable();
+            $table->date('fechaDesde')->nullable();
+            $table->date('fechaHasta')->nullable();
             $table->smallInteger('estadoUltim_id')->nullable();
             $table->bigInteger('created_by')->nullable();
             $table->timestamp('created_at')->nullable();

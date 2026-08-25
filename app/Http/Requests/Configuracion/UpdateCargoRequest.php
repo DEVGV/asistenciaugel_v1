@@ -3,7 +3,9 @@
 namespace App\Http\Requests\Configuracion;
 
 use App\DTOs\Configuracion\UpdateCargoDTO;
+use App\Models\Param\ParamRolTrabajador;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateCargoRequest extends FormRequest
 {
@@ -20,7 +22,7 @@ class UpdateCargoRequest extends FormRequest
         return [
             'nombre' => ['required', 'string', 'max:255'],
             'abreviatura' => ['nullable', 'string', 'max:50'],
-            'rolTrabajador_id' => ['nullable', 'integer'],
+            'rolTrabajador_id' => ['nullable', 'integer', Rule::exists(ParamRolTrabajador::class, 'id')],
             'activo' => ['boolean'],
         ];
     }

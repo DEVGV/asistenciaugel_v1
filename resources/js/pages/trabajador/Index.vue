@@ -16,6 +16,7 @@ import {
 } from 'lucide-vue-next';
 import { ref, watch, computed } from 'vue';
 import TrabajadorController from '@/actions/App/Http/Controllers/Trabajador/TrabajadorController';
+import { usePermisos } from '@/composables/usePermisos';
 import ConfirmModal from '@/components/shared/ConfirmModal.vue';
 import FormModal from '@/components/shared/FormModal.vue';
 import LocalMarcacionSelect from '@/components/shared/LocalMarcacionSelect.vue';
@@ -57,6 +58,8 @@ const props = defineProps<{
     filters: { search?: string };
     perfiles: { id: number; nombre: string; descripcion: string | null }[];
 }>();
+
+const { can } = usePermisos();
 
 // ─── Búsqueda en Vivo en el Index ───
 const search = ref(props.filters.search || '');
@@ -280,7 +283,7 @@ function onMasivoSuccess(count: number) {
                     asignados.
                 </p>
             </div>
-            <div class="flex items-center gap-2">
+            <div v-if="can('trabajadores.crear')" class="flex items-center gap-2">
                 <Button variant="outline" @click="showMasivoModal = true">
                     <Upload class="mr-2 h-4 w-4" />
                     Carga Masiva
@@ -388,14 +391,16 @@ function onMasivoSuccess(count: number) {
                                             <span>Ver Detalles</span>
                                         </Link>
                                     </DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem
-                                        @click="confirmDelete(trabajador)"
-                                        class="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
-                                    >
-                                        <Trash2 class="mr-2 h-4 w-4" />
-                                        <span>Desactivar</span>
-                                    </DropdownMenuItem>
+                                    <template v-if="can('trabajadores.eliminar')">
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem
+                                            @click="confirmDelete(trabajador)"
+                                            class="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
+                                        >
+                                            <Trash2 class="mr-2 h-4 w-4" />
+                                            <span>Desactivar</span>
+                                        </DropdownMenuItem>
+                                    </template>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </TableCell>
@@ -495,6 +500,7 @@ function onMasivoSuccess(count: number) {
                                     type="tipos-doc-identidad"
                                     label="Tipo Doc. *"
                                     :error="form.errors.tipoDocIdentidad_id"
+                                    default-codigo="01"
                                     @update:item="onDocTypeChange"
                                 />
                                 <div class="grid gap-2">
@@ -613,6 +619,7 @@ function onMasivoSuccess(count: number) {
                                     type="paises"
                                     label="País *"
                                     :error="form.errors.pais_id"
+                                    default-codigo="9589"
                                 />
                             </div>
 

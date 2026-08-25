@@ -16,6 +16,8 @@ const props = defineProps<{
     cargas: any[];
 }>();
 
+const detallesActuales = computed(() => (props.horario?.detalles ?? []));
+
 defineOptions({
     layout: {
         breadcrumbs: [
@@ -78,7 +80,7 @@ const totalHorasSemanales = computed(() => {
     />
 
     <div class="flex flex-col gap-6 p-4">
-        <!-- Botón Volver -->
+        <!-- Botón Volver / Acciones -->
         <div class="flex items-center justify-between">
             <Button variant="outline" size="sm" as-child>
                 <Link :href="`/horarios-trabajador`">
@@ -201,16 +203,22 @@ const totalHorasSemanales = computed(() => {
                     class="flex items-center gap-2 text-lg font-bold text-foreground"
                 >
                     <CalendarDays class="h-5 w-5 text-primary" />
-                    Horario Consolidado de Clases
+                    {{ props.horario.tipoHorario === 'A' ? 'Horario Consolidado de Jornada' : 'Horario Consolidado de Clases' }}
                 </h2>
                 <p class="text-xs text-muted-foreground">
-                    Visualización en formato de calendario de las clases y
-                    cursos asignados al docente para el año lectivo
-                    {{ props.horario.anio }}.
+                    <template v-if="props.horario.tipoHorario === 'A'">
+                        Visualización de la jornada laboral configurada para el año
+                        {{ props.horario.anio }}.
+                    </template>
+                    <template v-else>
+                        Visualización en formato de calendario de las clases y
+                        cursos asignados al docente para el año lectivo
+                        {{ props.horario.anio }}.
+                    </template>
                 </p>
             </div>
 
-            <DetalleHorarioGrid :horarios="mappedHorarios" readOnly />
+            <DetalleHorarioGrid v-if="mappedHorarios.length > 0" :horarios="mappedHorarios" readOnly />
         </div>
     </div>
 </template>

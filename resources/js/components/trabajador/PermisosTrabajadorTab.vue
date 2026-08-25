@@ -1,61 +1,63 @@
 <script setup lang="ts">
-import { router } from '@inertiajs/vue3';
-import {
-    AlertCircle,
-    ClipboardCheck,
-    Plus,
-    RefreshCw,
-} from 'lucide-vue-next';
-import { computed, onMounted, ref } from 'vue';
-import ConfirmModal from '@/components/shared/ConfirmModal.vue';
-import PermisoFormModal from '@/components/tramite/PermisoFormModal.vue';
-import PermisosList from '@/components/tramite/PermisosList.vue';
+import { AlertCircle, ClipboardCheck, Eye, FileCheck, Plus, RefreshCw } from 'lucide-vue-next';
+import { onMounted, ref } from 'vue';
+import { usePermisos } from '@/composables/usePermisos';
+import ExpedienteDetailModal from '@/components/tramite/ExpedienteDetailModal.vue';
+import ExpedienteFormModal from '@/components/tramite/ExpedienteFormModal.vue';
+import RegistroDirectoModal from '@/components/tramite/RegistroDirectoModal.vue';
 import { Button } from '@/components/ui/button';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+import { TIPO_EXPEDIENTE_LABELS, estadoLabel, type Expediente } from '@/types/models/tramite';
 import type { Trabajador } from '@/types/models/trabajador';
-import type {
-    AltaPermisoOption,
-    ExpedientePermiso,
-} from '@/types/models/tramite';
 
 const props = defineProps<{
     trabajador: Trabajador;
 }>();
 
-const permisos = ref<ExpedientePermiso[]>([]);
+const { can, esAdmin, esDirector } = usePermisos();
+
+const expedientes = ref<Expediente[]>([]);
 const loading = ref(false);
 const error = ref(false);
+const showModal = ref(false);
+const showDirectoModal = ref(false);
+const showDetailModal = ref(false);
+const selectedExpedienteId = ref<number | null>(null);
 
-// Altas activas del trabajador como opciones del formulario (etiqueta = IE)
-const altasOptions = computed<AltaPermisoOption[]>(() =>
-    (props.trabajador.altas ?? [])
-        .filter((alta) => !alta.fechaBaja)
-        .map((alta) => ({
-            id: alta.id,
-            trabajador_id: props.trabajador.id,
-            label:
-                alta.institucion_educativa?.nombreLegal ??
-                alta.institucionEducativa?.nombreLegal ??
-                `Alta #${alta.id}`,
-            cargo: alta.cargo?.nombre ?? undefined,
-        })),
-);
+function openDetail(exp: Expediente) {
+    selectedExpedienteId.value = exp.id;
+    showDetailModal.value = true;
+}
 
-async function loadPermisos() {
+const ESTADO_CLASES: Record<string, string> = {
+    '1': 'bg-amber-100 text-amber-700 ring-1 ring-amber-200',
+    '2': 'bg-sky-100 text-sky-700 ring-1 ring-sky-200',
+    '3': 'bg-red-100 text-red-700 ring-1 ring-red-200',
+    '4': 'bg-blue-100 text-blue-700 ring-1 ring-blue-200',
+    '5': 'bg-muted text-muted-foreground ring-1 ring-border',
+};
+
+async function loadExpedientes() {
     loading.value = true;
     error.value = false;
 
     try {
         const res = await fetch(
-            `/trabajadores/${props.trabajador.id}/permisos`,
+            `/api/trabajadores/${props.trabajador.id}/expedientes`,
             { headers: { Accept: 'application/json' } },
         );
 
-        if (!res.ok) {
-            throw new Error();
-        }
+        if (!res.ok) throw new Error();
 
         const result = await res.json();
-        permisos.value = result.data;
+        expedientes.value = result.data ?? [];
     } catch {
         error.value = true;
     } finally {
@@ -63,38 +65,7 @@ async function loadPermisos() {
     }
 }
 
-onMounted(() => loadPermisos());
-
-// ── Crear ─────────────────────────────────────────────────────────────────────
-const showFormModal = ref(false);
-
-// ── Anular ────────────────────────────────────────────────────────────────────
-const anularPermiso = ref<ExpedientePermiso | null>(null);
-const anulando = ref(false);
-
-function confirmarAnular() {
-    if (!anularPermiso.value) {
-        return;
-    }
-
-    anulando.value = true;
-
-    router.post(
-        `/permisos/${anularPermiso.value.id}/anular`,
-        {},
-        {
-            preserveScroll: true,
-            preserveState: true,
-            onSuccess: () => {
-                anularPermiso.value = null;
-                loadPermisos();
-            },
-            onFinish: () => {
-                anulando.value = false;
-            },
-        },
-    );
-}
+onMounted(() => loadExpedientes());
 </script>
 
 <template>
@@ -103,7 +74,7 @@ function confirmarAnular() {
         <div class="flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-2">
                 <ClipboardCheck class="h-5 w-5 text-primary" />
-                <h2 class="text-base font-bold">Solicitudes de Permiso</h2>
+                <h2 class="text-base font-bold">Expedientes</h2>
             </div>
 
             <div class="flex items-center gap-2">
@@ -113,21 +84,17 @@ function confirmarAnular() {
                     class="h-8 w-8"
                     title="Recargar"
                     :disabled="loading"
-                    @click="loadPermisos"
+                    @click="loadExpedientes"
                 >
-                    <RefreshCw
-                        class="h-4 w-4"
-                        :class="{ 'animate-spin': loading }"
-                    />
+                    <RefreshCw class="h-4 w-4" :class="{ 'animate-spin': loading }" />
                 </Button>
-                <Button
-                    size="sm"
-                    class="h-8 text-xs"
-                    :disabled="altasOptions.length === 0"
-                    @click="showFormModal = true"
-                >
+                <Button v-if="can('tramites.crear') && (esDirector || esAdmin)" size="sm" variant="outline" class="h-8 text-xs" @click="showDirectoModal = true">
+                    <FileCheck class="mr-1 h-3.5 w-3.5" />
+                    Registrar permiso
+                </Button>
+                <Button v-if="can('tramites.crear')" size="sm" class="h-8 text-xs" @click="showModal = true">
                     <Plus class="mr-1 h-3.5 w-3.5" />
-                    Nueva Solicitud
+                    Nuevo expediente
                 </Button>
             </div>
         </div>
@@ -135,62 +102,114 @@ function confirmarAnular() {
         <!-- Error -->
         <div
             v-if="error"
-            class="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/20 dark:text-red-300"
+            class="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
         >
             <AlertCircle class="h-4 w-4 shrink-0" />
-            Error al cargar las solicitudes. Intente nuevamente.
+            Error al cargar los expedientes. Intente nuevamente.
         </div>
 
         <!-- Skeleton -->
-        <div v-else-if="loading" class="space-y-3">
-            <div
-                v-for="i in 2"
-                :key="i"
-                class="h-28 animate-pulse rounded-xl border bg-muted/30"
-            />
+        <div v-else-if="loading" class="rounded-lg border bg-card">
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>Código</TableHead>
+                        <TableHead>Tipo</TableHead>
+                        <TableHead>Asunto</TableHead>
+                        <TableHead>Fecha</TableHead>
+                        <TableHead>Estado</TableHead>
+                        <TableHead class="w-16" />
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    <TableRow v-for="i in 2" :key="i">
+                        <TableCell><div class="h-4 w-16 animate-pulse rounded bg-muted" /></TableCell>
+                        <TableCell><div class="h-4 w-20 animate-pulse rounded bg-muted" /></TableCell>
+                        <TableCell><div class="h-4 w-40 animate-pulse rounded bg-muted" /></TableCell>
+                        <TableCell><div class="h-4 w-24 animate-pulse rounded bg-muted" /></TableCell>
+                        <TableCell><div class="h-6 w-20 animate-pulse rounded bg-muted" /></TableCell>
+                        <TableCell><div class="h-8 w-8 animate-pulse rounded bg-muted" /></TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
         </div>
 
         <!-- Vacío -->
         <div
-            v-else-if="permisos.length === 0"
-            class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed py-14 text-center"
+            v-else-if="expedientes.length === 0"
+            class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed py-14 text-center bg-card"
         >
             <ClipboardCheck class="mb-3 h-10 w-10 text-muted-foreground/40" />
-            <p class="text-sm font-medium text-muted-foreground">
-                Sin solicitudes de permiso registradas.
-            </p>
-            <p class="mt-1 text-xs text-muted-foreground/70">
-                Registre una solicitud adjuntando su documento de sustento.
-            </p>
+            <p class="text-sm font-medium text-muted-foreground">Sin expedientes registrados.</p>
+            <Button v-if="can('tramites.crear')" size="sm" variant="outline" class="mt-4" @click="showModal = true">
+                <Plus class="mr-1.5 h-3.5 w-3.5" />
+                Nuevo expediente
+            </Button>
         </div>
 
         <!-- Lista -->
-        <PermisosList
-            v-else
-            :permisos="permisos"
-            show-institucion
-            can-anular
-            @anular="anularPermiso = $event"
-        />
+        <div v-else class="rounded-lg border bg-card">
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>Código</TableHead>
+                        <TableHead>Tipo</TableHead>
+                        <TableHead>Asunto</TableHead>
+                        <TableHead>Fecha</TableHead>
+                        <TableHead>Estado</TableHead>
+                        <TableHead class="w-16" />
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    <TableRow v-for="exp in expedientes" :key="exp.id">
+                        <TableCell class="font-mono text-xs font-semibold text-primary">
+                            {{ exp.codigo ?? `EXP-${exp.id}` }}
+                        </TableCell>
+                        <TableCell class="text-sm">
+                            {{ exp.tipoExpediente ? TIPO_EXPEDIENTE_LABELS[exp.tipoExpediente] : '—' }}
+                        </TableCell>
+                        <TableCell class="max-w-xs truncate text-sm">
+                            {{ exp.asunto }}
+                        </TableCell>
+                        <TableCell class="text-sm">
+                            {{ exp.fecha }}
+                        </TableCell>
+                        <TableCell>
+                            <span
+                                class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                                :class="ESTADO_CLASES[exp.estado?.codigo ?? ''] ?? ESTADO_CLASES['1']"
+                            >
+                                {{ estadoLabel(exp) }}
+                            </span>
+                        </TableCell>
+                        <TableCell class="text-right">
+                            <Button variant="ghost" size="sm" @click="openDetail(exp)" title="Ver detalle">
+                                <Eye class="h-4 w-4" />
+                            </Button>
+                        </TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
+        </div>
     </div>
 
-    <!-- Modal crear -->
-    <PermisoFormModal
-        v-model:show="showFormModal"
-        :altas="altasOptions"
-        alta-label="Institución Educativa (vínculo laboral)"
-        @success="loadPermisos"
+    <!-- Modal crear expediente -->
+    <ExpedienteFormModal
+        v-model:show="showModal"
+        :trabajador-id="props.trabajador.id"
+        @success="loadExpedientes"
     />
 
-    <!-- Confirmar anulación -->
-    <ConfirmModal
-        :show="anularPermiso !== null"
-        title="Anular Solicitud"
-        :description="`¿Anular la solicitud ${anularPermiso?.codigo ?? ''}? Esta acción no se puede deshacer.`"
-        confirm-text="Anular"
-        destructive
-        :processing="anulando"
-        @update:show="anularPermiso = $event ? anularPermiso : null"
-        @confirm="confirmarAnular"
+    <!-- Modal detalle expediente -->
+    <ExpedienteDetailModal
+        v-model:show="showDetailModal"
+        :expediente-id="selectedExpedienteId"
+    />
+
+    <!-- Modal registro directo -->
+    <RegistroDirectoModal
+        v-model:show="showDirectoModal"
+        :trabajador-id="props.trabajador.id"
+        @success="loadExpedientes"
     />
 </template>

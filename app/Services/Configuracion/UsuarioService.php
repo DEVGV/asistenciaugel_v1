@@ -69,7 +69,10 @@ class UsuarioService
         return AltasTrabajadores::where('trabajador_id', $user->trabajador_id)
             ->where('institucionEducativa_id', $ieId)
             ->whereNull('fechaBaja')
-            ->whereNull('fechaFin')
+            ->where(function ($q) {
+                $q->whereNull('fechaFin')
+                  ->orWhere('fechaFin', '>=', now()->toDateString());
+            })
             ->exists();
     }
 
@@ -238,7 +241,10 @@ class UsuarioService
     {
         return $this->contextoService->filtrarInstituciones(InstitucionesEduc::query())
             ->select(['id', 'nombreLegal', 'codigoModular', 'entidadUgel_id'])
-            ->whereNull('fechaFin')
+            ->where(function ($q) {
+                $q->whereNull('fechaFin')
+                  ->orWhere('fechaFin', '>=', now()->toDateString());
+            })
             ->orderBy('nombreLegal')
             ->get();
     }

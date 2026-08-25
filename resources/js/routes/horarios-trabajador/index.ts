@@ -1,7 +1,8 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
+import manual from './manual'
 /**
 * @see \App\Http\Controllers\Horario\HorarioTrabajadorController::index
-* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:19
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:20
 * @route '/horarios-trabajador'
 */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +17,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\Horario\HorarioTrabajadorController::index
-* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:19
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:20
 * @route '/horarios-trabajador'
 */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +26,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Horario\HorarioTrabajadorController::index
-* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:19
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:20
 * @route '/horarios-trabajador'
 */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -35,7 +36,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Horario\HorarioTrabajadorController::index
-* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:19
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:20
 * @route '/horarios-trabajador'
 */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -45,7 +46,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\Horario\HorarioTrabajadorController::index
-* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:19
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:20
 * @route '/horarios-trabajador'
 */
 const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -55,7 +56,7 @@ const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 
 /**
 * @see \App\Http\Controllers\Horario\HorarioTrabajadorController::index
-* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:19
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:20
 * @route '/horarios-trabajador'
 */
 indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -65,7 +66,7 @@ indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Horario\HorarioTrabajadorController::index
-* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:19
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:20
 * @route '/horarios-trabajador'
 */
 indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -82,7 +83,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\Horario\HorarioTrabajadorController::show
-* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:36
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:44
 * @route '/horarios-trabajador/{horarioTrabajador}'
 */
 export const show = (args: { horarioTrabajador: string | number } | [horarioTrabajador: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -97,7 +98,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\Horario\HorarioTrabajadorController::show
-* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:36
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:44
 * @route '/horarios-trabajador/{horarioTrabajador}'
 */
 show.url = (args: { horarioTrabajador: string | number } | [horarioTrabajador: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -124,7 +125,7 @@ show.url = (args: { horarioTrabajador: string | number } | [horarioTrabajador: s
 
 /**
 * @see \App\Http\Controllers\Horario\HorarioTrabajadorController::show
-* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:36
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:44
 * @route '/horarios-trabajador/{horarioTrabajador}'
 */
 show.get = (args: { horarioTrabajador: string | number } | [horarioTrabajador: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -134,7 +135,7 @@ show.get = (args: { horarioTrabajador: string | number } | [horarioTrabajador: s
 
 /**
 * @see \App\Http\Controllers\Horario\HorarioTrabajadorController::show
-* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:36
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:44
 * @route '/horarios-trabajador/{horarioTrabajador}'
 */
 show.head = (args: { horarioTrabajador: string | number } | [horarioTrabajador: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -144,7 +145,7 @@ show.head = (args: { horarioTrabajador: string | number } | [horarioTrabajador: 
 
 /**
 * @see \App\Http\Controllers\Horario\HorarioTrabajadorController::show
-* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:36
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:44
 * @route '/horarios-trabajador/{horarioTrabajador}'
 */
 const showForm = (args: { horarioTrabajador: string | number } | [horarioTrabajador: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -154,7 +155,7 @@ const showForm = (args: { horarioTrabajador: string | number } | [horarioTrabaja
 
 /**
 * @see \App\Http\Controllers\Horario\HorarioTrabajadorController::show
-* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:36
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:44
 * @route '/horarios-trabajador/{horarioTrabajador}'
 */
 showForm.get = (args: { horarioTrabajador: string | number } | [horarioTrabajador: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -164,7 +165,7 @@ showForm.get = (args: { horarioTrabajador: string | number } | [horarioTrabajado
 
 /**
 * @see \App\Http\Controllers\Horario\HorarioTrabajadorController::show
-* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:36
+* @see app/Http/Controllers/Horario/HorarioTrabajadorController.php:44
 * @route '/horarios-trabajador/{horarioTrabajador}'
 */
 showForm.head = (args: { horarioTrabajador: string | number } | [horarioTrabajador: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -182,6 +183,7 @@ show.form = showForm
 const horariosTrabajador = {
     index: Object.assign(index, index),
     show: Object.assign(show, show),
+    manual: Object.assign(manual, manual),
 }
 
 export default horariosTrabajador

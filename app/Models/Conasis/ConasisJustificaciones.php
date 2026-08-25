@@ -3,6 +3,7 @@
 namespace App\Models\Conasis;
 
 use App\Models\AltasTrabajadores;
+use App\Models\Param\ParamMotivosSuspLab;
 use App\Models\Trabajador;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,6 +17,7 @@ class ConasisJustificaciones extends Model
     protected $fillable = [
         'trabajador_id',
         'altaTrabajador_id',
+        'motivoSuspLab_id',
         'turno',
         'fechaInicio',
         'fechaFin',
@@ -28,6 +30,11 @@ class ConasisJustificaciones extends Model
     public function altaTrabajador(): BelongsTo
     {
         return $this->belongsTo(AltasTrabajadores::class, 'altaTrabajador_id');
+    }
+
+    public function motivoSuspLab(): BelongsTo
+    {
+        return $this->belongsTo(ParamMotivosSuspLab::class, 'motivoSuspLab_id');
     }
 
     public function expediente(): BelongsTo

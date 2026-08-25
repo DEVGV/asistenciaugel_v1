@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
-* @see \App\Http\Controllers\Tramite\PermisoController::descargar
-* @see app/Http/Controllers/Tramite/PermisoController.php:69
+* @see \App\Http\Controllers\Tramite\ExpedienteController::descargar
+* @see app/Http/Controllers/Tramite/ExpedienteController.php:269
 * @route '/documentos-tram/{documentoTram}/descargar'
 */
 export const descargar = (args: { documentoTram: number | { id: number } } | [documentoTram: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -15,8 +15,8 @@ descargar.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Http\Controllers\Tramite\PermisoController::descargar
-* @see app/Http/Controllers/Tramite/PermisoController.php:69
+* @see \App\Http\Controllers\Tramite\ExpedienteController::descargar
+* @see app/Http/Controllers/Tramite/ExpedienteController.php:269
 * @route '/documentos-tram/{documentoTram}/descargar'
 */
 descargar.url = (args: { documentoTram: number | { id: number } } | [documentoTram: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -48,8 +48,8 @@ descargar.url = (args: { documentoTram: number | { id: number } } | [documentoTr
 }
 
 /**
-* @see \App\Http\Controllers\Tramite\PermisoController::descargar
-* @see app/Http/Controllers/Tramite/PermisoController.php:69
+* @see \App\Http\Controllers\Tramite\ExpedienteController::descargar
+* @see app/Http/Controllers/Tramite/ExpedienteController.php:269
 * @route '/documentos-tram/{documentoTram}/descargar'
 */
 descargar.get = (args: { documentoTram: number | { id: number } } | [documentoTram: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -58,8 +58,8 @@ descargar.get = (args: { documentoTram: number | { id: number } } | [documentoTr
 })
 
 /**
-* @see \App\Http\Controllers\Tramite\PermisoController::descargar
-* @see app/Http/Controllers/Tramite/PermisoController.php:69
+* @see \App\Http\Controllers\Tramite\ExpedienteController::descargar
+* @see app/Http/Controllers/Tramite/ExpedienteController.php:269
 * @route '/documentos-tram/{documentoTram}/descargar'
 */
 descargar.head = (args: { documentoTram: number | { id: number } } | [documentoTram: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -68,8 +68,8 @@ descargar.head = (args: { documentoTram: number | { id: number } } | [documentoT
 })
 
 /**
-* @see \App\Http\Controllers\Tramite\PermisoController::descargar
-* @see app/Http/Controllers/Tramite/PermisoController.php:69
+* @see \App\Http\Controllers\Tramite\ExpedienteController::descargar
+* @see app/Http/Controllers/Tramite/ExpedienteController.php:269
 * @route '/documentos-tram/{documentoTram}/descargar'
 */
 const descargarForm = (args: { documentoTram: number | { id: number } } | [documentoTram: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -78,8 +78,8 @@ const descargarForm = (args: { documentoTram: number | { id: number } } | [docum
 })
 
 /**
-* @see \App\Http\Controllers\Tramite\PermisoController::descargar
-* @see app/Http/Controllers/Tramite/PermisoController.php:69
+* @see \App\Http\Controllers\Tramite\ExpedienteController::descargar
+* @see app/Http/Controllers/Tramite/ExpedienteController.php:269
 * @route '/documentos-tram/{documentoTram}/descargar'
 */
 descargarForm.get = (args: { documentoTram: number | { id: number } } | [documentoTram: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -88,8 +88,8 @@ descargarForm.get = (args: { documentoTram: number | { id: number } } | [documen
 })
 
 /**
-* @see \App\Http\Controllers\Tramite\PermisoController::descargar
-* @see app/Http/Controllers/Tramite/PermisoController.php:69
+* @see \App\Http\Controllers\Tramite\ExpedienteController::descargar
+* @see app/Http/Controllers/Tramite/ExpedienteController.php:269
 * @route '/documentos-tram/{documentoTram}/descargar'
 */
 descargarForm.head = (args: { documentoTram: number | { id: number } } | [documentoTram: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

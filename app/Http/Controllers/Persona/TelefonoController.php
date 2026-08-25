@@ -15,36 +15,41 @@ class TelefonoController extends Controller
         private TelefonoService $telefonoService,
     ) {}
 
+    private function redirectToTrabajador(Personas $persona, string $message): RedirectResponse
+    {
+        $trabajador = $persona->trabajador;
+
+        return $trabajador
+            ? redirect()->route('trabajadores.show', $trabajador)->with('success', $message)
+            : redirect()->route('trabajadores.index')->with('success', $message);
+    }
+
     public function store(StoreTelefonoRequest $request, Personas $persona): RedirectResponse
     {
         $this->telefonoService->crear($persona, $request->toDTO());
 
-        return redirect()->route('personas.show', $persona)
-            ->with('success', 'Teléfono agregado exitosamente.');
+        return $this->redirectToTrabajador($persona, 'Teléfono agregado exitosamente.');
     }
 
     public function update(StoreTelefonoRequest $request, Telefonos $telefono): RedirectResponse
     {
         $this->telefonoService->actualizar($telefono, $request->toDTO());
 
-        return redirect()->route('personas.show', $telefono->persona_id)
-            ->with('success', 'Teléfono actualizado exitosamente.');
+        return $this->redirectToTrabajador($telefono->persona, 'Teléfono actualizado exitosamente.');
     }
 
     public function darDeBaja(Telefonos $telefono): RedirectResponse
     {
         $this->telefonoService->darDeBaja($telefono);
 
-        return redirect()->route('personas.show', $telefono->persona_id)
-            ->with('success', 'Teléfono dado de baja exitosamente.');
+        return $this->redirectToTrabajador($telefono->persona, 'Teléfono dado de baja exitosamente.');
     }
 
     public function destroy(Telefonos $telefono): RedirectResponse
     {
-        $personaId = $telefono->persona_id;
+        $persona = $telefono->persona;
         $this->telefonoService->eliminar($telefono);
 
-        return redirect()->route('personas.show', $personaId)
-            ->with('success', 'Teléfono eliminado exitosamente.');
+        return $this->redirectToTrabajador($persona, 'Teléfono eliminado exitosamente.');
     }
 }

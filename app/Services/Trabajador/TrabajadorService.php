@@ -23,11 +23,28 @@ class TrabajadorService
      */
     public function listarPaginado(Request $request): LengthAwarePaginator
     {
-        return $this->contextoService->filtrarPorRelacionIe(Trabajador::query(), 'altas')
-            ->with(['persona.tipoDocIdentidad', 'persona.sexo'])
-            ->when($request->search, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('codigo', 'like', "%{$search}%")
+        $query = Trabajador::query()
+            ->with(['persona.tipoDocIdentidad', 'persona.sexo']);
+
+        // Si hay una IE específica en contexto, filtramos por altas en esa IE.
+        // Si es admin global o admin UGEL sin IE seleccionada, mostramos todos
+        // los trabajadores activos (incluso los que no tienen alta aún).
+        if ($this->contextoService->ieId()) {
+            $this->contextoService->filtrarPorRelacionIe($query, 'altas');
+        } elseif ($this->contextoService->ugelId()) {
+            // Admin de UGEL: muestra trabajadores con alta en cualquier IE de su UGEL,
+            // más los que no tienen alta (ej. administradores).
+            $query->where(function ($q) {
+                $q->whereHas('altas', fn ($a) => $this->contextoService->filtrarPorIe($a))
+                    ->orWhereDoesntHave('altas');
+            });
+        }
+        // Admin global (sin ugel ni ie en contexto): no aplica ningún filtro de IE.
+
+        return $query
+            ->when($request->search, function ($q, $search) {
+                $q->where(function ($inner) use ($search) {
+                    $inner->where('codigo', 'like', "%{$search}%")
                         ->orWhereHas('persona', function ($qp) use ($search) {
                             $qp->where('docIdentidad', 'like', "%{$search}%")
                                 ->orWhere('paterno', 'ilike', "%{$search}%")
@@ -61,6 +78,7 @@ class TrabajadorService
             'altas.area',
             'altas.cargo',
             'altas.motivoBaja',
+            'altas.localMarcacion',
         ]);
     }
 
@@ -76,22 +94,26 @@ class TrabajadorService
      * Búsqueda de trabajadores para selects/typeaheads.
      * Filtra opcionalmente por IE activa y término de búsqueda.
      *
-     * @return \Illuminate\Database\Eloquent\Collection<int, Trabajador>
+     * @return Collection<int, Trabajador>
      */
-    public function buscarParaAsignacion(Request $request): \Illuminate\Database\Eloquent\Collection
+    public function buscarParaAsignacion(Request $request): Collection
     {
-        $query = $this->contextoService->filtrarPorRelacionIe(Trabajador::query(), 'altas')
+        $query = Trabajador::query()
             ->with(['persona', 'altas' => function ($q) {
                 $q->whereNull('fechaBaja')->with(['cargo', 'institucionEducativa']);
             }])
             ->where('activo', true);
 
+        // Si se pide filtrar por una IE específica, aplicamos el filtro por altas.
         if ($request->filled('ie_id')) {
             $ieId = $request->integer('ie_id');
             $query->whereHas('altas', function ($q) use ($ieId) {
                 $q->where('institucionEducativa_id', $ieId)->whereNull('fechaBaja');
             });
+        } elseif ($this->contextoService->ieId()) {
+            $this->contextoService->filtrarPorRelacionIe($query, 'altas');
         }
+        // Admin global o admin UGEL sin IE: retorna todos los trabajadores activos.
 
         if ($request->filled('search')) {
             $term = '%'.$request->string('search').'%';

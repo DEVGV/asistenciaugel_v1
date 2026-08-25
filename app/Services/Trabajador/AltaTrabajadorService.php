@@ -38,6 +38,7 @@ class AltaTrabajadorService
                 'area',
                 'cargo',
                 'motivoBaja',
+                'localMarcacion.localInstEduc.local',
             ])
             ->where('trabajador_id', $trabajador->id)
             ->orderByDesc('fechaInicio')
@@ -174,6 +175,7 @@ class AltaTrabajadorService
                 'area:id,nombre',
                 'cargo:id,nombre',
                 'motivoBaja:id,nombre',
+                'localesMarcacion.localInstEduc.local:id,nombre',
             ])
             ->where('institucionEducativa_id', $ie->id)
             ->when($request->search, function ($query, string $search) {

@@ -346,8 +346,8 @@ const entidades = {
     index: Object.assign(index, index),
     store: Object.assign(store, store),
     update: Object.assign(update, update),
-    destroy: Object.assign(destroy, destroy),
     masivo: Object.assign(masivo, masivo),
+    destroy: Object.assign(destroy, destroy),
 }
 
 export default entidades

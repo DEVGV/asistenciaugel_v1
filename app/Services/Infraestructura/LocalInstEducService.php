@@ -32,7 +32,10 @@ class LocalInstEducService
     {
         return $ie->localesInstEduc()
             ->with('local:id,nombre,domicilio')
-            ->whereNull('fechaFin')
+            ->where(function ($q) {
+                $q->whereNull('fechaFin')
+                  ->orWhere('fechaFin', '>=', now()->toDateString());
+            })
             ->get()
             ->map(fn (ConasisLocalesInstEduc $li) => [
                 'id'     => $li->id,

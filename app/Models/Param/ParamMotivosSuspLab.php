@@ -16,10 +16,12 @@ class ParamMotivosSuspLab extends Model
         'tipoSuspensionLaboral_id',
         'descripcion',
         'abreviatura',
+        'abreviaturaPers',
         'conGoceHaber',
         'asusfal',
         'diasMaxCiclo',
         'codigoProg',
+        'autorizadoPor',
         'created_by',
         'activo',
     ];

@@ -43,12 +43,13 @@ return new class extends Migration
             // Quitar columnas que ya no se usan
             $table->dropColumn(['name', 'email', 'email_verified_at']);
 
-            // Agregar nuevas columnas
-            $table->bigInteger('trabajador_id')->nullable()->after('id');
+            // Agregar nuevas columnas (solo si no existen)
+            if (!Schema::hasColumn('auth.users', 'trabajador_id')) {
+                $table->bigInteger('trabajador_id')->nullable()->after('id');
+                $table->foreign('trabajador_id')->references('id')->on('t_trabajador');
+            }
             $table->string('login', 20)->unique()->after('trabajador_id');  // nro documento
             $table->boolean('activo')->default(true)->after('remember_token');
-
-            $table->foreign('trabajador_id')->references('id')->on('t_trabajador');
         });
 
         // Quitar password_reset_tokens que dependía de email

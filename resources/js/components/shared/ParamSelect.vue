@@ -14,6 +14,7 @@ const props = defineProps<{
     placeholder?: string;
     error?: string;
     disabled?: boolean;
+    defaultCodigo?: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -85,6 +86,15 @@ async function fetchData() {
             if (initialItem) {
                 emit('update:item', initialItem);
             }
+        } else if (props.defaultCodigo) {
+            const defaultItem = data.value.find(
+                (i) => i.codigo === props.defaultCodigo,
+            );
+
+            if (defaultItem) {
+                emit('update:modelValue', defaultItem.id);
+                emit('update:item', defaultItem);
+            }
         }
     } catch (e: any) {
         if (e?.name !== 'AbortError') {
@@ -112,6 +122,18 @@ watch(
     () => props.modelValue,
     (newVal) => {
         if (!newVal) {
+            if (props.defaultCodigo && data.value.length > 0) {
+                const defaultItem = data.value.find(
+                    (i) => i.codigo === props.defaultCodigo,
+                );
+
+                if (defaultItem) {
+                    emit('update:modelValue', defaultItem.id);
+                    emit('update:item', defaultItem);
+                    return;
+                }
+            }
+
             emit('update:item', null);
         } else if (data.value.length > 0) {
             const item = data.value.find(
@@ -215,7 +237,7 @@ function selectItem(item: ParamSimple) {
             <!-- Dropdown Menu -->
             <div
                 v-if="isOpen"
-                class="absolute z-50 mt-1 w-full animate-in overflow-hidden rounded-md border bg-background text-sm shadow-lg fade-in-0 zoom-in-95"
+                class="absolute left-0 right-0 z-50 mt-1 w-full animate-in overflow-hidden rounded-md border bg-background text-sm shadow-lg fade-in-0 zoom-in-95"
             >
                 <!-- Search Input -->
                 <div class="flex items-center border-b px-3">
@@ -260,7 +282,7 @@ function selectItem(item: ParamSimple) {
                         >
                             <Check class="h-4 w-4" />
                         </span>
-                        <span class="line-clamp-1">{{
+                        <span class="break-words whitespace-normal">{{
                             item.nombre || item.descripcion
                         }}</span>
                     </div>

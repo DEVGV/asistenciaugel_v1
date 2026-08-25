@@ -2,10 +2,12 @@
 
 namespace App\DTOs\Tramite;
 
-final readonly class ValidarPermisoDTO
+final readonly class CreateDocumentoTramDTO
 {
     public function __construct(
-        public string $estado,
+        public int $documento_id,
+        public ?string $nroDoc,
+        public ?string $fechaDoc,
         public ?string $observacion,
     ) {}
 
@@ -13,8 +15,10 @@ final readonly class ValidarPermisoDTO
     public static function from(array $data): self
     {
         return new self(
-            estado:      $data['estado'],
-            observacion: $data['observacion'] ?? null,
+            documento_id: (int) $data['documento_id'],
+            nroDoc:       $data['nroDoc'] ?? null,
+            fechaDoc:     $data['fechaDoc'] ?? null,
+            observacion:  $data['observacion'] ?? null,
         );
     }
 

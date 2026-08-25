@@ -23,6 +23,7 @@ return new class extends Migration
             $table->decimal('totalHoras', 15, 4)->nullable();
             $table->string('marcaApli', 2)->nullable();
             $table->string('observacion', 255)->nullable();
+            $table->smallInteger('turno')->nullable();
             $table->bigInteger('expediente_id')->nullable();
             $table->bigInteger('created_by')->nullable();
             $table->timestamp('created_at')->nullable();

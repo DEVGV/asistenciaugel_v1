@@ -3,6 +3,9 @@ import InstitucionEducativaMasivaController from './InstitucionEducativaMasivaCo
 import AltaMasivaIEController from './AltaMasivaIEController'
 import GradosMasivaIEController from './GradosMasivaIEController'
 import CursosMasivaIEController from './CursosMasivaIEController'
+import TelefonoIEController from './TelefonoIEController'
+import EmailIEController from './EmailIEController'
+import DomicilioIEController from './DomicilioIEController'
 import DiasNoLaborablesController from './DiasNoLaborablesController'
 import CursoIEController from './CursoIEController'
 import GradoIEController from './GradoIEController'
@@ -14,6 +17,9 @@ const InstitucionEducativa = {
     AltaMasivaIEController: Object.assign(AltaMasivaIEController, AltaMasivaIEController),
     GradosMasivaIEController: Object.assign(GradosMasivaIEController, GradosMasivaIEController),
     CursosMasivaIEController: Object.assign(CursosMasivaIEController, CursosMasivaIEController),
+    TelefonoIEController: Object.assign(TelefonoIEController, TelefonoIEController),
+    EmailIEController: Object.assign(EmailIEController, EmailIEController),
+    DomicilioIEController: Object.assign(DomicilioIEController, DomicilioIEController),
     DiasNoLaborablesController: Object.assign(DiasNoLaborablesController, DiasNoLaborablesController),
     CursoIEController: Object.assign(CursoIEController, CursoIEController),
     GradoIEController: Object.assign(GradoIEController, GradoIEController),

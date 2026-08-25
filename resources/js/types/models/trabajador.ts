@@ -74,6 +74,27 @@ export interface AltaTrabajador {
             descripcion: string | null;
         };
     } | null;
+    localMarcacion?: LocalMarcacionData | null;
+    local_marcacion?: LocalMarcacionData | null;
+    localesMarcacion?: LocalMarcacionData[];
+    locales_marcacion?: LocalMarcacionData[];
+}
+
+interface LocalMarcacionData {
+    id: number;
+    localInstEduc_id: number | null;
+    local_inst_educ_id?: number | null;
+    local_inst_educ?: LocalInstEducData | null;
+    localInstEduc?: LocalInstEducData | null;
+}
+
+interface LocalInstEducData {
+    id: number;
+    local?: {
+        id: number;
+        nombre: string | null;
+        domicilio: string | null;
+    } | null;
 }
 
 export type { PaginatedResponse };
